@@ -55,7 +55,7 @@ static func load_from(file_path: String = "") -> GameSettings:
 ## Muda um valor se ele for válido. Retorna false (e registra) se for inválido.
 func set_value(key: String, value: Variant) -> bool:
 	if not DEFAULTS.has(key) or not _is_valid(key, value):
-		load_issues.append("valor inválido em \"%s\"" % key)
+		load_issues.append('valor inválido em "%s"' % key)
 		return false
 	values[key] = value
 	return true

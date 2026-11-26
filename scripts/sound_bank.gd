@@ -48,6 +48,9 @@ const LENGTHS := {
 	&"vitoria": 0.7,
 }
 
+## Sons já gerados, guardados entre partidas: "Jogar de novo" não sintetiza tudo de novo.
+static var _cache := {}
+
 var enabled := true  ## Configuração "Som".
 var played := {}  ## Som -> vezes tocado (usado pelos testes).
 
@@ -100,11 +103,11 @@ func stream_of(sound: StringName) -> AudioStreamWAV:
 # ---------------------------------------------------------------- síntese
 
 
-
-
 func _build() -> void:
-	for sound: StringName in LENGTHS:
-		_streams[sound] = _make(LENGTHS[sound], Callable(self, "_wave_" + String(sound)))
+	if _cache.is_empty():
+		for sound: StringName in LENGTHS:
+			_cache[sound] = _make(LENGTHS[sound], Callable(self, "_wave_" + String(sound)))
+	_streams = _cache
 
 
 func _wave_golpe(t: float, n: float) -> float:

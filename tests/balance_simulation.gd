@@ -345,18 +345,17 @@ func _report_match() -> bool:
 		if game.upgrades.stacks(id) > 0:
 			upgrades.append("%s %d" % [id, game.upgrades.stacks(id)])
 	lines.append("Melhorias: " + ", ".join(upgrades))
-	lines.append(
-		(
-			"Eventos: elites %d · fendas %d/%d · marés %d · evoluções %d"
-			% [
-				stats.elites_killed,
-				stats.rifts_completed,
-				stats.rifts_completed + stats.rifts_failed,
-				stats.tides,
-				stats.evolutions,
-			]
-		)
+	var events := (
+		"Eventos: elites %d · fendas %d/%d · marés %d · evoluções %d"
+		% [
+			stats.elites_killed,
+			stats.rifts_completed,
+			stats.rifts_completed + stats.rifts_failed,
+			stats.tides,
+			stats.evolutions,
+		]
 	)
+	lines.append(events)
 	if stats.boss_spawned_at >= 0.0:
 		lines.append(
 			(

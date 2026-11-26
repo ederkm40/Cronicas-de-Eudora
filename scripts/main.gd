@@ -303,10 +303,11 @@ func _update_hud() -> void:
 
 func _event_text() -> String:
 	if director.rift_active:
-		return (
+		var text := (
 			"Fenda do Eco: %.1f/%.0f s dentro · %d s restantes"
 			% [director.rift_progress, director.rift_channel, ceili(director.rift_time_left())]
-		).replace(".", ",")
+		)
+		return text.replace(".", ",")
 	match director.tide:
 		EventDirector.Tide.MARE:
 			return "Maré da horda"

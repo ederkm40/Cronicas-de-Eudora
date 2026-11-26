@@ -66,9 +66,7 @@ func test_evolucao_exige_requisitos_e_e_unica() -> void:
 	_set_stacks({Upgrades.DAMAGE: 3})
 	_check(offers.is_valid(WeaponCatalog.EVO_BOLT), "requisitos cumpridos: aparece")
 	_check(offers.valid_ids().has(WeaponCatalog.EVO_BOLT), "entra no sorteio")
-	_check(
-		offers.tag_of(WeaponCatalog.EVO_BOLT).begins_with("EVOLUÇÃO"), "a carta mostra EVOLUÇÃO"
-	)
+	_check(offers.tag_of(WeaponCatalog.EVO_BOLT).begins_with("EVOLUÇÃO"), "a carta mostra EVOLUÇÃO")
 	_check(game.apply_offer(WeaponCatalog.EVO_BOLT), "evolui")
 	_check(game.stats.evolutions == 1, "a evolução é contada")
 	_check(not offers.is_valid(WeaponCatalog.EVO_BOLT), "uma arma evolui uma vez só")
@@ -402,9 +400,7 @@ func test_pausa_e_configuracoes() -> void:
 	game.pause_menu.option_button("numeros_dano").pressed.emit()
 	await _frames(1)
 	_check(not game.sounds.enabled and not game.feedback.enabled, "som e números desligados")
-	_check(
-		not GameSettings.load_from().values.som, "a escolha fica salva para a próxima partida"
-	)
+	_check(not GameSettings.load_from().values.som, "a escolha fica salva para a próxima partida")
 	_check(game.pause_menu.option_button("joystick_altura").disabled, "altura só no modo fixo")
 	game.pause_menu.resume_button().pressed.emit()
 	await _frames(2)
