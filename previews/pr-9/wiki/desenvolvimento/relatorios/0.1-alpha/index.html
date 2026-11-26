@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório 0.1-alpha: Projeto base · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #9, branch <code>docs/painel-etapas-e-arquivo-de-prompts</code>, commit <code>197a3ec</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Relatórios</a></nav>
+<article>
+<h1>Relatório 0.1-alpha: Projeto base</h1>
+<p class="selos"><span class="versao-art">Desde a 0.1-alpha</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#objetivo">Objetivo</a></li><li><a href="#funcionalidades-implementadas">Funcionalidades implementadas</a></li><li><a href="#desempenho">Desempenho</a></li><li><a href="#testes-executados">Testes executados</a></li><li><a href="#problemas-e-limitacoes">Problemas e limitações</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Data</strong></td><td>26/11/2026</td></tr><tr><td><strong>Commit</strong></td><td><code>0dd647fea0f8de1da5307316c98c22cceaee446d</code></td></tr><tr><td><strong>Pull Request</strong></td><td>nenhum (enviado direto ao <code>main</code>, antes da regra de PRs)</td></tr><tr><td><strong>Workflow</strong></td><td>execução 45782271052, sucesso (testar e publicar)</td></tr><tr><td><strong>Prévia</strong></td><td>não existia; publicado direto em https://ederkm40.github.io/Cronicas-de-Eudora/</td></tr></tbody></table></div>
+<p><em>Relatório escrito retroativamente na etapa de infraestrutura, a partir do histórico do repositório e da conversa de desenvolvimento.</em></p>
+<h2 id="objetivo">Objetivo</h2>
+<p>Criar o projeto base jogável no navegador do celular, para testar se mover e sobreviver com joystick flutuante funciona.</p>
+<h2 id="funcionalidades-implementadas">Funcionalidades implementadas</h2>
+<ul><li>Projeto Godot 4.7.2 inteiramente em texto. A partida é montada em código (<code>scripts/main.gd</code>).</li><li>Tela em retrato 720 × 1280 com <code>canvas_items</code> e <code>expand</code>. Renderizador Compatibility.</li><li>Câmera isométrica ortográfica fixa: giro de 45°, inclinação de 40°, 14 m de largura visível.</li><li>Joystick flutuante (raio 90, zona morta 12%, centro que acompanha o dedo, velocidade fixa), mais WASD e setas.</li><li>Personagem com 100 de vida e 5 m/s, sombra de disco (<code>BlobShadow</code>).</li><li>Arma automática no inimigo mais próximo: 10 de dano, 0,45 s, 11 m de alcance, projétil a 14 m/s por 1,2 s.</li><li>Hordas: intervalo de 1 s caindo 0,012 s por segundo até 0,12 s; +1 inimigo por onda a cada 25 s; até 300; vida 20 +60% por minuto; 2,2 m/s ±15%; 9 de dano por segundo por contato (até 5 inimigos).</li><li>HUD com tempo, abates, vida, FPS e inimigos; tela "Você caiu!" com "Jogar de novo".</li><li>Chão com grade de 2 m desenhada por shader, que acompanha o jogador.</li><li>Workflow do GitHub Actions: baixa o Godot, importa, roda o smoke test, exporta para Web e publica no GitHub Pages.</li></ul>
+<h2 id="desempenho">Desempenho</h2>
+<ul><li>Inimigos e projéteis em <code>Packed*Array</code> + 1 <code>MultiMesh</code> por tipo.</li><li>Separação entre inimigos com grade espacial montada por ordenação nativa, recalculada para metade dos inimigos por quadro.</li><li>Medição local (servidor, sem renderização): cerca de 2,4 ms por quadro só para a lógica de 300 inimigos, depois da otimização. A versão inicial gastava de 5 a 10 ms.</li></ul>
+<h2 id="testes-executados">Testes executados</h2>
+<div class="tabela"><table><thead><tr><th>Teste</th><th>Resultado</th></tr></thead><tbody><tr><td><code>tests/smoke_test.gd</code> (45 s simulados, toque e arraste no joystick, abates)</td><td>aprovado, localmente e no GitHub Actions</td></tr><tr><td>Exportação Web</td><td>aprovada (index.html, .js, .pck, .wasm)</td></tr><tr><td>Teste visual num Chrome com celular simulado (390 × 844, toque)</td><td>joystick, câmera, inimigos e projéteis visíveis</td></tr></tbody></table></div>
+<h2 id="problemas-e-limitacoes">Problemas e limitações</h2>
+<ul><li>Não foi testado em celular físico.</li><li>No ambiente de testes com SwiftShader (renderização por software do Chrome), as atualizações de MultiMesh não aparecem. Com o renderizador Mesa/GL apareceram corretamente. É um problema do ambiente de teste, não do jogo.</li><li>Na tela deitada (paisagem), a interface fica pequena.</li><li>Gráficos provisórios e jogo sem som.</li></ul>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 197a3ec</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/docs/painel-etapas-e-arquivo-de-prompts/docs/versoes/0.1-alpha/RELATORIO.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>

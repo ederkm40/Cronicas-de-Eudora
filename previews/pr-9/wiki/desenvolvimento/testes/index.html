@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testes · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Como a versão 0.3-alpha é validada e quais resultados foram registrados no PR #5.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #9, branch <code>docs/painel-etapas-e-arquivo-de-prompts</code>, commit <code>197a3ec</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Painel de desenvolvimento</a></nav>
+<article>
+<h1>Testes</h1>
+
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#testes-do-godot">Testes do Godot</a></li><li><a href="#ci-e-navegador">CI e navegador</a></li><li><a href="#limite-importante">Limite importante</a></li><li><a href="#manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</a></li></ol></details>
+<p>O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados durante a entrega da 0.3-alpha, não uma nova execução desta atualização editorial.</p>
+<h2 id="testes-do-godot">Testes do Godot</h2>
+<p>A 0.3-alpha registrou <strong>41 testes em quatro suítes e 4.370 verificações</strong>:</p>
+<div class="tabela"><table><thead><tr><th>Suíte</th><th>Cobertura</th></tr></thead><tbody><tr><td><code>progressao.gd</code></td><td>XP, coleta, level-up, melhorias, limites, pausa, derrota e reinício</td></tr><tr><td><code>armas_e_ofertas.gd</code></td><td>Arsenal, Aura, Lâmina, níveis, ofertas, troca e bloqueio</td></tr><tr><td><code>inimigos_e_chefe.gd</code></td><td>Mistura por tempo, comportamentos, avisos, chefe, fases e vitória</td></tr><tr><td><code>esquiva_e_encerramento.gd</code></td><td>Esquiva, invulnerabilidade, resultados, reinício e progressão permanente</td></tr></tbody></table></div>
+<p>Também foram registrados:</p>
+<ul><li><code>tests/smoke_test.gd</code>: teste de ponta a ponta.</li><li><code>tests/long_simulation.gd</code>: simulação prolongada de 300 s.</li><li><code>tests/balance_simulation.gd</code>: simulações de armas, partidas e encontro final. Não é executada no CI.</li></ul>
+<h2 id="ci-e-navegador">CI e navegador</h2>
+<p>No PR #5, o relatório registrou:</p>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado informado</th></tr></thead><tbody><tr><td><code>gdlint</code></td><td>Sem problemas</td></tr><tr><td><code>gdformat --check</code></td><td>Arquivos GDScript alterados formatados</td></tr><tr><td>Testes do Godot</td><td>41 testes, 4.370 verificações, zero falhas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação prolongada</td><td>Aprovada</td></tr><tr><td>Testes da Wiki e montagem do site</td><td>14 e 7 testes aprovados</td></tr><tr><td>Playwright</td><td>18 aprovados e 3 pulados por desenho, nos três perfis</td></tr></tbody></table></div>
+<p>Os testes Playwright abrem o jogo exportado e verificam joystick, esquiva, teclado, level-up, vitória, derrota e reinício.</p>
+<h2 id="limite-importante">Limite importante</h2>
+<p>Os perfis de Pixel 7 são emulação de tela e toque em Chromium de computador. <strong>Não equivalem a teste em celular físico.</strong> O desempenho de CPU medido sem renderização também não representa FPS real em um aparelho.</p>
+<p>Consulte <a href="../relatorios/">os relatórios por versão</a> para os detalhes e as condições de cada medição.</p>
+<h2 id="manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</h2>
+<p>A etapa de manutenção ampliou a cobertura para <strong>51 testes em cinco suítes, com 4.482 verificações e zero falhas</strong>. Esses números são os registrados no CI e no relatório do PR #7, não uma execução feita durante esta atualização editorial.</p>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado registrado</th></tr></thead><tbody><tr><td>Testes do Godot</td><td>51 testes, 4.482 verificações, 0 falhas</td></tr><tr><td>Conferência ao contrário (save e joystick)</td><td>5 testes falham quando as correções são removidas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação prolongada de 300 s</td><td>Aprovada</td></tr><tr><td>Wiki / montagem do site</td><td>14 / 7 testes aprovados</td></tr><tr><td>Verificação das builds</td><td>Produção: 0 referências à ponte de QA; QA: 3</td></tr><tr><td>Playwright na build Web QA, 3 perfis</td><td>21 aprovados, 3 pulados por desenho</td></tr><tr><td>Playwright na build de produção, 3 perfis</td><td>11 aprovados, 1 pulado por desenho</td></tr></tbody></table></div>
+<p>A build de produção é a única publicada. A build Web QA, que contém a ponte usada pelos testes de jogabilidade, é restrita ao CI. Os três perfis de navegador incluem desktop e emulações de Pixel 7 em retrato e paisagem. <strong>A emulação não substitui testes em aparelhos físicos</strong>, que continuam pendentes.</p>
+<p>Relatório técnico: <code>docs/versoes/manutencao-pos-0.3/RELATORIO.md</code>. Pull Request: <a href="https://github.com/ederkm40/Cronicas-de-Eudora/pull/7" rel="noopener">#7</a>.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 197a3ec</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/docs/painel-etapas-e-arquivo-de-prompts/wiki-src/desenvolvimento/testes.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>

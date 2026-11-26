@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0001: Godot 4.7.2, GDScript, renderizador Compatibility e exportação Web sem threads · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #9, branch <code>docs/painel-etapas-e-arquivo-de-prompts</code>, commit <code>197a3ec</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Decisões técnicas</a></nav>
+<article>
+<h1>0001: Godot 4.7.2, GDScript, renderizador Compatibility e exportação Web sem threads</h1>
+
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#contexto">Contexto</a></li><li><a href="#decisao">Decisão</a></li><li><a href="#consequencias">Consequências</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Situação</strong></td><td>Aceita</td></tr><tr><td><strong>Data</strong></td><td>25/11/2026</td></tr></tbody></table></div>
+<h2 id="contexto">Contexto</h2>
+<p>O jogo precisa rodar no navegador do celular, ser construído quase todo por IA e não ter custo. O proprietário não usa um computador local para desenvolver.</p>
+<h2 id="decisao">Decisão</h2>
+<ul><li><strong>Godot 4.7.2</strong>, gratuito, com o projeto inteiro em arquivos de texto.</li><li><strong>GDScript</strong>. C# não exporta para a Web no Godot 4.</li><li><strong>Renderizador Compatibility</strong> (WebGL 2), o único suportado na exportação Web e o mais leve para celulares.</li><li><strong>Exportação Web sem threads</strong>, porque o GitHub Pages não envia os cabeçalhos que o <code>SharedArrayBuffer</code> exige.</li><li>A versão do Godot fica fixada em <code>GODOT_VERSION</code> no workflow.</li></ul>
+<h2 id="consequencias">Consequências</h2>
+<p>Não usar recursos que exijam threads ou C#. Trocar a versão do Godot exige atualizar o workflow e rodar todos os testes.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 197a3ec</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/docs/painel-etapas-e-arquivo-de-prompts/docs/decisoes/0001-godot-web-compatibility.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>
