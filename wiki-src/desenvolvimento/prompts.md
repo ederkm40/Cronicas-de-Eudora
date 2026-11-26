@@ -25,6 +25,7 @@ Não inventar texto para preencher lacunas. Quando o prompt original estiver dis
 | PR #6 | Wiki pública e prévias | A recuperar |
 | PR #7 | Manutenção pós-0.3-alpha + Documento Mestre de Sistemas | Resumo recuperado |
 | PR #8 | Atualização da Wiki e changelog após PR #7 | Resumo recuperado |
+| Etapa 3 / PR #10 | O Despertar de Eudora, evolução do núcleo de gameplay | Resumo recuperado |
 | Próximas etapas | Novos pedidos de desenvolvimento | A registrar literalmente |
 
 ## 0.1-alpha — Projeto base
@@ -133,3 +134,14 @@ As regras abaixo devem acompanhar os próximos pedidos de desenvolvimento, salvo
 - **Prompt 2:** (repetir quando houver)
 - **Resultado:** link para relatório, PR e versão.
 - **Observações:** decisões, correções e limites relevantes.
+
+
+## Etapa 3 — O Despertar de Eudora (0.4-alpha, PR #10)
+
+**Situação do registro:** resumo recuperado a partir da solicitação do proprietário, do prompt de execução preparado nesta conversa e do relatório técnico. O pedido literal do proprietário foi: “vamos lá então seja extremamente criativo nesse prompt. Quero muita evolução.”
+
+**Objetivo confirmado:** transformar a 0.3-alpha em uma experiência mais rica, com evolução substancial do combate, builds, inimigos, chefes, eventos, progressão, controles mobile, identidade audiovisual e desempenho. A orientação exigia auditoria antes de implementar, liberdade criativa com critérios, respeito ao Documento Mestre, testes automatizados, branch própria e Pull Request sem merge automático.
+
+**Resultado:** PR #10 integrado em 26/11/2026 como 0.4-alpha. Foram adicionadas configurações mobile, três evoluções de armas, Pacto do Eco, estados de combate, Tecelão, Semeador, elites, eventos, novas mecânicas da Sentinela, som procedural e feedback audiovisual. As mecânicas novas de gameplay permanecem experimentais no eixo de design; a personalização mobile já era aprovada.
+
+**Registro da entrega:** [PR #10](https://github.com/ederkm40/Cronicas-de-Eudora/pull/10) · [relatório 0.4-alpha](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.4-alpha/RELATORIO.md).
