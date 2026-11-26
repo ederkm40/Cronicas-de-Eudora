@@ -74,4 +74,4 @@ O arquivo [[desenvolvimento/prompts|Arquivo histórico de prompts]] reúne os pe
 - [[desenvolvimento/problemas-conhecidos]]: limitações atuais.
 - [[desenvolvimento/arquitetura]] e [[desenvolvimento/desempenho]]: visão técnica.
 - [[desenvolvimento/previas]]: como testar versões candidatas.
-- [[desenvolvimento/relatorios]] · [[desenvolvimento/changelog]] · [[desenvolvimento/decisoes]].
+- [[desenvolvimento/relatorios]] · [[desenvolvimento/changelog]] · [[desenvolvimento/eventos-da-partida]] · [[desenvolvimento/decisoes]].
