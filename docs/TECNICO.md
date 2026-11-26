@@ -1,6 +1,6 @@
 # Documentação técnica
 
-Estado de referência: versão 0.3-alpha "grande expansão do combate" (em revisão no PR #5). Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
+Estado de referência: versão 0.3-alpha "grande expansão do combate" (integrada no `main` pelo PR #5), com a manutenção pós-0.3 (builds de produção e QA, save validado, retomada do joystick). Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
 
 ## Visão geral
 
@@ -19,7 +19,7 @@ Main (main.gd)
 ├── AuraWeapon (aura_weapon.gd)            Aura de brasas: 1 malha com shader
 ├── OrbitBlades (orbit_blades.gd)          Lâmina orbital: 1 MultiMesh (lâminas + rastro) e o anel da órbita
 ├── XpOrbManager (xp_orbs.gd)              orbes de experiência: arrays + 1 MultiMesh
-├── WebBridge (web_bridge.gd)              só no navegador e só com ?teste=1 (testes de navegador)
+├── (web_bridge.gd)                      ponte de testes: só na build "Web QA" (ver Builds)
 └── CanvasLayer
     ├── FloatingJoystick                   joystick flutuante e duplo toque (esquiva)
     ├── Hud                                tempo, abates, vida, XP, armas, chefe, avisos, esquiva
@@ -54,7 +54,7 @@ Objetos sem nó (RefCounted):
 
 ### Pausa
 
-Pausa nativa (`SceneTree.paused`). Só `LevelUpPanel`, `ResultsScreen` e `WebBridge` usam `PROCESS_MODE_ALWAYS`. Com a pausa, o jogador não recebe teclas (a esquiva pelo Espaço não funciona no menu) e o joystick fica desligado (sem duplo toque). A tela de escolha fica travada por 0,35 s depois de abrir.
+Pausa nativa (`SceneTree.paused`). Só `LevelUpPanel`, `ResultsScreen`, `FloatingJoystick` e a ponte de testes usam `PROCESS_MODE_ALWAYS`. Com a pausa, o jogador não recebe teclas (a esquiva pelo Espaço não funciona no menu) e o joystick fica desligado (sem movimento e sem duplo toque), mas continua acompanhando o dedo que já estava nele: ao retomar, esse dedo volta a controlar a partir da posição atual; se foi solto durante a pausa, o joystick volta neutro. Toques que começam durante a pausa não viram joystick, e a pausa zera os gestos de esquiva. A tela de escolha fica travada por 0,35 s depois de abrir.
 
 ## Armas
 
@@ -131,9 +131,15 @@ Vida 3.800. Abaixo de 50%: fase 2 (aviso no HUD, avisos e pausas 25% mais curtos
 ## Progressão permanente (`MetaProgress`)
 
 - Arquivo `user://progresso.json`, com campo `versao` (atual: 1). No navegador, `user://` fica no armazenamento do site (IndexedDB).
-- Salvamento: grava num `.tmp` e renomeia. Arquivo corrompido → cópia `.corrompido` e começo do zero. Arquivo de versão mais nova → só leitura (não salva por cima). Versão 0 (sem o campo `versao`) é migrada. **Não havia save antes desta versão**: a migração está pronta e testada para o futuro.
+- Salvamento: grava num `.tmp` e renomeia. Versão 0 (sem o campo `versao`) é migrada. **Não havia save antes da 0.3**: a migração está pronta e testada para o futuro.
+- Leitura com validação (manutenção pós-0.3):
+  - **Estrutura inválida** (JSON inválido, raiz que não é objeto, `versao` que não é número ou é negativa, `estatisticas` ou `melhorias` que não são objetos): cópia `.corrompido` e começo do zero.
+  - **Campo inválido** (tipo errado, negativo, fracionado, nível acima do limite): cópia `.corrompido`; só o campo vira valor seguro (0, o inteiro abaixo ou o limite); o resto é mantido. `load_note` = `ajustado`.
+  - Os motivos ficam em `MetaProgress.load_issues` e saem no console (`push_warning`). Nenhum valor inválido causa erro de execução.
+  - **Versão mais nova:** só leitura, tolerante a tipos desconhecidos; nunca salva por cima.
+  - O original só é substituído no próximo salvamento, depois da cópia. Campos desconhecidos são mantidos ao salvar.
 - Recompensa: 1 Eco a cada 20 s, 1 a cada 15 abates, 40 por chefe derrotado.
-- Loja (na tela de resultados): Vigor ancestral (+8% de vida por nível, 5 níveis), Fúria latente (+5% de dano, 5), Atração do eco (+20% de raio de coleta, 3), Renovação (+1 troca de opções, 2). Os preços estão em `MetaProgress.UPGRADES`.
+- Loja (na tela de resultados): Vigor ancestral (+8% de vida por nível, 5 níveis), Fúria latente (+5% de dano, 5), Atração do eco (+20% no raio do ímã dos orbes, 3; o texto no jogo diz "raio de coleta"), Renovação (+1 troca de opções, 2). Os preços estão em `MetaProgress.UPGRADES`.
 
 ## Desempenho
 
@@ -149,7 +155,7 @@ Medições: ver `docs/versoes/0.3-alpha/RELATORIO.md`. São tempos de CPU do ser
 
 | Arquivo | O que cobre |
 |---|---|
-| `tests/run_tests.gd` + `tests/suites/` | 41 testes em 4 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (7); esquiva, encerramento e progressão permanente (9) |
+| `tests/run_tests.gd` + `tests/suites/` | 51 testes em 5 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (7); esquiva, encerramento e progressão permanente (9); save e joystick (10) |
 | `tests/smoke_test.gd` | 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa |
 | `tests/long_simulation.gd` | partida longa (`--segundos=N`, `--invulneravel`): tempo por quadro, máximos, nós e memória, com reinícios |
 | `tests/balance_simulation.gd` | **não roda no CI**: comparação de armas (`--modo=dps`), partida com piloto (`--modo=partida`) e encontro final (`--modo=chefe`) |
@@ -183,9 +189,19 @@ Em `tools/e2e/`, com guia de manutenção em `tools/e2e/README.md`. Abrem o **jo
 | Jogo rodando | a imagem do canvas muda com o tempo |
 | Sem erros | nenhuma exceção nem `console.error` |
 | Toque e orientação | nos perfis de celular |
-| Jogabilidade (`jogabilidade.spec.js`) | joystick arrastado, duplo toque (e toques espaçados que não esquivam), Espaço, level-up tocando em Trocar/Bloquear/cartão, vitória contra o chefe e derrota com "Jogar de novo" tocado. Usa a ponte `?teste=1` só para ler o estado e preparar situações |
+| Jogabilidade (`jogabilidade.spec.js`) | joystick arrastado, duplo toque (e toques espaçados que não esquivam), Espaço, level-up tocando em Trocar/Bloquear/cartão, vitória contra o chefe e derrota com "Jogar de novo" tocado. Roda na build "Web QA", cuja ponte de testes só lê o estado e prepara situações; inclui a retomada do joystick com o dedo pressionado |
+| Produção sem ponte (`producao.spec.js`) | build "Web" aberta normalmente e com `?teste=1`: sem `window.__eudora` nem `window.__eudoraComandos`, comandos escritos na página não são lidos, o jogo roda |
 
 **Renderizador:** dentro do `xvfb-run`, com `--use-angle=gl`, o Chromium usa Mesa/llvmpipe (OpenGL 4.5). Sem tela virtual, cai no SwiftShader, que não mostra as atualizações de MultiMesh. **A emulação de Pixel 7 não equivale a um celular físico.**
+
+## Builds: produção e QA
+
+| Build | Preset | O que tem | Onde vai |
+|---|---|---|---|
+| **Produção** | `Web` (`export_presets.cfg`, `exclude_filter` tira `scripts/web_bridge.gd`) | o jogo, sem a ponte de testes | site oficial e prévias dos PRs (`tools/ci/construir_parte.sh`) |
+| **QA** | `Web QA` (funcionalidade de exportação `qa`) | o jogo + a ponte de testes `scripts/web_bridge.gd` | só os testes do Playwright no CI (`tools/ci/construir_qa.sh`, em `$RUNNER_TEMP/qa`); nunca sai do job "Testar e exportar" |
+
+`main.gd` só carrega a ponte quando o jogo roda no navegador **e** tem a funcionalidade `qa`; a ponte não tem `class_name`, então nada no jogo depende dela. `tools/ci/verificar_producao.sh` confere no CI que o `.pck` de produção não contém `scripts/web_bridge` (e que o de QA contém, para a verificação não passar por engano). O Playwright roda duas vezes: na QA (`E2E_MODO=qa`: `jogo.spec.js` e `jogabilidade.spec.js`) e na produção (`E2E_MODO=producao`: `jogo.spec.js` e `producao.spec.js`).
 
 ## Publicação, Wiki e prévias
 
@@ -231,7 +247,6 @@ Ferramentas de publicação (Python 3 e shell, sem dependências externas):
 - **Sem teste em celular físico.** Os testes de navegador emulam toque e tela de Pixel 7 num Chromium de computador.
 - **Equilíbrio medido só com piloto automático:** os números da versão vêm de simulações. Falta testar com pessoas (critério da fase 1).
 - **Tela deitada:** a câmera mantém 14 m de largura e mostra pouco mapa na vertical; as interfaces ficam numa coluna central.
-- **Pausa e dedo no joystick:** se o dedo ainda estiver na tela quando a pausa termina, o joystick só volta a responder depois de levantar e tocar de novo.
 - **Destro/canhoto e ajuste do joystick:** ainda não implementados (o joystick flutua em qualquer ponto da tela; os parâmetros já são `@export` em `FloatingJoystick`).
 - **Orbes distantes** ficam no chão até o jogador passar perto.
 - **Sem som e sem arte final.**

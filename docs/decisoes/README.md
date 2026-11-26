@@ -14,5 +14,6 @@ Cada arquivo registra uma decisão: contexto, decisão e consequências. **Nunca
 | 0008 | [Duas IAs com papéis separados e o GitHub como fonte de verdade](0008-divisao-ias-github-fonte-de-verdade.md) | Aceita | 26/11/2026 |
 | 0009 | [Ferramentas de QA no CI (GDScript Toolkit e Playwright), sem custo e fora do jogo](0009-ferramentas-qa-web.md) | Aceita | 26/11/2026 |
 | 0010 | [Arquitetura do combate 0.3: armas em camadas, inimigos e chefe no mesmo gerenciador, esquiva por gesto, resultados e progresso versionado](0010-combate-03-arquitetura.md) | Aceita | 26/11/2026 |
+| 0011 | [Build de produção sem a ponte de testes; build de QA só no CI](0011-builds-producao-e-qa.md) | Aceita | 26/11/2026 |
 
 Modelo para uma nova decisão: copie qualquer arquivo e mantenha as seções *Contexto*, *Decisão* e *Consequências*.

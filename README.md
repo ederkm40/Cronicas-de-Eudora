@@ -12,7 +12,7 @@ A versão oficial é a do branch `main` e se atualiza sozinha alguns minutos dep
 
 ## Estado atual
 
-A versão oficial é a **0.2-alpha "Ecos da Evolução"**. A **0.3-alpha** (grande expansão do combate) está em revisão no PR #5, com prévia jogável em `/previews/pr-5/`. O que a 0.3 traz:
+A versão oficial é a **0.3-alpha "Grande expansão do combate"**, integrada pelo PR #5. O que ela traz:
 
 - **Controles:** joystick flutuante (toque em qualquer ponto e arraste); no PC, WASD ou setas. **Esquiva:** duplo toque no joystick (ou Espaço no PC).
 - **Armas:** Raio arcano (inicial), **Aura de brasas** e **Lâmina orbital**, cada uma com espaço próprio e 5 níveis.
@@ -24,6 +24,10 @@ A versão oficial é a **0.2-alpha "Ecos da Evolução"**. A **0.3-alpha** (gran
 - **Desempenho:** contador de FPS e de inimigos no rodapé.
 
 Detalhes, números e testes: `docs/TECNICO.md` e `docs/versoes/0.3-alpha/RELATORIO.md`.
+
+## Documento Mestre de Sistemas
+
+A referência central de design (sistemas, conteúdos, dependências, estados de design, implementação e validação) fica em [`docs/design/DOCUMENTO_MESTRE_SISTEMAS.md`](docs/design/DOCUMENTO_MESTRE_SISTEMAS.md), com os catálogos em [`docs/design/catalogos/`](docs/design/catalogos/README.md). Ele **não autoriza** implementar nada: as entregas aprovadas estão em `docs/ROADMAP.md`.
 
 A arte ainda é provisória (cápsulas e cristais): o objetivo agora é testar se o ciclo de jogo é divertido no celular.
 

@@ -45,6 +45,10 @@ Regras para não haver conflito:
 5. O proprietário leva o PR ao ChatGPT, que atualiza a Wiki e o changelog **na mesma branch**. Cada commit atualiza a prévia sozinho.
 6. O proprietário testa a prévia e aprova. O merge publica a versão oficial e apaga a prévia.
 
+## Documento Mestre de Sistemas
+
+`docs/design/DOCUMENTO_MESTRE_SISTEMAS.md` e `docs/design/catalogos/` organizam o design: o que cada sistema é, suas regras, dependências e três estados independentes (design, implementação, validação). **Não autorizam implementar nada** (a roadmap define as entregas). Quem implementa algo atualiza o estado de implementação e os números a partir do código; propostas novas entram como `PROPOSTO_NAO_APROVADO`.
+
 ## Regras técnicas (não negociáveis)
 
 - Godot **4.7.2** (fixado em `GODOT_VERSION` no workflow), GDScript, Compatibility, Web **sem threads**. Sem C#.
@@ -99,6 +103,6 @@ python3 tools/wiki/build_wiki.py --saida build/wiki  # gerar a Wiki localmente
 cd tools/e2e && npm ci && E2E_DIR=<exportação> xvfb-run -a npx playwright test   # navegador
 ```
 
-No CI, os scripts do Godot rodam por `tools/ci/rodar_godot.sh`, que também falha se o log tiver erro de script. Os testes de navegador abrem o jogo com `?teste=1` (ponte `scripts/web_bridge.gd`).
+No CI, os scripts do Godot rodam por `tools/ci/rodar_godot.sh`, que também falha se o log tiver erro de script. Os testes de jogabilidade no navegador usam a build **Web QA** (preset com a funcionalidade `qa`), que tem a ponte `scripts/web_bridge.gd`. A build de produção (preset `Web`) não tem a ponte e é a única publicada (site oficial e prévias). Ver `docs/TECNICO.md`, seção "Builds".
 
 Os checks obrigatórios da `main` são **`Testar e exportar`** e **`Publicar`**. Não renomeie esses jobs nem crie um terceiro job obrigatório sem combinar com o proprietário.

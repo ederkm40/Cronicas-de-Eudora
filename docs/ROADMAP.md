@@ -27,7 +27,7 @@ O plano segue as fases do documento de criação: conceito → protótipo → ve
 ### Infraestrutura: ferramentas de QA (PR #4)
 - GDScript Toolkit no CI e testes de navegador (Playwright) em 3 perfis.
 
-### 0.3-alpha: grande expansão do combate (em revisão, PR #5)
+### 0.3-alpha: grande expansão do combate (integrada pelo PR #5)
 Entregue o escopo da 0.3 e antecipadas partes da 0.4, 0.5 e 0.6 (detalhes em `docs/versoes/0.3-alpha/RELATORIO.md`):
 - **0.3 (completo):** Aura de brasas e Lâmina orbital em espaços próprios, com 5 níveis; level-up oferece armas novas, evoluções e melhorias; troca de opções e bloqueio.
 - **0.4 (antecipado):** os 4 tipos de inimigo (Espreitador, Couraçado, Lançador, Volátil) com comportamentos próprios e entrada gradual; chefe aos 10 minutos (Sentinela do Eco) com 3 ataques avisados e 2 fases.

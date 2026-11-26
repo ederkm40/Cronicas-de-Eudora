@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Situação** | Aceita |
+| **Situação** | Aceita (o item 9, ponte de testes ligada por `?teste=1`, foi **substituído pela [0011](0011-builds-producao-e-qa.md)**) |
 | **Data** | 26/11/2026 |
 
 ## Contexto
