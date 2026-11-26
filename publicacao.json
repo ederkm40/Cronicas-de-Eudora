@@ -3,12 +3,5 @@
     "commit": "70cf85fc5e459a042f415e4b5e5493a2233465e9",
     "publicado_em": "2026-11-26T15:04:29Z"
   },
-  "previas": {
-    "5": {
-      "branch": "feat/grande-expansao-combate-03",
-      "commit": "004cf530b248bbb59b53ce72a5b7ad3a3aeb46c3",
-      "publicado_em": "2026-11-26T16:31:31Z",
-      "titulo": "0.3-alpha: grande expansão do combate (armas, inimigos, chefe, esquiva, resultados e progressão)"
-    }
-  }
+  "previas": {}
 }
