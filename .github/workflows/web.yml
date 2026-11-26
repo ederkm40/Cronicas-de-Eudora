@@ -1,9 +1,11 @@
 name: Compilar e publicar (Web)
 
-# Roda a cada envio para o main, ou manualmente pela aba Actions.
+# Em Pull Requests: importa, testa e exporta, mas NÃO publica (versão em revisão).
+# No main (depois do merge) ou manualmente: faz tudo isso e publica no GitHub Pages.
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -12,7 +14,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: web-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -54,24 +56,45 @@ jobs:
           touch build/.gdignore
           ~/godot/godot --headless --path . --import
 
-      - name: Teste rápido (smoke test)
+      - name: Testes automáticos (progressão, melhorias, pausa, reinício)
+        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd
+
+      - name: Teste rápido de ponta a ponta (smoke test)
         run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
 
+      - name: Simulação prolongada (5 minutos de partida)
+        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=300
+
       - name: Exportar para Web
+        run: ~/godot/godot --headless --path . --export-release "Web" build/web/index.html
+
+      - name: Verificar os arquivos exportados
         run: |
-          ~/godot/godot --headless --path . --export-release "Web" build/web/index.html
-          test -f build/web/index.html && test -f build/web/index.pck && test -f build/web/index.wasm
+          for f in index.html index.js index.pck index.wasm; do
+            test -s "build/web/$f" || { echo "Faltando ou vazio: $f"; exit 1; }
+          done
+          ls -la build/web
+
+      - name: Guardar a versão web para download (Pull Request)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: versao-web
+          path: build/web
 
       - name: Preparar o GitHub Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
       - name: Enviar a versão web
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/web
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
