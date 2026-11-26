@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0011: Build de produção sem a ponte de testes; build de QA só no CI · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #7, branch <code>feat/manutencao-e-documento-mestre-03</code>, commit <code>7e4aaa5</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Decisões técnicas</a></nav>
+<article>
+<h1>0011: Build de produção sem a ponte de testes; build de QA só no CI</h1>
+
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#contexto">Contexto</a></li><li><a href="#decisao">Decisão</a></li><li><a href="#alternativas-consideradas">Alternativas consideradas</a></li><li><a href="#consequencias">Consequências</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Situação</strong></td><td>Aceita</td></tr><tr><td><strong>Data</strong></td><td>26/11/2026</td></tr></tbody></table></div>
+<h2 id="contexto">Contexto</h2>
+<p>Na 0.3-alpha, a ponte de testes do navegador (<code>scripts/web_bridge.gd</code>) ia em toda exportação Web e ligava com <code>?teste=1</code> no endereço. Ela aceita comandos que mudam a partida (<code>xp</code>, <code>hordas</code>, <code>invulneravel</code>, <code>limpar</code>, <code>chefe</code>, <code>chefe_vida</code>, <code>morrer</code>). Não havia placar nem dado online afetado, mas uma ferramenta de QA não deve estar no jogo publicado nem nas prévias públicas.</p>
+<h2 id="decisao">Decisão</h2>
+<ul><li>Dois presets de exportação no <code>export_presets.cfg</code>:<ul><li><strong><code>Web</code> (produção):</strong> <code>exclude_filter</code> tira <code>scripts/web_bridge.gd</code> do <code>.pck</code>. É o único usado por <code>tools/ci/construir_parte.sh</code>, portanto o único publicado (site oficial e prévias).</li><li><strong><code>Web QA</code>:</strong> funcionalidade de exportação personalizada <code>qa</code>. Exportado por <code>tools/ci/construir_qa.sh</code> dentro do job "Testar e exportar", em <code>$RUNNER_TEMP/qa</code>. Nunca é enviado ao job "Publicar".</li></ul></li><li><code>main.gd</code> carrega a ponte por caminho (<code>load</code>) só quando <code>OS.has_feature(&quot;web&quot;)</code> e <code>OS.has_feature(&quot;qa&quot;)</code>. A ponte não tem <code>class_name</code>, para que nada no jogo dependa dela e a produção compile sem o arquivo.</li><li>O endereço (<code>?teste=1</code>) deixou de ser o critério.</li><li><code>tools/ci/verificar_producao.sh</code> falha se o <code>.pck</code> de produção contiver o caminho <code>scripts/web_bridge</code>. Ele exige também que o de QA contenha, para a verificação não passar por engano.</li><li>Playwright roda duas vezes no mesmo job: na QA (<code>jogo.spec.js</code> e <code>jogabilidade.spec.js</code>) e na produção (<code>jogo.spec.js</code> e <code>producao.spec.js</code>, que confere a ausência da ponte com e sem <code>?teste=1</code>).</li><li>Nenhum job ou check novo: os checks obrigatórios continuam "Testar e exportar" e "Publicar".</li></ul>
+<h2 id="alternativas-consideradas">Alternativas consideradas</h2>
+<ul><li><strong>Manter a ponte e protegê-la por senha ou parâmetro secreto:</strong> o código continuaria no jogo publicado. Descartado.</li><li><strong>Testar só a produção, sem ponte:</strong> os testes de jogabilidade (level-up, chefe, vitória) dependem de ler o estado e preparar situações. Descartado.</li><li><strong>Apagar o arquivo da ponte antes da exportação de produção:</strong> frágil e fácil de esquecer fora do CI. O <code>exclude_filter</code> do preset vale em qualquer exportação.</li></ul>
+<h2 id="consequencias">Consequências</h2>
+<ul><li>Exportar localmente com o preset <code>Web</code> gera a build de produção. Para os testes de jogabilidade, exporte o preset <code>Web QA</code>.</li><li>A build de QA testada não é byte a byte a publicada (difere pela ponte e pela funcionalidade <code>qa</code>). Por isso a produção também passa pelo <code>jogo.spec.js</code> e pelo <code>producao.spec.js</code>.</li></ul>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 7e4aaa5</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/feat/manutencao-e-documento-mestre-03/docs/decisoes/0011-builds-producao-e-qa.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>
