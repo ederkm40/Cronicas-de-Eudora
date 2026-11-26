@@ -1,0 +1,9 @@
+# Cache e importações locais do Godot (recriados automaticamente)
+.godot/
+
+# Saída das compilações
+build/
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
