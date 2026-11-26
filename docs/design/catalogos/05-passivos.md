@@ -14,3 +14,9 @@ Regra comum: os níveis somam sobre a base (n níveis = 1 + taxa × n); tudo é 
 | `campo_de_ruptura` | Campo de ruptura | +20% de alcance do Raio e +10% de raio da Aura | 5 | Raio e Aura |
 
 Observação de balanceamento (relatório da 0.3): Passos ligeiros e Campo de ruptura quase não foram escolhidos pelo piloto com prioridade fixa, então não há medição do valor deles.
+
+### Em desenvolvimento na 0.4-alpha (PR #10, ainda não na `main`)
+
+| Id | Nome | Efeito por nível | Máximo | Afeta | D · I · V |
+|---|---|---|---|---|---|
+| `pacto_do_eco` | Pacto do eco | +25% de dano e +15% de XP, mas +20% de dano recebido | 3 | todas as armas; coleta de XP; o jogador | `PROPOSTO_NAO_APROVADO` (experimental) · `EM_DESENVOLVIMENTO` (PR #10) · `TESTADO` |

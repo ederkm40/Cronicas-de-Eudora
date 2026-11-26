@@ -40,8 +40,9 @@ Entregue o escopo da 0.3 e antecipadas partes da 0.4, 0.5 e 0.6 (detalhes em `do
 | Etapa | Objetivo | Situação |
 | --- | --- | --- |
 | 0.4-alpha | Variedade de inimigos e mini-chefe | **implementado na 0.3** (testado nos testes automáticos e em simulação; falta teste com pessoas) |
-| 0.5-alpha | Habilidade ativa | esquiva **implementada na 0.3**; **pendente:** destro/canhoto e ajuste do joystick |
+| 0.5-alpha | Habilidade ativa | esquiva **implementada na 0.3**; destro/canhoto e ajuste do joystick **em revisão no PR #10** |
 | 0.6-alpha | Fim de partida | vitória e resumo **implementados na 0.3**; **pendente:** equilíbrio com testes de pessoas |
+| Etapa 3 "O Despertar de Eudora" (0.4-alpha) | Evolução do núcleo de jogo: evoluções, elites, eventos, chefe, configurações mobile, som | **em revisão no PR #10** (testes automáticos e simulação; sem teste com pessoas). As mecânicas novas são propostas experimentais até o proprietário aprovar |
 | Próxima proposta (a aprovar) | Teste com pessoas e ajustes | 5 a 10 pessoas no celular; ajustar equilíbrio, legibilidade e controles a partir do que elas relatarem |
 
 Critério de saída da fase 1: 5 a 10 pessoas jogam no celular e pedem para jogar de novo.

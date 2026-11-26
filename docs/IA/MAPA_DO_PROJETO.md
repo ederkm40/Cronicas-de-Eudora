@@ -71,21 +71,29 @@
 | `meta_progress.gd` | `MetaProgress` (RefCounted) | arquivo `user://progresso.json` | `main.gd`, `ResultsScreen` |
 | `web_bridge.gd` | (sem `class_name`) | `JavaScriptBridge`; só existe na build "Web QA" | `main.gd` carrega por caminho na build QA; testes de navegador |
 | `blob_shadow.gd` | `BlobShadow` | — | `Player` |
+| `hazard_zones.gd` | `HazardZones` (0.4) | `Player`, `GroundEffects` | `EnemyManager` (Semeador) |
+| `event_director.gd` | `EventDirector` (0.4) | `EnemyManager`, `Player`, `CameraRig`, `GroundEffects`, `RunStats` | `main.gd` (sinais `announced`, `rift_completed`) |
+| `sound_bank.gd` | `SoundBank` (0.4) | — (sons gerados no código) | `GameFeel`, `main.gd` |
+| `combat_feedback.gd` | `CombatFeedback` (0.4) | — | `GameFeel` |
+| `game_feel.gd` | `GameFeel` (0.4) | `SoundBank`, `CameraRig`, `CombatFeedback`, `GroundEffects` | `main.gd` (`connect_to`) |
+| `game_settings.gd` | `GameSettings` (0.4, RefCounted) | arquivo `user://configuracoes.json` | `main.gd`, `PauseMenu` |
+| `pause_menu.gd` | `PauseMenu` (0.4) | `GameSettings` | `main.gd` (sinais `resumed`, `settings_changed`) |
 
-Fluxo de uma partida: `EnemyManager.damage(índice, dano, arma)` → `RunStats` → `enemy_killed(posição, tipo, xp)` → `XpOrbManager.spawn()` → `collected` → `Progression.add_xp()` (cura 12% por nível) → `main._open_level_up()` (pausa) → `LevelUpOffers.roll_for_level_up()` → `LevelUpPanel` (`chosen` / `reroll_requested` / `banish_requested`) → `main.apply_offer()` → `_sync_weapons()` → retoma. Aos 600 s: `main.start_encounter()` → `BossController.spawn()`. Chefe derrotado (`boss_died`) ou jogador morto (`died`) → `main._finish()` → `MetaProgress.record_run()` + `save()` → `ResultsScreen`.
+Fluxo de uma partida: `EnemyManager.damage(índice, dano, arma)` → `RunStats` → `enemy_killed(posição, tipo, xp)` → `XpOrbManager.spawn()` → `collected` → `Progression.add_xp()` (cura 12% por nível) → `main._open_level_up()` (pausa) → `LevelUpOffers.roll_for_level_up()` → `LevelUpPanel` (`chosen` / `reroll_requested` / `banish_requested`) → `main.apply_offer()` → `_sync_weapons()` → retoma. 0.4: `EventDirector` ajusta `spawn_rate_multiplier` e cria elites e fendas; `GameFeel` transforma sinais em som, números e tremor; o botão "II" do `Hud` → `main.open_pause()` → `PauseMenu` → `settings_changed` → `main._apply_settings()`. Aos 600 s: `main.start_encounter()` → `EventDirector.stop()` → `BossController.spawn()`. Chefe derrotado (`boss_died`) ou jogador morto (`died`) → `main._finish()` → `MetaProgress.record_run()` + `save()` → `ResultsScreen`.
 
 ## Testes
 
 | Arquivo | Roda com | Cobre |
 |---|---|---|
-| `tests/run_tests.gd` | Godot `--script` | executor das suítes de `tests/suites/` (51 testes) |
+| `tests/run_tests.gd` | Godot `--script` | executor das suítes de `tests/suites/` (71 testes) |
 | `tests/suites/base.gd` | — | base das suítes: ajudantes (partida nova, toques, teclas, inimigos parados) |
 | `tests/suites/progressao.gd` | (pelo executor) | 16 testes da 0.2: XP, level-up, efeitos, pausa, derrota, reinício |
 | `tests/suites/armas_e_ofertas.gd` | (pelo executor) | 9 testes: arsenal, aura, horda, lâmina, níveis, ofertas, troca, bloqueio |
 | `tests/suites/inimigos_e_chefe.gd` | (pelo executor) | 7 testes: mistura por tempo, velocidades e resistência, Lançador, Volátil, chefe |
 | `tests/suites/esquiva_e_encerramento.gd` | (pelo executor) | 9 testes: esquiva, duplo toque, derrota, reinício após vitória, progresso salvo |
 | `tests/suites/save_e_joystick.gd` | (pelo executor) | 10 testes: save com estrutura/campos inválidos, versão futura, retomada do joystick após a pausa |
-| `tests/smoke_test.gd` | Godot `--script` | partida de 60 s de ponta a ponta (joystick, D, Espaço, ofertas) |
+| `tests/suites/despertar.gd` | (pelo executor) | 20 testes da 0.4: evoluções, Pacto, elites, Tecelão, Semeador, chefe atordoado e prisão, fenda, maré, configurações, canhoto, joystick fixo, pausa, sons, números |
+| `tests/smoke_test.gd` | Godot `--script` | partida de 60 s de ponta a ponta (joystick, D, Espaço, ofertas; 0.4: elite, fenda, pausa por Esc, sons) |
 | `tests/long_simulation.gd` | Godot `--script -- --segundos=N [--invulneravel] [--armas-maximas]` | estabilidade, desempenho, memória, reinícios |
 | `tests/balance_simulation.gd` | Godot `--script -- --modo=dps\|partida\|chefe` | **fora do CI**: telemetria de equilíbrio |
 | `tools/ci/rodar_godot.sh` | bash | roda um script do Godot e falha se o log tiver erro de script |
