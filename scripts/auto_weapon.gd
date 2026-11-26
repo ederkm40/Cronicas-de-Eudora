@@ -1,6 +1,6 @@
 class_name AutoWeapon
 extends Node3D
-## Arma automática: atira sozinha no inimigo mais próximo dentro do alcance.
+## Raio arcano, a arma inicial: atira sozinha no inimigo mais próximo dentro do alcance.
 ## Os projéteis também usam arrays + MultiMesh, como os inimigos.
 ## Os valores base ficam nos @export. As melhorias mexem só nos modificadores abaixo,
 ## e os valores usados na partida (efetivos) são calculados a partir dos dois.
@@ -118,7 +118,7 @@ func _move_projectiles(delta: float) -> void:
 		_life[i] -= delta
 		var hit := enemies.hit_at(_positions[i], hit_radius)
 		if hit != -1:
-			enemies.damage(hit, effective_damage())
+			enemies.damage(hit, effective_damage(), WeaponCatalog.BOLT)
 			_remove(i)
 		elif _life[i] <= 0.0:
 			_remove(i)

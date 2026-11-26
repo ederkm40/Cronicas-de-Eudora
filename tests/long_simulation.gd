@@ -45,6 +45,9 @@ var _failures: Array[String] = []
 
 
 func _initialize() -> void:
+	MetaProgress.path = "user://teste_simulacao_progresso.json"
+	if FileAccess.file_exists(MetaProgress.path):
+		DirAccess.remove_absolute(MetaProgress.path)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--segundos="):
 			_target_seconds = float(arg.get_slice("=", 1))
@@ -95,7 +98,7 @@ func _process(delta: float) -> bool:
 		_restarting = true
 		if _nodes_after_first_game == -1:
 			_nodes_after_first_game = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
-		game.hud.restart_requested.emit()
+		game.results.restart_requested.emit()
 		return false
 
 	var panel: LevelUpPanel = game.level_up_panel
