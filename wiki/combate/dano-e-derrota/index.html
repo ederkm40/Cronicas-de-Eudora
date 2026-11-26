@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dano e derrota · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Inimigos causam dano por contato; com vida zero, a partida acaba.">
+<title>Dano, vitória e derrota · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Como o personagem recebe dano e como uma partida termina.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -34,20 +34,25 @@
 <main>
 <nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Sistemas de combate</a></nav>
 <article>
-<h1>Dano e derrota</h1>
+<h1>Dano, vitória e derrota</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.1-alpha</span></p>
-
-<h2 id="dano-por-contato">Dano por contato</h2>
-<p>Cada inimigo a menos de <strong>0,8 m</strong> do personagem causa <strong>9 de dano por segundo</strong>. No máximo <strong>5 inimigos</strong> causam dano ao mesmo tempo (até 45 por segundo), mesmo que haja mais encostados.</p>
-<p>Com 100 de vida, ficar cercado derruba o personagem em pouco mais de 2 segundos.</p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#dano">Dano</a></li><li><a href="#derrota">Derrota</a></li><li><a href="#vitoria">Vitória</a></li><li><a href="#resultados-e-reinicio">Resultados e reinício</a></li></ol></details>
+<h2 id="dano">Dano</h2>
+<p>Cada tipo de inimigo tem seu próprio valor de dano por contato. Alguns também usam projéteis ou explosões com avisos visuais. Resistências e comportamentos variam por tipo; veja <a href="../../inimigos/">a lista de inimigos</a>.</p>
+<p>A esquiva concede um período curto de invulnerabilidade contra contato, projéteis, explosões e ataques do chefe. Veja <a href="../../controles/esquiva/">Esquiva</a>.</p>
 <h2 id="derrota">Derrota</h2>
-<p>Quando a vida chega a zero:</p>
-<ul><li>A partida para e aparece a tela <strong>"Você caiu!"</strong>, com o tempo sobrevivido, o nível alcançado e o número de abates.</li><li>O botão <strong>"Jogar de novo"</strong> começa uma partida nova, do zero: nível 1, sem melhorias, sem orbes.</li><li>Depois da derrota, a escolha de melhoria não abre mais, mesmo que houvesse experiência pendente.</li></ul>
+<p>Quando a vida chega a zero, a partida termina em derrota e abre a tela de resultados.</p>
+<h2 id="vitoria">Vitória</h2>
+<p>Aos 10 minutos, começa o encontro final com o <a href="../../chefes/sentinela-do-eco/">Sentinela do Eco</a>. O cronômetro não encerra a partida sozinho. Derrotar o chefe produz a vitória.</p>
+<h2 id="resultados-e-reinicio">Resultados e reinício</h2>
+<p>A tela de resultados apresenta estatísticas registradas durante a partida:</p>
+<ul><li>Tempo e nível alcançado.</li><li>Abates.</li><li>Dano causado e recebido.</li><li>Esquivas.</li><li>Chefes derrotados e tempo de combate contra o chefe.</li><li>Armas adquiridas, níveis, dano e abates por arma.</li><li>Melhorias escolhidas.</li><li>Ecos recebidos.</li></ul>
+<p>O botão <strong>Jogar de novo</strong> recria a partida do zero. A progressão permanente salva em <code>user://progresso.json</code> permanece.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/combate/dano-e-derrota.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

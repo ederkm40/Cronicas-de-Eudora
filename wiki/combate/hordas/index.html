@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hordas · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Inimigos surgem fora da tela, cada vez mais rápido e em grupos maiores, até 300 ao mesmo tempo.">
+<meta name="description" content="Inimigos surgem fora da tela, aumentam em quantidade e ficam mais resistentes durante a partida.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -37,15 +37,20 @@
 <h1>Hordas</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.1-alpha</span></p>
 
-<p>Os <a href="../../inimigos/inimigo-comum/">inimigos</a> surgem logo <strong>fora da área visível</strong>, em volta do personagem, e andam até ele. A pressão cresce com o tempo de partida:</p>
-<div class="tabela"><table><thead><tr><th>Regra</th><th>Valor</th></tr></thead><tbody><tr><td>Intervalo entre ondas no início</td><td>1 s</td></tr><tr><td>Redução do intervalo</td><td>0,012 s por segundo de partida</td></tr><tr><td>Intervalo mínimo</td><td>0,12 s (alcançado por volta de 1 min 13 s)</td></tr><tr><td>Inimigos por onda</td><td>1, mais 1 a cada 25 s de partida</td></tr><tr><td>Máximo ao mesmo tempo</td><td>300</td></tr><tr><td>Vida dos novos inimigos</td><td>+60% da base a cada minuto</td></tr></tbody></table></div>
-<p>Na simulação automática, a horda chega ao máximo de 300 inimigos por volta dos 2 minutos.</p>
-<p>O tempo de partida <strong>para durante o <a href="../../progressao/level-up/">Level-up</a></strong>: as hordas não avançam enquanto você escolhe.</p>
+<p>Os inimigos surgem logo <strong>fora da área visível</strong>, em volta do personagem, e caminham ou executam seus comportamentos em direção a ele. A mistura de tipos cresce com o tempo.</p>
+<div class="tabela"><table><thead><tr><th>Regra</th><th style="text-align:right">Valor</th></tr></thead><tbody><tr><td>Intervalo entre ondas no início</td><td style="text-align:right">1 s</td></tr><tr><td>Redução do intervalo</td><td style="text-align:right">0,012 s por segundo de partida</td></tr><tr><td>Intervalo mínimo</td><td style="text-align:right">0,12 s</td></tr><tr><td>Aumento da leva</td><td style="text-align:right">+1 inimigo a cada 30 s</td></tr><tr><td>Máximo de inimigos ao mesmo tempo (todos os tipos)</td><td style="text-align:right">300</td></tr><tr><td>Crescimento de vida</td><td style="text-align:right">+35% da vida base por minuto</td></tr></tbody></table></div>
+<p>Os tipos especiais entram gradualmente:</p>
+<div class="tabela"><table><thead><tr><th>Inimigo</th><th style="text-align:right">Começa a aparecer</th></tr></thead><tbody><tr><td><a href="../../inimigos/espreitador/">Espreitador</a></td><td style="text-align:right">0:45</td></tr><tr><td><a href="../../inimigos/couracado/">Couraçado</a></td><td style="text-align:right">1:40</td></tr><tr><td><a href="../../inimigos/lancador/">Lançador</a></td><td style="text-align:right">2:30</td></tr><tr><td><a href="../../inimigos/volatil/">Volátil</a></td><td style="text-align:right">3:30</td></tr></tbody></table></div>
+<p>O chefe não conta no limite de 300 inimigos.</p>
+<h2 id="durante-o-encontro-final">Durante o encontro final</h2>
+<p>Aos 10 minutos começa o encontro com o <a href="../../chefes/sentinela-do-eco/">Sentinela do Eco</a>. Durante esse encontro:</p>
+<ul><li>O ritmo das hordas cai para 30% do ritmo normal.</li><li>Novos Lançadores deixam de nascer.</li><li>Inimigos que já estavam em campo continuam ativos.</li></ul>
+<p>O tempo, as hordas, os projéteis e os orbes param durante o <a href="../../progressao/level-up/">level-up</a>.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/combate/hordas.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

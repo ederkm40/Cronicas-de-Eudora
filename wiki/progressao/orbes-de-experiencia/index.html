@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Orbes de experiência · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Cristais azul-claros deixados pelos inimigos; voam até o personagem quando ele chega perto.">
+<meta name="description" content="Cristais de experiência deixados pelos inimigos derrotados e coletados por proximidade.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -37,17 +37,17 @@
 <h1>Orbes de experiência</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.2-alpha</span></p>
 
-<p>Cada inimigo derrotado deixa um <strong>orbe de experiência</strong> no lugar onde morreu. Hoje ele aparece como um pequeno cristal azul-claro flutuando, uma arte provisória.</p>
+<p>Cada inimigo derrotado deixa um <strong>orbe de experiência</strong> no lugar onde morreu. O visual atual é um pequeno cristal azul-claro flutuando.</p>
 <h2 id="coleta-por-proximidade">Coleta por proximidade</h2>
-<div class="tabela"><table><thead><tr><th>Etapa</th><th>Distância do personagem</th><th>O que acontece</th></tr></thead><tbody><tr><td>Parado</td><td>mais de 3 m</td><td>o orbe fica no chão, esperando</td></tr><tr><td>Ímã</td><td>até 3 m</td><td>o orbe voa até o personagem, cada vez mais rápido</td></tr><tr><td>Coleta</td><td>até 0,6 m</td><td>o orbe some e a XP entra na <a href="../experiencia/">barra</a></td></tr></tbody></table></div>
-<p>Não é preciso tocar em nada: basta passar perto.</p>
-<h2 id="detalhes">Detalhes</h2>
-<ul><li>Orbes <strong>não somem com o tempo</strong>. Os que caíram longe continuam lá até você passar perto.</li><li>Limite de 400 orbes no chão. Acima disso, o valor do orbe novo é <strong>somado ao orbe mais antigo</strong>, então nenhuma experiência se perde.</li><li>Os orbes param durante o <a href="../level-up/">Level-up</a> e depois da derrota.</li></ul>
+<div class="tabela"><table><thead><tr><th>Etapa</th><th style="text-align:right">Distância</th><th>O que acontece</th></tr></thead><tbody><tr><td>Parado</td><td style="text-align:right">Mais de 3 m</td><td>O orbe fica no chão.</td></tr><tr><td>Ímã</td><td style="text-align:right">Até 3 m</td><td>O orbe voa em direção ao personagem.</td></tr><tr><td>Coleta</td><td style="text-align:right">Até 0,6 m</td><td>O orbe desaparece e a XP entra na barra.</td></tr></tbody></table></div>
+<p>Não é preciso tocar no orbe: basta passar perto. A melhoria permanente <a href="../melhorias-permanentes/">Atração do eco</a> aumenta o raio do ímã em 20% por nível (a coleta final continua a 0,6 m).</p>
+<h2 id="limites">Limites</h2>
+<ul><li>Orbes não somem com o tempo.</li><li>O limite é de 400 orbes no chão.</li><li>Acima do limite, o valor do novo orbe é somado ao orbe mais antigo, sem perda de experiência.</li><li>Os orbes param durante o <a href="../level-up/">level-up</a> e depois do encerramento da partida.</li></ul>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/progressao/orbes-de-experiencia.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

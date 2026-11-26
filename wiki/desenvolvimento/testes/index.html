@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Testes · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Como o jogo é testado e os resultados registrados.">
+<meta name="description" content="Como a versão 0.3-alpha é validada e quais resultados foram registrados no PR #5.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -36,17 +36,25 @@
 <article>
 <h1>Testes</h1>
 
-
-<p>Todo envio de código passa por testes automáticos no GitHub Actions <strong>antes</strong> de o jogo ser exportado e publicado. Se algum teste falhar, nada é publicado.</p>
-<div class="tabela"><table><thead><tr><th>Teste</th><th>O que verifica</th></tr></thead><tbody><tr><td><code>tests/run_tests.gd</code></td><td>16 testes da progressão: XP ao derrotar, coleta por proximidade, acúmulo, subida de nível, vários níveis de uma vez, 3 opções diferentes, cada uma das 6 melhorias medida dentro da partida, limites, pausa e retomada, bloqueio após a derrota, reinício limpo</td></tr><tr><td><code>tests/smoke_test.gd</code></td><td>60 s de partida de ponta a ponta: toque e arraste no joystick, tecla D, coleta, escolhas de melhoria</td></tr><tr><td><code>tests/long_simulation.gd</code></td><td>Partida longa (5 min no GitHub, 10 min nos testes manuais), com mortes e reinícios, medindo desempenho e memória</td></tr><tr><td><code>tools/wiki/test_wiki.py</code></td><td>A Wiki é gerada sem erros, os links funcionam, a busca encontra artigos, o resultado é sempre o mesmo</td></tr><tr><td><code>tools/site/test_montar_site.py</code></td><td>A montagem do site preserva o jogo oficial ao publicar prévias e remove prévias fechadas</td></tr></tbody></table></div>
-<h2 id="ultimos-resultados-registrados">Últimos resultados registrados</h2>
-<div class="tabela"><table><thead><tr><th>Versão</th><th>Resultado</th><th>Onde está</th></tr></thead><tbody><tr><td>0.2-alpha</td><td>Todos os testes passaram (16 testes e 1.627 verificações; smoke test; simulação de 10 min com 4 reinícios)</td><td><a href="../relatorios/0.2-alpha/">relatório 0.2-alpha</a></td></tr></tbody></table></div>
-<blockquote><p>O jogo <strong>ainda não foi testado num celular físico</strong> pela equipe de desenvolvimento. Até aqui, os testes visuais foram feitos num Chrome com tela e toque de celular simulados.</p></blockquote>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#testes-do-godot">Testes do Godot</a></li><li><a href="#ci-e-navegador">CI e navegador</a></li><li><a href="#limite-importante">Limite importante</a></li></ol></details>
+<p>O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados durante a entrega da 0.3-alpha, não uma nova execução desta atualização editorial.</p>
+<h2 id="testes-do-godot">Testes do Godot</h2>
+<p>A 0.3-alpha registrou <strong>41 testes em quatro suítes e 4.370 verificações</strong>:</p>
+<div class="tabela"><table><thead><tr><th>Suíte</th><th>Cobertura</th></tr></thead><tbody><tr><td><code>progressao.gd</code></td><td>XP, coleta, level-up, melhorias, limites, pausa, derrota e reinício</td></tr><tr><td><code>armas_e_ofertas.gd</code></td><td>Arsenal, Aura, Lâmina, níveis, ofertas, troca e bloqueio</td></tr><tr><td><code>inimigos_e_chefe.gd</code></td><td>Mistura por tempo, comportamentos, avisos, chefe, fases e vitória</td></tr><tr><td><code>esquiva_e_encerramento.gd</code></td><td>Esquiva, invulnerabilidade, resultados, reinício e progressão permanente</td></tr></tbody></table></div>
+<p>Também foram registrados:</p>
+<ul><li><code>tests/smoke_test.gd</code>: teste de ponta a ponta.</li><li><code>tests/long_simulation.gd</code>: simulação prolongada de 300 s.</li><li><code>tests/balance_simulation.gd</code>: simulações de armas, partidas e encontro final. Não é executada no CI.</li></ul>
+<h2 id="ci-e-navegador">CI e navegador</h2>
+<p>No PR #5, o relatório registrou:</p>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado informado</th></tr></thead><tbody><tr><td><code>gdlint</code></td><td>Sem problemas</td></tr><tr><td><code>gdformat --check</code></td><td>Arquivos GDScript alterados formatados</td></tr><tr><td>Testes do Godot</td><td>41 testes, 4.370 verificações, zero falhas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação prolongada</td><td>Aprovada</td></tr><tr><td>Testes da Wiki e montagem do site</td><td>14 e 7 testes aprovados</td></tr><tr><td>Playwright</td><td>18 aprovados e 3 pulados por desenho, nos três perfis</td></tr></tbody></table></div>
+<p>Os testes Playwright abrem o jogo exportado e verificam joystick, esquiva, teclado, level-up, vitória, derrota e reinício.</p>
+<h2 id="limite-importante">Limite importante</h2>
+<p>Os perfis de Pixel 7 são emulação de tela e toque em Chromium de computador. <strong>Não equivalem a teste em celular físico.</strong> O desempenho de CPU medido sem renderização também não representa FPS real em um aparelho.</p>
+<p>Consulte <a href="../relatorios/">os relatórios por versão</a> para os detalhes e as condições de cada medição.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/testes.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inimigo comum · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Anda em direção ao personagem e causa dano ao encostar. Fica mais resistente com o tempo.">
+<title>Errante · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Inimigo comum que persegue o personagem e causa dano por contato.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -34,21 +34,19 @@
 <main>
 <nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Inimigos</a></nav>
 <article>
-<h1>Inimigo comum</h1>
+<h1>Errante</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.1-alpha</span></p>
 
-<p>O único inimigo atual, representado por uma <strong>cápsula vermelha</strong> provisória. Ele surge fora da tela e anda direto na direção do <a href="../../personagens/personagem-jogavel/">Personagem jogável</a>.</p>
+<p>O <strong>Errante</strong> é o inimigo básico. Surge fora da área visível e caminha diretamente na direção do personagem.</p>
 <h2 id="valores">Valores</h2>
-<div class="tabela"><table><thead><tr><th>Atributo</th><th>Valor</th></tr></thead><tbody><tr><td>Vida no início da partida</td><td>20</td></tr><tr><td>Aumento de vida</td><td>+60% da vida base por minuto de partida</td></tr><tr><td>Velocidade</td><td>2,2 m/s, com variação de ±15% entre inimigos</td></tr><tr><td>Dano por contato</td><td>9 por segundo, enquanto estiver a menos de 0,8 m do personagem</td></tr><tr><td>Experiência ao morrer</td><td>1 (um <a href="../../progressao/orbes-de-experiencia/">orbe</a>)</td></tr></tbody></table></div>
-<h3 id="vida-ao-longo-da-partida">Vida ao longo da partida</h3>
-<div class="tabela"><table><thead><tr><th>Tempo de partida</th><th>Vida de um inimigo novo</th></tr></thead><tbody><tr><td>0 min</td><td>20</td></tr><tr><td>1 min</td><td>32</td></tr><tr><td>5 min</td><td>80</td></tr><tr><td>10 min</td><td>140</td></tr></tbody></table></div>
-<h2 id="comportamento">Comportamento</h2>
-<ul><li>Os inimigos se empurram de leve para não ficarem todos no mesmo ponto.</li><li>Um inimigo que fica longe demais do personagem reaparece do outro lado, fora da tela.</li><li>Como surgem as hordas: veja <a href="../../combate/hordas/">Hordas</a>.</li></ul>
+<div class="tabela"><table><thead><tr><th>Atributo</th><th style="text-align:right">Valor</th></tr></thead><tbody><tr><td>Multiplicador de vida</td><td style="text-align:right">1× a vida base</td></tr><tr><td>Vida base</td><td style="text-align:right">20</td></tr><tr><td>Crescimento da vida</td><td style="text-align:right">+35% da vida base por minuto de partida</td></tr><tr><td>Velocidade</td><td style="text-align:right">2,2 m/s</td></tr><tr><td>Dano por contato</td><td style="text-align:right">9 por segundo</td></tr><tr><td>Experiência ao ser derrotado</td><td style="text-align:right">1 XP</td></tr></tbody></table></div>
+<p>Os inimigos se empurram levemente para evitar que todos ocupem exatamente a mesma posição. Inimigos que ficam longe demais podem reaparecer fora da tela, do outro lado do campo.</p>
+<p>Veja também: <a href="../../combate/hordas/">Hordas</a> e <a href="../../progressao/experiencia/">Experiência</a>.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/inimigos/inimigo-comum.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

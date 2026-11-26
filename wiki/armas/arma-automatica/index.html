@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arma automática · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Dispara sozinha no inimigo mais próximo dentro do alcance.">
+<title>Raio arcano · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Arma inicial que dispara projéteis automaticamente no alvo mais próximo.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -34,19 +34,22 @@
 <main>
 <nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Armas</a></nav>
 <article>
-<h1>Arma automática</h1>
+<h1>Raio arcano</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.1-alpha</span></p>
 
-<p>A arma inicial do <a href="../../personagens/personagem-jogavel/">Personagem jogável</a>. Você não precisa mirar nem apertar nada: ela dispara sozinha um projétil amarelo no <strong>inimigo mais próximo</strong> que estiver dentro do alcance. Se não houver nenhum inimigo no alcance, ela espera e dispara assim que um aparecer.</p>
+<p>O <strong>Raio arcano</strong> é a arma inicial. Dispara sozinho contra o inimigo mais próximo dentro do alcance. Quando o Sentinela do Eco está ao alcance, o Raio prioriza o chefe.</p>
+<p>Não é necessário mirar nem apertar um botão de ataque.</p>
 <h2 id="valores-base">Valores base</h2>
-<div class="tabela"><table><thead><tr><th>Atributo</th><th>Valor</th><th>Melhoria</th></tr></thead><tbody><tr><td>Dano por projétil</td><td>10</td><td><a href="../../melhorias/poder-arcano/">Poder arcano</a> +20% por nível</td></tr><tr><td>Intervalo entre disparos</td><td>0,45 s (cerca de 2,2 disparos por segundo)</td><td><a href="../../melhorias/cadencia/">Cadência</a> +15% de velocidade por nível</td></tr><tr><td>Alcance de mira</td><td>11 m</td><td><a href="../../melhorias/campo-de-ruptura/">Campo de ruptura</a> +20% por nível</td></tr><tr><td>Projéteis por disparo</td><td>1</td><td><a href="../../melhorias/projetil-adicional/">Projétil adicional</a> +1 por nível</td></tr><tr><td>Velocidade do projétil</td><td>14 m/s</td><td>—</td></tr><tr><td>Duração do projétil</td><td>1,2 s (cresce junto com o alcance)</td><td><a href="../../melhorias/campo-de-ruptura/">Campo de ruptura</a></td></tr><tr><td>Raio de acerto</td><td>0,55 m</td><td>—</td></tr><tr><td>Abertura do leque</td><td>10° entre projéteis</td><td>—</td></tr></tbody></table></div>
-<h2 id="detalhes">Detalhes</h2>
-<ul><li>Cada projétil acerta <strong>um</strong> inimigo e some.</li><li>Com mais de um projétil por disparo, eles saem em leque, centrados no alvo.</li><li>O alvo é escolhido no momento do disparo. O projétil segue em linha reta e não persegue o alvo.</li><li>Limite técnico: 256 projéteis ao mesmo tempo na tela.</li></ul>
+<div class="tabela"><table><thead><tr><th>Atributo</th><th style="text-align:right">Valor</th><th>Melhoria relacionada</th></tr></thead><tbody><tr><td>Dano por projétil</td><td style="text-align:right">10</td><td><a href="../../melhorias/poder-arcano/">Poder arcano</a></td></tr><tr><td>Intervalo entre disparos</td><td style="text-align:right">0,45 s</td><td><a href="../../melhorias/cadencia/">Cadência</a></td></tr><tr><td>Alcance de mira</td><td style="text-align:right">11 m</td><td><a href="../../melhorias/campo-de-ruptura/">Campo de ruptura</a></td></tr><tr><td>Projéteis por disparo</td><td style="text-align:right">1</td><td><a href="../../melhorias/projetil-adicional/">Projétil adicional</a></td></tr><tr><td>Velocidade do projétil</td><td style="text-align:right">14 m/s</td><td>—</td></tr><tr><td>Duração do projétil</td><td style="text-align:right">1,2 s</td><td>aumenta com o alcance</td></tr><tr><td>Raio de acerto</td><td style="text-align:right">0,55 m</td><td>—</td></tr><tr><td>Abertura do leque</td><td style="text-align:right">10° entre projéteis</td><td>com projéteis adicionais</td></tr></tbody></table></div>
+<p>Cada projétil acerta um inimigo e desaparece. O alvo é escolhido no momento do disparo; o projétil segue em linha reta, sem persegui-lo.</p>
+<h2 id="sinergias">Sinergias</h2>
+<ul><li><a href="../../melhorias/poder-arcano/">Poder arcano</a> aumenta o dano de todas as armas.</li><li><a href="../../melhorias/cadencia/">Cadência</a> aumenta a velocidade de disparo do Raio.</li><li><a href="../../melhorias/projetil-adicional/">Projétil adicional</a> acrescenta projéteis em leque.</li><li><a href="../../melhorias/campo-de-ruptura/">Campo de ruptura</a> aumenta o alcance de mira e a duração do projétil.</li></ul>
+<p>O Raio arcano não possui níveis próprios no catálogo atual: seus atributos são modificados pelas melhorias passivas.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/armas/arma-automatica.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

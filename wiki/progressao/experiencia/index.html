@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Experiência · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Cada inimigo vale 1 de XP; a XP necessária cresce a cada nível.">
+<meta name="description" content="A XP vem dos orbes deixados pelos inimigos derrotados e aumenta o nível da partida.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -37,18 +37,19 @@
 <h1>Experiência</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.2-alpha</span></p>
 
-<p>A experiência (XP) vem dos <a href="../orbes-de-experiencia/">orbes</a>. Cada <a href="../../inimigos/inimigo-comum/">inimigo</a> derrotado vale <strong>1 de XP</strong>.</p>
-<h2 id="barra-de-experiencia">Barra de experiência</h2>
-<p>No topo da tela, abaixo da barra vermelha de vida, fica a <strong>barra azul-clara de experiência</strong>, com o nível atual ao lado (<strong>Nv. 1</strong>, <strong>Nv. 2</strong>…). Ela mostra quanto falta para o próximo nível e volta ao começo a cada nível.</p>
+<p>A experiência (XP) vem dos <a href="../orbes-de-experiencia/">orbes</a>. A quantidade depende do inimigo derrotado:</p>
+<div class="tabela"><table><thead><tr><th>Inimigo</th><th style="text-align:right">XP</th></tr></thead><tbody><tr><td><a href="../../inimigos/inimigo-comum/">Errante</a></td><td style="text-align:right">1</td></tr><tr><td><a href="../../inimigos/espreitador/">Espreitador</a></td><td style="text-align:right">1</td></tr><tr><td><a href="../../inimigos/couracado/">Couraçado</a></td><td style="text-align:right">4</td></tr><tr><td><a href="../../inimigos/lancador/">Lançador</a></td><td style="text-align:right">2</td></tr><tr><td><a href="../../inimigos/volatil/">Volátil</a></td><td style="text-align:right">2</td></tr></tbody></table></div>
+<p>Um Volátil que explode sozinho não conta como abate do jogador e não deixa orbe.</p>
 <h2 id="curva-de-experiencia">Curva de experiência</h2>
 <p>A XP necessária para passar de um nível ao próximo é <code>4 × nível^1,35</code>, arredondada:</p>
-<div class="tabela"><table><thead><tr><th>Nível atual</th><th>XP para o próximo</th><th>XP total desde o início</th></tr></thead><tbody><tr><td>1</td><td>4</td><td>4</td></tr><tr><td>2</td><td>10</td><td>14</td></tr><tr><td>3</td><td>18</td><td>32</td></tr><tr><td>4</td><td>26</td><td>58</td></tr><tr><td>5</td><td>35</td><td>93</td></tr><tr><td>10</td><td>90</td><td>433</td></tr></tbody></table></div>
-<p>Se um coleta der mais XP do que falta, o que sobra passa para o próximo nível. Dá para <strong>subir vários níveis de uma vez</strong>: cada nível abre a sua própria escolha de melhoria, uma depois da outra. Veja <a href="../level-up/">Level-up</a>.</p>
+<div class="tabela"><table><thead><tr><th>Nível atual</th><th style="text-align:right">XP para o próximo</th><th style="text-align:right">XP total desde o início</th></tr></thead><tbody><tr><td>1</td><td style="text-align:right">4</td><td style="text-align:right">4</td></tr><tr><td>2</td><td style="text-align:right">10</td><td style="text-align:right">14</td></tr><tr><td>3</td><td style="text-align:right">18</td><td style="text-align:right">32</td></tr><tr><td>4</td><td style="text-align:right">26</td><td style="text-align:right">58</td></tr><tr><td>5</td><td style="text-align:right">35</td><td style="text-align:right">93</td></tr><tr><td>10</td><td style="text-align:right">90</td><td style="text-align:right">433</td></tr></tbody></table></div>
+<p>O excesso de XP passa para o próximo nível. É possível subir vários níveis de uma vez; cada nível abre sua própria escolha, uma depois da outra.</p>
+<p>Cada nível ganho também recupera <strong>12% da vida máxima</strong>. Veja <a href="../level-up/">Level-up</a>.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/progressao/experiencia.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

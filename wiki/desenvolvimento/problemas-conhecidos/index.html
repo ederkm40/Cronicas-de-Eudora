@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Problemas conhecidos · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Limitações e problemas já identificados.">
+<meta name="description" content="Limitações da versão 0.3-alpha que ainda precisam de validação ou correção.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -37,12 +37,13 @@
 <h1>Problemas conhecidos</h1>
 
 
-<div class="tabela"><table><thead><tr><th>Problema</th><th>Desde</th><th>Situação</th></tr></thead><tbody><tr><td>Jogo não testado em celular físico</td><td>0.1-alpha</td><td>aguardando teste do proprietário</td></tr><tr><td>Depois da pausa do level-up, o joystick só responde depois de levantar o dedo e tocar de novo</td><td>0.2-alpha</td><td>conhecido, sem correção agendada</td></tr><tr><td>Equilíbrio não ajustado: a arma base mata devagar diante da horda máxima, e a evolução fica lenta depois do nível 6 ou 7</td><td>0.2-alpha</td><td>depende de testes com pessoas</td></tr><tr><td>Orbes que caem longe ficam no chão até o jogador passar perto</td><td>0.2-alpha</td><td>decisão pendente</td></tr><tr><td>Na tela deitada (paisagem), o jogo funciona, mas mostra menos mapa na vertical (a câmera mantém 14 m de largura), porque foi feito para a tela em pé</td><td>0.1-alpha</td><td>conhecido</td></tr><tr><td>Gráficos provisórios e jogo sem som</td><td>0.1-alpha</td><td>planejado para a fase 2</td></tr></tbody></table></div>
+<div class="tabela"><table><thead><tr><th>Problema ou limitação</th><th>Situação</th></tr></thead><tbody><tr><td>Jogo ainda não testado em celular físico</td><td>Pendente de teste com pessoas e aparelhos reais.</td></tr><tr><td>Joystick depois da pausa do level-up</td><td>Se o dedo permanecer na tela durante a pausa, pode ser necessário levantar e tocar novamente.</td></tr><tr><td>Destro/canhoto e ajuste do joystick</td><td>Direção de design aprovada, mas ainda não implementada.</td></tr><tr><td>Equilíbrio do encontro com o chefe</td><td>Ajustado por simulações automáticas, sem balanceamento definitivo contra jogadores humanos. Na última simulação, o piloto automático sobreviveu ao encontro, mas não derrotou o chefe (tirou 2.457 e 3.018 dos 3.800 de vida). A vida do chefe é o primeiro número a revisar com pessoas.</td></tr><tr><td>Câmera em paisagem</td><td>Mantém aproximadamente 14 m de largura e revela pouco mapa na vertical.</td></tr><tr><td>Orbes distantes</td><td>Permanecem no chão até o jogador se aproximar; decisão sobre descarte, fusão ou atração de longe continua pendente.</td></tr><tr><td>Ponte de QA na exportação Web</td><td>A ponte de testes <code>WebBridge</code> está incluída no jogo publicado. Ela fica desligada, mas liga quando a página é aberta com <code>?teste=1</code>; nesse caso, quem abrir a página pode preparar situações (por exemplo, ganhar experiência ou chamar o chefe). Não há placar nem dado online afetado. Retirar a ponte da exportação oficial ainda não foi decidido.</td></tr><tr><td>Validação do arquivo de progressão</td><td>O save <code>user://progresso.json</code> tem versão, migração e cópia de segurança quando o JSON é inválido. Mas a estrutura interna não é toda validada: se o arquivo for um JSON válido com um campo do tipo errado (por exemplo, <code>estatisticas</code> como lista), a leitura para no meio e parte dos dados volta ao padrão, sem aviso ao jogador. Isso só acontece com um arquivo editado à mão ou danificado.</td></tr><tr><td>Desempenho no celular</td><td>O custo de CPU por quadro dobrou em relação à 0.2; o FPS em aparelhos reais ainda não foi medido.</td></tr><tr><td>Arte e áudio</td><td>Gráficos ainda provisórios e sem som final.</td></tr></tbody></table></div>
+<p>O piloto automático usado nas simulações é uma ferramenta simples e não substitui observações de jogadores.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/problemas-conhecidos.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

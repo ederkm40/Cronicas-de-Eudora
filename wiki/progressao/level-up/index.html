@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Level-up · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Ao subir de nível, a partida pausa e você escolhe 1 de 3 melhorias diferentes.">
+<meta name="description" content="Ao subir de nível, a partida pausa e você escolhe entre armas novas, evoluções ou melhorias.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -36,19 +36,25 @@
 <article>
 <h1>Level-up</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.2-alpha</span></p>
-
-<p>Quando a <a href="../experiencia/">barra de experiência</a> enche:</p>
-<ol><li>A partida <strong>pausa por completo</strong>: inimigos, projéteis, orbes, surgimento de hordas e o relógio da partida.</li><li>Aparece a tela <strong>"Nível N!"</strong> com <strong>três cartões</strong>, cada um com uma <a href="../../melhorias/">melhoria</a> diferente.</li><li>Você toca em um cartão (no computador, as teclas <strong>1</strong>, <strong>2</strong> e <strong>3</strong> também funcionam).</li><li>A melhoria vale <strong>na hora</strong> e a partida continua.</li></ol>
-<h2 id="o-que-cada-cartao-mostra">O que cada cartão mostra</h2>
-<ul><li>O nome da melhoria e quantos níveis você já tem dela (por exemplo, <strong>1/10</strong>).</li><li>O que ela faz (por exemplo, "+20% de dano dos projéteis").</li><li>A mudança exata, em azul (por exemplo, "Dano: +20% » +40%").</li></ul>
-<h2 id="regras">Regras</h2>
-<ul><li>As três opções são <strong>sempre diferentes</strong>.</li><li>Melhorias que chegaram ao limite <strong>não aparecem</strong> mais. Se sobrarem menos de três disponíveis, a tela mostra as que restam. Se nenhuma sobrar, o nível conta e o personagem recupera 25 de vida, sem abrir a tela.</li><li>Os cartões ficam <strong>travados por 0,35 s</strong> depois de abrir, para o dedo que estava no joystick não escolher sem querer.</li><li>Subiu vários níveis de uma vez? As escolhas aparecem uma depois da outra.</li><li>Depois da derrota, a tela não abre mais.</li></ul>
-<blockquote><p>Se o dedo continuar na tela quando a partida volta, o joystick só responde depois que você levanta o dedo e toca de novo.</p></blockquote>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#como-funciona">Como funciona</a></li><li><a href="#tipos-de-oferta">Tipos de oferta</a></li><li><a href="#trocar-e-bloquear">Trocar e bloquear</a></li><li><a href="#cura-e-fim-das-opcoes">Cura e fim das opções</a></li></ol></details>
+<p>Quando a barra de <a href="../experiencia/">experiência</a> enche, a partida pausa e abre o painel de level-up.</p>
+<h2 id="como-funciona">Como funciona</h2>
+<ol><li>Inimigos, projéteis, orbes, surgimento das hordas e relógio param.</li><li>Aparecem até três ofertas válidas.</li><li>Você escolhe uma oferta, troca as opções ou bloqueia um cartão.</li><li>A escolha é aplicada e a partida continua.</li></ol>
+<h2 id="tipos-de-oferta">Tipos de oferta</h2>
+<ul><li><strong>Nova arma:</strong> adquire uma arma que ainda não está no arsenal, se houver espaço.</li><li><strong>Evolução de arma:</strong> aumenta o nível de uma arma adquirida.</li><li><strong>Melhoria:</strong> aumenta uma das seis melhorias passivas.</li></ul>
+<p>As opções são diferentes entre si. Armas no nível máximo e melhorias no limite deixam de aparecer. Se houver menos de três opções válidas, o jogo mostra apenas as que existem.</p>
+<h2 id="trocar-e-bloquear">Trocar e bloquear</h2>
+<div class="tabela"><table><thead><tr><th>Ação</th><th style="text-align:right">Limite base por partida</th><th>Efeito</th></tr></thead><tbody><tr><td>Trocar opções</td><td style="text-align:right">2</td><td>Sorteia novas opções, evitando repetir as atuais quando houver alternativas.</td></tr><tr><td>Bloquear</td><td style="text-align:right">2</td><td>Remove uma oferta da partida inteira e coloca outra no cartão.</td></tr></tbody></table></div>
+<p>Trocar e bloquear são recursos independentes. A melhoria permanente <a href="../melhorias-permanentes/">Renovação</a> aumenta a quantidade de trocas.</p>
+<h2 id="cura-e-fim-das-opcoes">Cura e fim das opções</h2>
+<p>Cada nível ganho recupera <strong>12% da vida máxima</strong>. Se não houver nenhuma oferta válida, o nível é consumido e o personagem recupera 25 de vida sem abrir o painel.</p>
+<p>Se vários níveis forem ganhos de uma vez, as escolhas aparecem uma após a outra.</p>
+<p>A partida volta a funcionar depois da escolha. Há uma limitação conhecida no joystick quando o dedo permanece pressionando a tela durante a pausa; veja <a href="../../desenvolvimento/problemas-conhecidos/">Problemas conhecidos</a>.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Oficial · commit 51e7e5d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 3d9102c</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/progressao/level-up.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>
