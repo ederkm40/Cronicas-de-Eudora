@@ -179,7 +179,7 @@ func _step_match(delta: float) -> bool:
 	if _mode == "chefe" and not game.encounter_started():
 		game.start_encounter()
 	_time += delta
-	_pilot(delta)
+	_pilot()
 	if game.elapsed() >= _limit:
 		return _report_match()
 	return false
@@ -187,7 +187,7 @@ func _step_match(delta: float) -> bool:
 
 ## Piloto: foge dos inimigos próximos, sai das áreas de aviso, vai atrás dos orbes e esquiva
 ## quando leva muito dano de uma vez ou quando um aviso está para acertar.
-func _pilot(delta: float) -> void:
+func _pilot() -> void:
 	var player: Player = game.player
 	var enemies: EnemyManager = game.enemies
 	var p := player.global_position
