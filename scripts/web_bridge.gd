@@ -124,6 +124,15 @@ func snapshot() -> Dictionary:
 			"aberto": results.is_open(),
 			"reiniciar": _rect(results.restart_button()),
 		},
+		"pausa":
+		{
+			"aberta": _game.pause_menu.is_open(),
+			"botao": _rect(_game.hud.pause_button()),
+			"mao": _rect(_game.pause_menu.option_button("mao")),
+			"continuar": _rect(_game.pause_menu.resume_button()),
+			"canhoto": _game.settings.left_handed(),
+		},
+		"joystick_ativo": _game.joystick.is_active(),
 	}
 
 

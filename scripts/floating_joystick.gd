@@ -17,6 +17,11 @@ extends Control
 ## foi levantado durante a pausa, o joystick volta neutro. Toques que começam durante a
 ## pausa (como o toque no cartão) nunca viram joystick nem esquiva.
 
+## Configurações (GameSettings): tamanho (`size_scale`) e modo fixo, em que o centro fica
+## num ponto fixo do lado do polegar (`fixed_anchor`, em frações da tela) e aparece apagado
+## quando ninguém toca. O duplo toque funciona igual nos dois modos. Toques que começam em
+## `blocked_rects` (como o botão de pausa) não viram joystick.
+
 signal dodge_requested(screen_direction: Vector2)
 
 @export var radius := 90.0  ## Raio máximo do joystick, em unidades da tela base (720 de largura).
@@ -37,6 +42,10 @@ signal dodge_requested(screen_direction: Vector2)
 var output := Vector2.ZERO
 var enabled := true
 var dodge_gestures := 0  ## Duplos toques reconhecidos (usado pelos testes).
+var size_scale := 1.0
+var fixed_mode := false
+var fixed_anchor := Vector2(0.72, 0.84)
+var blocked_rects: Array[Rect2] = []
 
 var _touch_index := -1
 var _center := Vector2.ZERO
@@ -91,8 +100,10 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		var touch := make_input_local(event) as InputEventScreenTouch
 		if touch.pressed and _touch_index == -1:
+			if _is_blocked(touch.position):
+				return
 			_touch_index = touch.index
-			_center = touch.position
+			_center = fixed_center() if fixed_mode else touch.position
 			_finger = touch.position
 			_begin_gesture(touch.position)
 			_update(touch.position)
@@ -119,6 +130,30 @@ func _track_while_disabled(event: InputEvent) -> void:
 		var drag := make_input_local(event) as InputEventScreenDrag
 		if drag.index == _touch_index:
 			_finger = drag.position
+
+
+func _is_blocked(where: Vector2) -> bool:
+	for rect in blocked_rects:
+		if rect.has_point(where):
+			return true
+	return false
+
+
+## Centro do joystick no modo fixo, em coordenadas da tela.
+func fixed_center() -> Vector2:
+	return size * fixed_anchor
+
+
+func effective_radius() -> float:
+	return radius * size_scale
+
+
+## Aplica tamanho e modo (vindos das configurações) e redesenha.
+func configure(scale: float, fixed: bool, anchor: Vector2) -> void:
+	size_scale = scale
+	fixed_mode = fixed
+	fixed_anchor = anchor
+	queue_redraw()
 
 
 func _begin_gesture(where: Vector2) -> void:
@@ -162,14 +197,15 @@ func _emit_dodge(direction: Vector2) -> void:
 func _update(finger: Vector2) -> void:
 	var offset := finger - _center
 	var length := offset.length()
-	if length > radius:
-		if follow_finger:
-			_center = finger - offset / length * radius
-		offset = offset / length * radius
-		length = radius
+	var r := effective_radius()
+	if length > r:
+		if follow_finger and not fixed_mode:
+			_center = finger - offset / length * r
+		offset = offset / length * r
+		length = r
 	_knob = _center + offset
 
-	var t := length / radius
+	var t := length / r
 	if t < dead_zone or length == 0.0:
 		output = Vector2.ZERO
 	elif analog:
@@ -186,8 +222,13 @@ func _release() -> void:
 
 
 func _draw() -> void:
+	var r := effective_radius()
 	if _touch_index == -1 or not enabled:
+		if fixed_mode and enabled:
+			# Modo fixo: mostra onde o joystick está, bem apagado.
+			draw_arc(fixed_center(), r, 0.0, TAU, 48, Color(ring_color, 0.18), 3.0, true)
+			draw_circle(fixed_center(), r * 0.42, Color(knob_color, 0.12))
 		return
-	draw_circle(_center, radius, base_color)
-	draw_arc(_center, radius, 0.0, TAU, 48, ring_color, 3.0, true)
-	draw_circle(_knob, radius * 0.42, knob_color)
+	draw_circle(_center, r, base_color)
+	draw_arc(_center, r, 0.0, TAU, 48, ring_color, 3.0, true)
+	draw_circle(_knob, r * 0.42, knob_color)

@@ -53,6 +53,39 @@ const DEFINITIONS := [
 	},
 ]
 
+## Evoluções: cada arma pode evoluir uma vez, quando está no nível pedido e o jogador tem as
+## melhorias passivas exigidas. A evolução muda o comportamento da arma (não só os números).
+const EVO_BOLT := &"raio_em_cadeia"
+const EVO_AURA := &"coroa_de_cinzas"
+const EVO_BLADE := &"vendaval_de_laminas"
+const EVOLUTIONS := [
+	{
+		"id": EVO_BOLT,
+		"weapon": BOLT,
+		"name": "Raio em cadeia",
+		"description": "Cada acerto salta para 2 inimigos perto (60% do dano); 3 se o alvo arde.",
+		"weapon_level": 1,
+		"requires": {&"projetil_adicional": 2, &"poder_arcano": 3},
+	},
+	{
+		"id": EVO_AURA,
+		"weapon": AURA,
+		"name": "Coroa de cinzas",
+		"description": "Os pulsos deixam os inimigos em chamas por 3 s e a área cresce 15%.",
+		"weapon_level": 5,
+		"requires": {&"cadencia": 2},
+	},
+	{
+		"id": EVO_BLADE,
+		"weapon": BLADE,
+		"name": "Vendaval de lâminas",
+		"description":
+		"+2 lâminas; a órbita abre e fecha; cada corte empurra e deixa o inimigo lento.",
+		"weapon_level": 5,
+		"requires": {&"passos_ligeiros": 2},
+	},
+]
+
 ## Rótulos dos atributos nos cartões de evolução.
 const LABELS := {
 	"damage": "Dano",
@@ -67,6 +100,20 @@ static func definition(id: StringName) -> Dictionary:
 	for d in DEFINITIONS:
 		if d.id == id:
 			return d
+	return {}
+
+
+static func evolution(id: StringName) -> Dictionary:
+	for e in EVOLUTIONS:
+		if e.id == id:
+			return e
+	return {}
+
+
+static func evolution_of_weapon(weapon_id: StringName) -> Dictionary:
+	for e in EVOLUTIONS:
+		if e.weapon == weapon_id:
+			return e
 	return {}
 
 

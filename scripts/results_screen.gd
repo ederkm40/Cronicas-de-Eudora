@@ -149,6 +149,9 @@ func show_results(data: Dictionary, meta: MetaProgress) -> void:
 	_add_line("Dano recebido", _number(data.damage_taken))
 	_add_line("Esquivas", str(data.dodges))
 	_add_line("Chefes derrotados", str(data.bosses))
+	_add_line("Elites derrotados", str(data.get("elites", 0)))
+	_add_line("Fendas do Eco fechadas", str(data.get("rifts", 0)))
+	_add_line("Armas evoluídas", str(data.get("evolutions", 0)))
 	if data.boss_seconds >= 0.0:
 		_add_line("Tempo contra o chefe", Hud.format_time(data.boss_seconds))
 	_add_header("Armas")

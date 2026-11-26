@@ -21,6 +21,11 @@ var bosses_defeated := 0
 var boss_damage_taken := 0.0  ## Dano que o jogador recebeu dos ataques do chefe.
 var boss_damage_dealt := 0.0
 var orbs_xp := 0
+var elites_killed := 0
+var rifts_completed := 0
+var rifts_failed := 0
+var tides := 0  ## Marés da horda vividas.
+var evolutions := 0
 
 
 func record_damage(source: StringName, amount: float, kind: int) -> void:

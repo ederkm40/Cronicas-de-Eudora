@@ -6,9 +6,9 @@ extends RefCounted
 ## "hp" é um multiplicador da vida base do EnemyManager (que cresce com o tempo de partida).
 ## "armor" é a fração do dano que o inimigo ignora (0,4 = recebe 60% do dano).
 
-enum { COMUM, RAPIDO, RESISTENTE, ATIRADOR, EXPLOSIVO, CHEFE }
+enum { COMUM, RAPIDO, RESISTENTE, ATIRADOR, EXPLOSIVO, CHEFE, TECELAO, SEMEADOR }
 
-const COUNT := 6
+const COUNT := 8
 const STATS := [
 	{
 		"name": "Errante",
@@ -76,7 +76,36 @@ const STATS := [
 		"height": 1.2,
 		"color": Color(0.55, 0.12, 0.4),
 	},
+	{
+		"name": "Tecelão",
+		"hp": 2.0,
+		"speed": 1.9,
+		"contact_dps": 5.0,
+		"armor": 0.0,
+		"xp": 3,
+		"radius": 0.34,
+		"height": 0.75,
+		"color": Color(0.35, 0.9, 0.85),
+	},
+	{
+		"name": "Semeador",
+		"hp": 1.6,
+		"speed": 2.1,
+		"contact_dps": 6.0,
+		"armor": 0.0,
+		"xp": 3,
+		"radius": 0.4,
+		"height": 0.4,
+		"color": Color(0.55, 0.62, 0.3),
+	},
 ]
+
+## Elites: versões raras e mais fortes de um tipo comum, com um modificador visível.
+enum { SEM_ELITE, VELOZ, BLINDADO, GERADOR }
+const ELITE_NAMES := ["", "veloz", "blindado", "gerador"]
+const ELITE_HP := 5.0  ## Vida multiplicada.
+const ELITE_SCALE := 1.45  ## Tamanho na tela.
+const ELITE_CONTACT := 1.5  ## Dano de contato multiplicado.
 
 ## Quando cada tipo começa a aparecer (segundos de partida) e o peso máximo no sorteio.
 ## O comum tem peso 1. Os outros entram aos poucos: o peso cresce de 0 até o máximo
@@ -86,6 +115,8 @@ const SCHEDULE := [
 	{"kind": RESISTENTE, "start": 100.0, "ramp": 300.0, "max": 0.22},
 	{"kind": ATIRADOR, "start": 150.0, "ramp": 300.0, "max": 0.15},
 	{"kind": EXPLOSIVO, "start": 210.0, "ramp": 300.0, "max": 0.2},
+	{"kind": TECELAO, "start": 270.0, "ramp": 300.0, "max": 0.07},
+	{"kind": SEMEADOR, "start": 330.0, "ramp": 300.0, "max": 0.09},
 ]
 
 
@@ -95,6 +126,10 @@ static func stat(kind: int, key: String) -> Variant:
 
 static func display_name(kind: int) -> String:
 	return STATS[kind].name
+
+
+static func elite_name(kind: int, modifier: int) -> String:
+	return "%s %s" % [STATS[kind].name, ELITE_NAMES[modifier]]
 
 
 ## Peso de cada tipo no sorteio, no instante `t` da partida. O chefe nunca é sorteado.

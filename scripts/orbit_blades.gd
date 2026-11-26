@@ -12,6 +12,13 @@ const HEIGHT := 0.6
 const TRAIL_OFFSET := 0.28  ## Ângulo (rad) do rastro atrás de cada lâmina.
 const BLADE_COLOR := Color(0.78, 0.95, 1.0, 1.0)
 const TRAIL_COLOR := Color(0.55, 0.85, 1.0, 0.35)
+## Vendaval de lâminas (evolução): +2 lâminas, órbita que abre e fecha, corte que empurra e
+## deixa lento.
+const EVOLVED_EXTRA := 2
+const BREATH_AMPLITUDE := 0.9  ## Metros que a órbita abre e fecha.
+const BREATH_SPEED := 1.6
+const EVOLVED_KNOCK := 4.0
+const EVOLVED_SLOW := 1.5
 
 var player: Player
 var enemies: EnemyManager
@@ -19,6 +26,8 @@ var effects: GroundEffects
 var level := 0
 var damage_multiplier := 1.0
 var hits := 0  ## Cortes na partida (usado pelos testes).
+var evolved := false
+var _breath := 0.0
 
 var _angle := 0.0
 var _multimesh: MultiMesh
@@ -74,7 +83,7 @@ func _base(key: String) -> float:
 
 
 func blade_count() -> int:
-	return mini(int(_base("count")), MAX_BLADES)
+	return mini(int(_base("count")) + (EVOLVED_EXTRA if evolved else 0), MAX_BLADES)
 
 
 func effective_damage() -> float:
@@ -82,6 +91,8 @@ func effective_damage() -> float:
 
 
 func orbit_radius() -> float:
+	if evolved:
+		return _base("radius") + BREATH_AMPLITUDE * sin(_breath)
 	return _base("radius")
 
 
@@ -106,6 +117,7 @@ func _process(delta: float) -> void:
 	if level == 0 or player == null or not player.alive:
 		return
 	_angle = fmod(_angle + orbit_speed() * delta, TAU)
+	_breath = fmod(_breath + BREATH_SPEED * delta, TAU)
 	var blades := blade_positions()
 	_cut(blades)
 	_draw_blades()
@@ -123,6 +135,9 @@ func _cut(blades: PackedVector3Array) -> void:
 				if not enemies.try_blade_hit(index, HIT_COOLDOWN):
 					break
 				hits += 1
+				if evolved:
+					var away := Vector3(p.x - center.x, 0.0, p.z - center.z).normalized()
+					enemies.apply_effects(index, 0.0, 0.0, EVOLVED_SLOW, away * EVOLVED_KNOCK)
 				if effects:
 					effects.burst(p, 0.15, 0.6, 0.15, Color(0.7, 0.95, 1.0, 0.8))
 				enemies.damage(index, amount, WeaponCatalog.BLADE)

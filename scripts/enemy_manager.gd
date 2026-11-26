@@ -15,6 +15,9 @@ extends Node3D
 signal enemy_killed(position: Vector3, kind: int, xp: int)
 signal enemy_exploded(position: Vector3)
 signal boss_died(position: Vector3)
+signal elite_killed(position: Vector3, kind: int, modifier: int)
+## Golpe no chefe ou num elite (para os números de dano). `vulnerable` = chefe atordoado.
+signal important_hit(position: Vector3, amount: float, vulnerable: bool)
 
 const CELL := 1.5
 const INDEX_BITS := 16
@@ -27,6 +30,13 @@ const BOSS_CAPACITY := 2
 const BASE_BODY_RADIUS := 0.32
 const NORMAL := 0
 const ACTIVE := 1  ## Lançador preparando o disparo ou Volátil com o pavio aceso.
+const BURN_SOURCE := &"aura_de_brasas"  ## A queimadura vem da Coroa de cinzas (Aura evoluída).
+const SLOW_FACTOR := 0.55  ## Velocidade de um inimigo com Lentidão.
+const KNOCK_DECAY := 9.0  ## Quão rápido o empurrão perde força.
+const STATUS_BURN := 1
+const STATUS_SLOW := 2
+const STATUS_SHIELD := 4
+const STATUS_ELITE := 8
 
 @export var max_enemies := 300
 @export var base_speed := 2.2  ## Velocidade do comum. Os outros tipos escalam a partir dela.
@@ -47,6 +57,11 @@ const ACTIVE := 1  ## Lançador preparando o disparo ou Volátil com o pavio ace
 @export var shooter_windup := 0.55  ## Tempo parado e brilhando antes de disparar (aviso).
 @export var shooter_projectile_speed := 6.5
 @export var shooter_projectile_damage := 8.0
+@export_group("Tecelão e Semeador")
+@export var weaver_radius := 3.5  ## Inimigos a essa distância de um Tecelão ficam protegidos.
+@export var weaver_reduction := 0.4  ## Fração do dano que a proteção absorve.
+@export var sower_interval := 4.5  ## Segundos entre as poças de cinzas do Semeador.
+@export var elite_spawner_interval := 7.0  ## Elite gerador: segundos entre reforços.
 @export_group("Volátil")
 @export var exploder_trigger_distance := 1.9
 @export var exploder_fuse := 0.85  ## Tempo entre o aviso e a explosão.
@@ -65,6 +80,8 @@ var spawn_rate_multiplier := 1.0  ## Menor que 1 = hordas mais lentas (usado no 
 ## são os do chefe). Os que já estão em campo continuam.
 var excluded_kinds: Array[int] = []
 var boss_tint := Color(0, 0, 0, 0)  ## Brilho do chefe nos avisos de ataque (a = intensidade).
+var boss_vulnerable := false  ## Chefe atordoado: recebe +50% de dano (BossController).
+var hazards: HazardZones  ## Poças de cinzas do Semeador.
 var count: int:
 	get:
 		return _positions.size()
@@ -81,6 +98,13 @@ var _blade_cd := PackedFloat32Array()  ## Tempo até a lâmina orbital poder ace
 var _flash := PackedFloat32Array()
 var _fx := PackedInt32Array()  ## Aviso no chão ligado ao inimigo (0 = nenhum).
 var _ids := PackedInt32Array()
+var _elite := PackedByteArray()  ## Modificador de elite (EnemyTypes.SEM_ELITE = comum).
+var _burn := PackedFloat32Array()  ## Segundos de Queimadura restantes.
+var _burn_dps := PackedFloat32Array()
+var _slow := PackedFloat32Array()  ## Segundos de Lentidão restantes.
+var _knock := PackedVector3Array()  ## Empurrão recebido (perde força com o tempo).
+var _shielded := PackedByteArray()  ## 1 = protegido por um Tecelão neste quadro.
+var _weavers := PackedVector3Array()  ## Posição dos Tecelões no quadro (são poucos).
 var _next_id := 1
 var _boss_index := -1
 var _spawn_timer := 0.0
@@ -148,6 +172,20 @@ func _make_mesh(kind: int) -> Mesh:
 			sphere.radial_segments = 12
 			sphere.rings = 6
 			mesh = sphere
+		EnemyTypes.TECELAO:
+			var pillar := CylinderMesh.new()
+			pillar.top_radius = 0.12
+			pillar.bottom_radius = 0.38
+			pillar.height = 1.5
+			pillar.radial_segments = 8
+			mesh = pillar
+		EnemyTypes.SEMEADOR:
+			var mound := SphereMesh.new()
+			mound.radius = 0.5
+			mound.height = 0.6
+			mound.radial_segments = 10
+			mound.rings = 4
+			mesh = mound
 		EnemyTypes.CHEFE:
 			var body := CylinderMesh.new()
 			body.top_radius = 0.55
@@ -208,12 +246,24 @@ func _spawn(delta: float) -> void:
 
 ## Cria um inimigo num ponto exato. Usado pelos testes e pelos eventos (chefe, reforços).
 ## Sem `hp`, usa a vida base do tipo (sem o crescimento por tempo).
-func spawn_at(point: Vector3, hp: float = -1.0, kind: int = EnemyTypes.COMUM) -> int:
-	if count >= max_enemies and kind != EnemyTypes.CHEFE:
+## `elite` (EnemyTypes.VELOZ, BLINDADO ou GERADOR) cria a versão elite: 8x a vida e maior.
+func spawn_at(
+	point: Vector3, hp: float = -1.0, kind: int = EnemyTypes.COMUM, elite: int = 0
+) -> int:
+	if count >= max_enemies and kind != EnemyTypes.CHEFE and elite == 0:
 		return -1
 	if hp <= 0.0:
 		hp = base_hp * float(EnemyTypes.STATS[kind].hp)
-	return _append(point, kind, hp, _speed_for(kind))
+	var speed := _speed_for(kind)
+	if elite != EnemyTypes.SEM_ELITE:
+		hp *= EnemyTypes.ELITE_HP
+		if elite == EnemyTypes.VELOZ:
+			speed *= 1.5
+	var index := _append(point, kind, hp, speed)
+	_elite[index] = elite
+	if elite == EnemyTypes.GERADOR:
+		_timer[index] = elite_spawner_interval
+	return index
 
 
 func _append(point: Vector3, kind: int, hp: float, speed: float) -> int:
@@ -224,10 +274,21 @@ func _append(point: Vector3, kind: int, hp: float, speed: float) -> int:
 	_push.append(Vector3.ZERO)
 	_kind.append(kind)
 	_state.append(NORMAL)
-	_timer.append(shooter_interval * randf_range(0.4, 1.0) if kind == EnemyTypes.ATIRADOR else 0.0)
+	var first_timer := 0.0
+	if kind == EnemyTypes.ATIRADOR:
+		first_timer = shooter_interval * randf_range(0.4, 1.0)
+	elif kind == EnemyTypes.SEMEADOR:
+		first_timer = sower_interval * randf_range(0.3, 1.0)
+	_timer.append(first_timer)
 	_blade_cd.append(0.0)
 	_flash.append(0.0)
 	_fx.append(0)
+	_elite.append(EnemyTypes.SEM_ELITE)
+	_burn.append(0.0)
+	_burn_dps.append(0.0)
+	_slow.append(0.0)
+	_knock.append(Vector3.ZERO)
+	_shielded.append(0)
 	_ids.append(_next_id)
 	_next_id += 1
 	if kind == EnemyTypes.CHEFE:
@@ -265,6 +326,7 @@ func _move(delta: float) -> void:
 	var sep_sq := separation_radius * separation_radius
 	var hitters := 0
 	var contact_dps := 0.0
+	_update_weavers()
 
 	# De trás para a frente: se um Volátil explodir (e sair da lista), o último inimigo
 	# ocupa o lugar dele, e esse já foi processado neste quadro.
@@ -275,12 +337,16 @@ func _move(delta: float) -> void:
 			_flash[i] -= delta
 		if _blade_cd[i] > 0.0:
 			_blade_cd[i] -= delta
+		if _tick_statuses(i, delta):
+			i -= 1
+			continue  # morreu queimando
 		var pos := _positions[i]
 		var to_player := Vector3(target.x - pos.x, 0.0, target.z - pos.z)
 		var dist := to_player.length()
 		if dist < _contact_reach(i) and hitters < max_contact_hitters:
 			hitters += 1
-			contact_dps += float(EnemyTypes.STATS[kind].contact_dps)
+			var hit := float(EnemyTypes.STATS[kind].contact_dps)
+			contact_dps += hit * (EnemyTypes.ELITE_CONTACT if _elite[i] != 0 else 1.0)
 		if kind == EnemyTypes.CHEFE:
 			i -= 1
 			continue
@@ -296,26 +362,102 @@ func _move(delta: float) -> void:
 		var weight := 0.3 if kind == EnemyTypes.RESISTENTE else 1.0
 		var velocity := _push[i] * separation_strength * weight
 		var dir := to_player / dist if dist > 0.05 else Vector3.ZERO
+		var slow := SLOW_FACTOR if _slow[i] > 0.0 else 1.0
+		if _elite[i] == EnemyTypes.GERADOR:
+			_elite_spawner(i, pos, delta)
 		match kind:
 			EnemyTypes.RAPIDO:
-				velocity += _rapid_velocity(i, pos, target, dist)
+				velocity += _rapid_velocity(i, pos, target, dist) * slow
 			EnemyTypes.ATIRADOR:
-				velocity += _shooter_velocity(i, pos, dir, dist, half, delta)
+				velocity += _shooter_velocity(i, pos, dir, dist, half, delta) * slow
+			EnemyTypes.TECELAO:
+				velocity += _keep_distance(i, dir, dist, 7.0, 9.5) * slow
+			EnemyTypes.SEMEADOR:
+				velocity += _sower_velocity(i, pos, dir, dist, delta) * slow
 			EnemyTypes.EXPLOSIVO:
 				if _exploder_tick(i, pos, dist, delta):
 					i -= 1
 					continue
 				if _state[i] == NORMAL:
-					velocity += dir * _speed[i]
+					velocity += dir * _speed[i] * slow
 				else:
 					velocity = Vector3.ZERO  # pavio aceso: para e incha
 			_:
-				velocity += dir * _speed[i]
+				velocity += dir * _speed[i] * slow
+		velocity += _knock[i]
+		_knock[i] *= exp(-KNOCK_DECAY * delta)
 		_positions[i] = pos + velocity * delta
 		i -= 1
 
 	if hitters > 0:
 		player.take_damage(contact_dps * delta, "Contato")
+
+
+## Estados por inimigo. Retorna true se o inimigo morreu de queimadura (e saiu da lista).
+func _tick_statuses(i: int, delta: float) -> bool:
+	if _slow[i] > 0.0:
+		_slow[i] -= delta
+	if _burn[i] <= 0.0:
+		return false
+	_burn[i] -= delta
+	return _hurt(i, _burn_dps[i] * delta, BURN_SOURCE, false)
+
+
+## Tecelão: fica atrás, a 7–9,5 m, andando de lado. O perigo dele é proteger os outros.
+func _keep_distance(i: int, dir: Vector3, dist: float, near: float, far: float) -> Vector3:
+	if dist > far:
+		return dir * _speed[i]
+	if dist < near:
+		return -dir * _speed[i]
+	var side := 1.0 if _ids[i] % 2 == 0 else -1.0
+	return Vector3(-dir.z, 0.0, dir.x) * side * _speed[i] * 0.6
+
+
+## Semeador: chega a ~3,5 m, rodeia o jogador e deixa poças de cinzas no caminho.
+func _sower_velocity(i: int, pos: Vector3, dir: Vector3, dist: float, delta: float) -> Vector3:
+	_timer[i] -= delta
+	if _timer[i] <= 0.0 and dist < 9.0:
+		_timer[i] = sower_interval * randf_range(0.85, 1.15)
+		if hazards:
+			hazards.add(pos)
+	if dist > 4.5:
+		return dir * _speed[i]
+	var side := 1.0 if _ids[i] % 2 == 0 else -1.0
+	return (Vector3(-dir.z, 0.0, dir.x) * side + dir * (dist - 3.5) * 0.4) * _speed[i]
+
+
+## Elite gerador: chama dois Errantes ao redor de tempos em tempos.
+func _elite_spawner(i: int, pos: Vector3, delta: float) -> void:
+	_timer[i] -= delta
+	if _timer[i] > 0.0:
+		return
+	_timer[i] = elite_spawner_interval
+	for k in 2:
+		var angle := randf() * TAU
+		var hp := base_hp * time_hp_multiplier()
+		spawn_at(pos + Vector3(cos(angle), 0.0, sin(angle)) * 1.6, hp, EnemyTypes.COMUM)
+	if effects:
+		effects.burst(pos, 0.4, 2.0, 0.4, Color(1.0, 0.85, 0.3, 0.8))
+
+
+## Quem está perto de um Tecelão fica protegido neste quadro.
+func _update_weavers() -> void:
+	_weavers.resize(0)
+	for i in count:
+		if _kind[i] == EnemyTypes.TECELAO:
+			_weavers.append(_positions[i])
+	var r_sq := weaver_radius * weaver_radius
+	for i in count:
+		var shielded := 0
+		# O chefe não recebe escudo: a luta contra ele fica previsível.
+		var kind := _kind[i]
+		if not _weavers.is_empty() and kind != EnemyTypes.TECELAO and kind != EnemyTypes.CHEFE:
+			var p := _positions[i]
+			for w in _weavers:
+				if Vector2(p.x - w.x, p.z - w.z).length_squared() < r_sq:
+					shielded = 1
+					break
+		_shielded[i] = shielded
 
 
 func _reposition(i: int) -> void:
@@ -466,8 +608,12 @@ func _draw_instances() -> void:
 			continue
 		var pos := _positions[i]
 		var color := _color_of(i, kind)
+		var size := EnemyTypes.ELITE_SCALE if _elite[i] != 0 else 1.0
+		buffer[b + 0] = size
+		buffer[b + 5] = size
+		buffer[b + 10] = size
 		buffer[b + 3] = pos.x
-		buffer[b + 7] = pos.y + float(EnemyTypes.STATS[kind].height)
+		buffer[b + 7] = pos.y + float(EnemyTypes.STATS[kind].height) * size
 		buffer[b + 11] = pos.z
 		buffer[b + 12] = color.r
 		buffer[b + 13] = color.g
@@ -493,6 +639,16 @@ func _color_of(i: int, kind: int) -> Color:
 		color = color.lerp(Color(1.0, 1.0, 0.85), blink)
 	elif kind == EnemyTypes.CHEFE and boss_tint.a > 0.0:
 		color = color.lerp(Color(boss_tint.r, boss_tint.g, boss_tint.b), boss_tint.a)
+	if _elite[i] != 0:
+		color = color.lerp(Color(1.0, 0.82, 0.3), 0.35 + 0.15 * sin(elapsed * 4.0))
+	if _burn[i] > 0.0:
+		color = color.lerp(Color(1.0, 0.45, 0.1), 0.35 + 0.2 * sin(elapsed * 20.0 + i))
+	elif _slow[i] > 0.0:
+		color = color.lerp(Color(0.5, 0.75, 1.0), 0.45)
+	if _shielded[i] != 0:
+		color = color.lerp(Color(0.45, 1.0, 0.95), 0.3)
+	if kind == EnemyTypes.CHEFE and boss_vulnerable:
+		color = color.lerp(Color(1.0, 1.0, 1.0), 0.35 + 0.25 * sin(elapsed * 12.0))
 	if _flash[i] > 0.0:
 		color = color.lerp(Color.WHITE, 0.7)
 	return color
@@ -616,23 +772,75 @@ func try_blade_hit(index: int, cooldown: float) -> bool:
 func damage(index: int, amount: float, source: StringName = &"") -> bool:
 	if index < 0 or index >= count or amount <= 0.0:
 		return false
+	return _hurt(index, amount, source, true)
+
+
+## Dano depois da resistência do tipo, da proteção do Tecelão, da elite blindada e
+## da vulnerabilidade do chefe. `flash` = piscar em branco (a queimadura não pisca).
+func _hurt(index: int, amount: float, source: StringName, flash: bool) -> bool:
 	var kind := _kind[index]
-	var dealt := amount * (1.0 - float(EnemyTypes.STATS[kind].armor))
+	var armor := float(EnemyTypes.STATS[kind].armor)
+	if _elite[index] == EnemyTypes.BLINDADO:
+		armor = minf(armor + 0.3, 0.75)
+	var dealt := amount * (1.0 - armor)
+	if _shielded[index] != 0:
+		dealt *= 1.0 - weaver_reduction
+	if kind == EnemyTypes.CHEFE and boss_vulnerable:
+		dealt *= 1.5
 	if stats:
 		stats.record_damage(source, minf(dealt, maxf(_hp[index], 0.0)), kind)
 	_hp[index] -= dealt
-	_flash[index] = FLASH_TIME
+	if flash:
+		_flash[index] = FLASH_TIME
+		if kind == EnemyTypes.CHEFE or _elite[index] != EnemyTypes.SEM_ELITE:
+			var weak_point := kind == EnemyTypes.CHEFE and boss_vulnerable
+			important_hit.emit(_positions[index], dealt, weak_point)
 	if _hp[index] > 0.0:
 		return false
 	var where := _positions[index]
 	var xp := int(EnemyTypes.STATS[kind].xp)
+	var elite := _elite[index]
 	_remove(index)
 	if stats:
 		stats.record_kill(source, kind)
 	if kind == EnemyTypes.CHEFE:
 		boss_died.emit(where)
+	if elite != EnemyTypes.SEM_ELITE:
+		elite_killed.emit(where, kind, elite)
 	enemy_killed.emit(where, kind, xp)
 	return true
+
+
+## Estados e empurrão de um golpe (armas evoluídas e Raio). Zeros = nada.
+## burn_dps/burn_seconds: Queimadura; slow_seconds: Lentidão; knock: impulso em m/s.
+## O chefe não é empurrado; Couraçados e elites, só um pouco.
+func apply_effects(
+	index: int, burn_dps: float, burn_seconds: float, slow_seconds: float, knock: Vector3
+) -> void:
+	if index < 0 or index >= count:
+		return
+	if burn_seconds > 0.0:
+		_burn[index] = maxf(_burn[index], burn_seconds)
+		_burn_dps[index] = maxf(_burn_dps[index], burn_dps)
+	if slow_seconds > 0.0 and _kind[index] != EnemyTypes.CHEFE:
+		_slow[index] = maxf(_slow[index], slow_seconds)
+	if knock != Vector3.ZERO and _kind[index] != EnemyTypes.CHEFE:
+		var weight := 0.3 if _kind[index] == EnemyTypes.RESISTENTE or _elite[index] != 0 else 1.0
+		_knock[index] += Vector3(knock.x, 0.0, knock.z) * weight
+
+
+## Estados do inimigo agora, em bits: STATUS_BURN, STATUS_SLOW, STATUS_SHIELD, STATUS_ELITE.
+func status_of(index: int) -> int:
+	var flags := 0
+	if _burn[index] > 0.0:
+		flags |= STATUS_BURN
+	if _slow[index] > 0.0:
+		flags |= STATUS_SLOW
+	if _shielded[index] != 0:
+		flags |= STATUS_SHIELD
+	if _elite[index] != EnemyTypes.SEM_ELITE:
+		flags |= STATUS_ELITE
+	return flags
 
 
 ## Remove um inimigo: o último ocupa o lugar dele em todos os arrays.
@@ -656,6 +864,12 @@ func _remove(index: int) -> void:
 	_flash[index] = _flash[last]
 	_fx[index] = _fx[last]
 	_ids[index] = _ids[last]
+	_elite[index] = _elite[last]
+	_burn[index] = _burn[last]
+	_burn_dps[index] = _burn_dps[last]
+	_slow[index] = _slow[last]
+	_knock[index] = _knock[last]
+	_shielded[index] = _shielded[last]
 	_positions.resize(last)
 	_hp.resize(last)
 	_max_hp.resize(last)
@@ -668,3 +882,9 @@ func _remove(index: int) -> void:
 	_flash.resize(last)
 	_fx.resize(last)
 	_ids.resize(last)
+	_elite.resize(last)
+	_burn.resize(last)
+	_burn_dps.resize(last)
+	_slow.resize(last)
+	_knock.resize(last)
+	_shielded.resize(last)

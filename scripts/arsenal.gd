@@ -10,6 +10,7 @@ var max_slots := DEFAULT_SLOTS
 
 var _levels := {}  ## id da arma -> nível (só armas adquiridas)
 var _order: Array[StringName] = []  ## Ordem de aquisição (para a interface).
+var _evolved := {}  ## id da arma -> true, se já evoluiu.
 
 
 func _init(starting_weapon: StringName = WeaponCatalog.BOLT) -> void:
@@ -59,6 +60,28 @@ func level_up(id: StringName) -> bool:
 		return false
 	_levels[id] += 1
 	return true
+
+
+## Evolução: a arma está no nível pedido e as melhorias exigidas foram escolhidas.
+func can_evolve(evolution_id: StringName, upgrades: Upgrades) -> bool:
+	var e := WeaponCatalog.evolution(evolution_id)
+	if e.is_empty() or is_evolved(e.weapon) or level(e.weapon) < int(e.weapon_level):
+		return false
+	for upgrade_id: StringName in e.requires:
+		if upgrades.stacks(upgrade_id) < int(e.requires[upgrade_id]):
+			return false
+	return true
+
+
+func evolve(evolution_id: StringName, upgrades: Upgrades) -> bool:
+	if not can_evolve(evolution_id, upgrades):
+		return false
+	_evolved[WeaponCatalog.evolution(evolution_id).weapon] = true
+	return true
+
+
+func is_evolved(weapon_id: StringName) -> bool:
+	return _evolved.has(weapon_id)
 
 
 ## Adquire ou evolui, conforme o caso.

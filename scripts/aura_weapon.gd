@@ -10,6 +10,7 @@ shader_type spatial;
 render_mode unshaded, cull_disabled, depth_draw_never, shadows_disabled;
 uniform vec4 tint : source_color = vec4(1.0, 0.45, 0.12, 1.0);
 uniform float pulse = 0.0;
+uniform float crown = 0.0;
 
 void fragment() {
 	vec2 p = UV * 2.0 - 1.0;
@@ -23,11 +24,15 @@ void fragment() {
 	float fill = (0.06 + 0.07 * embers) * r;
 	float front = 1.0 - pulse;
 	float wave = smoothstep(0.14, 0.0, abs(r - front)) * pulse;
-	ALBEDO = mix(tint.rgb, vec3(1.0, 0.9, 0.6), wave);
-	ALPHA = clamp(edge * 0.7 + fill + wave * 0.65, 0.0, 1.0);
+	float flames = crown * smoothstep(0.7, 1.0, r) * (0.5 + 0.5 * sin(angle * 14.0 - TIME * 6.0));
+	ALBEDO = mix(mix(tint.rgb, vec3(1.0, 0.9, 0.6), wave), vec3(1.0, 0.3, 0.05), flames);
+	ALPHA = clamp(edge * 0.7 + fill + wave * 0.65 + flames * 0.35, 0.0, 1.0);
 }
 """
 const PULSE_SECONDS := 0.3
+const EVOLVED_AREA := 1.15
+const BURN_SECONDS := 3.0
+const BURN_SHARE := 0.4  ## Dano por segundo da queimadura, como fração do dano do pulso.
 
 var player: Player
 var enemies: EnemyManager
@@ -36,6 +41,7 @@ var damage_multiplier := 1.0
 var rate_multiplier := 1.0
 var area_multiplier := 1.0
 var pulses := 0  ## Pulsos de dano na partida (usado pelos testes).
+var evolved := false  ## Coroa de cinzas: pulsos põem fogo e a área cresce 15%.
 
 var _timer := 0.0
 var _pulse := 0.0
@@ -74,7 +80,7 @@ func effective_damage() -> float:
 
 
 func effective_radius() -> float:
-	return _base("radius") * area_multiplier
+	return _base("radius") * area_multiplier * (EVOLVED_AREA if evolved else 1.0)
 
 
 func effective_interval() -> float:
@@ -90,6 +96,7 @@ func _process(delta: float) -> void:
 	scale = Vector3(r, 1.0, r)
 	_pulse = maxf(_pulse - delta / PULSE_SECONDS, 0.0)
 	_material.set_shader_parameter("pulse", _pulse)
+	_material.set_shader_parameter("crown", 1.0 if evolved else 0.0)
 	_timer -= delta
 	if _timer <= 0.0:
 		_timer = maxf(_timer + effective_interval(), 0.05)
@@ -102,4 +109,6 @@ func _fire() -> void:
 	_pulse = 1.0
 	var amount := effective_damage()
 	for index in enemies.indices_in_radius(global_position, effective_radius()):
+		if evolved:
+			enemies.apply_effects(index, amount * BURN_SHARE, BURN_SECONDS, 0.0, Vector3.ZERO)
 		enemies.damage(index, amount, WeaponCatalog.AURA)

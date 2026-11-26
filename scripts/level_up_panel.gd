@@ -17,6 +17,7 @@ const CARD_COLOR := Color(0.13, 0.11, 0.18, 0.96)
 const CARD_HOVER := Color(0.2, 0.17, 0.28, 0.98)
 const CARD_BORDER := Color(0.48, 0.36, 1.0)
 const WEAPON_BORDER := Color(1.0, 0.62, 0.25)
+const EVOLUTION_BORDER := Color(1.0, 0.9, 0.35)
 const ACCENT := Color(0.45, 0.95, 1.0)
 const WEAPON_ACCENT := Color(1.0, 0.75, 0.4)
 const COLUMN_WIDTH := 640
@@ -217,8 +218,11 @@ func _set_buttons_disabled(value: bool) -> void:
 
 
 func _make_card(index: int, id: StringName) -> Button:
-	var is_weapon := WeaponCatalog.is_weapon(id)
+	var is_evolution := not WeaponCatalog.evolution(id).is_empty()
+	var is_weapon := WeaponCatalog.is_weapon(id) or is_evolution
 	var border := WEAPON_BORDER if is_weapon else CARD_BORDER
+	if is_evolution:
+		border = EVOLUTION_BORDER
 	var button := Button.new()
 	button.custom_minimum_size = Vector2(0, 176)
 	button.focus_mode = Control.FOCUS_NONE
