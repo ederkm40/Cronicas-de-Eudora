@@ -23,27 +23,39 @@ const RANGE_PER_STACK := 0.20
 ## Ordem fixa: também é a ordem usada nos testes e na documentação.
 const DEFINITIONS := [
 	{
-		"id": DAMAGE, "name": "Poder arcano", "max": 10,
+		"id": DAMAGE,
+		"name": "Poder arcano",
+		"max": 10,
 		"description": "+20% de dano dos projéteis.",
 	},
 	{
-		"id": FIRE_RATE, "name": "Cadência", "max": 8,
+		"id": FIRE_RATE,
+		"name": "Cadência",
+		"max": 8,
 		"description": "+15% de velocidade de disparo.",
 	},
 	{
-		"id": VITALITY, "name": "Núcleo vital", "max": 8,
+		"id": VITALITY,
+		"name": "Núcleo vital",
+		"max": 8,
 		"description": "+25% de vida máxima e recupera 25 de vida.",
 	},
 	{
-		"id": SPEED, "name": "Passos ligeiros", "max": 5,
+		"id": SPEED,
+		"name": "Passos ligeiros",
+		"max": 5,
 		"description": "+15% de velocidade de movimento.",
 	},
 	{
-		"id": PROJECTILE, "name": "Projétil adicional", "max": 4,
+		"id": PROJECTILE,
+		"name": "Projétil adicional",
+		"max": 4,
 		"description": "+1 projétil por disparo, em leque.",
 	},
 	{
-		"id": RANGE, "name": "Campo de ruptura", "max": 5,
+		"id": RANGE,
+		"name": "Campo de ruptura",
+		"max": 5,
 		"description": "+20% de alcance da arma.",
 	},
 ]
