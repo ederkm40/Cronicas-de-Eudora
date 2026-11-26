@@ -163,3 +163,38 @@ test("joystick volta a responder depois do level-up sem levantar o dedo", async 
   expect(fim.esquivas, "sem esquiva acidental").toBe(0);
   expect(erros).toEqual([]);
 });
+
+test("pausa pelo botão II, modo canhoto e retomada pelo toque", async ({ page }, testInfo) => {
+  const erros = await abrirPartida(page);
+  await comandos(page, "hordas:0", "invulneravel:1", "limpar");
+  const dedo = await criarDedo(page, testInfo);
+  await page.waitForTimeout(300);
+  const antes = await estado(page);
+  expect(antes.pausa.canhoto, "começa destro").toBe(false);
+
+  // Tocar no botão de pausa abre as configurações e não liga o joystick.
+  await dedo.tocar(await centro(page, antes.pausa.botao));
+  await esperarEstado(page, (e) => e.pausado && e.pausa.aberta, "o botão II deveria pausar");
+  expect((await estado(page)).esquivas, "tocar na pausa não esquiva").toBe(0);
+
+  // Troca para canhoto tocando na opção e continua.
+  await page.waitForTimeout(300);
+  await dedo.tocar(await centro(page, (await estado(page)).pausa.mao));
+  await esperarEstado(page, (e) => e.pausa.canhoto, "a opção deveria mudar para canhoto");
+  await page.waitForTimeout(300);
+  await dedo.tocar(await centro(page, (await estado(page)).pausa.continuar));
+  await esperarEstado(page, (e) => !e.pausado && !e.pausa.aberta, "Continuar deveria retomar");
+  await page.waitForTimeout(300);
+  const depois = await estado(page);
+  expect(depois.pausa.botao[0], "canhoto: o botão de pausa vai para o outro lado").toBeGreaterThan(antes.pausa.botao[0]);
+
+  // O joystick continua funcionando depois da pausa.
+  const base = await ponto(page, 0.5, 0.7);
+  await dedo.encostar(base);
+  for (let k = 1; k <= 6; k++) await dedo.mover({ x: base.x + k * 15, y: base.y });
+  await page.waitForTimeout(800);
+  const andando = await estado(page);
+  await dedo.soltar();
+  expect(Math.hypot(andando.x - depois.x, andando.z - depois.z), "o joystick volta a mover").toBeGreaterThan(1.0);
+  expect(erros).toEqual([]);
+});

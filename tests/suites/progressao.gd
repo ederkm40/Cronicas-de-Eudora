@@ -136,7 +136,8 @@ func test_tres_opcoes_distintas() -> void:
 			seen[id] = true
 			_check(Upgrades.all_ids().has(id), "opção desconhecida: %s" % id)
 		_check(unique.size() == 3, "as 3 opções deveriam ser diferentes: %s" % [choices])
-	_check(seen.size() == 6, "as 6 melhorias deveriam aparecer nos sorteios")
+	var total := Upgrades.all_ids().size()
+	_check(seen.size() == total, "as %d melhorias deveriam aparecer nos sorteios" % total)
 	# Na tela: três cartões com melhorias diferentes.
 	await _new_game()
 	_grant_level()
@@ -303,7 +304,9 @@ func test_acumulo_e_limites_das_melhorias() -> void:
 		up.apply(Upgrades.SPEED, game.player, game.weapon)
 	_check(_near(game.player.speed_multiplier, 1.75), "Passos ligeiros deveria parar em +75%")
 	# Com só 2 melhorias disponíveis, o sorteio mostra as 2, sem repetir.
-	for id in [Upgrades.DAMAGE, Upgrades.FIRE_RATE, Upgrades.VITALITY, Upgrades.RANGE]:
+	var others := [Upgrades.DAMAGE, Upgrades.FIRE_RATE, Upgrades.VITALITY, Upgrades.RANGE]
+	others.append(Upgrades.PACT)
+	for id in others:
 		while up.apply(id, game.player, game.weapon):
 			pass
 	_check(up.available_ids().is_empty(), "todas no limite")

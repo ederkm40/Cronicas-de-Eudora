@@ -12,6 +12,8 @@ extends Node3D
 ## mais erupções, rajada dupla e um grupo de reforços.
 
 signal phase_changed(phase: int)
+signal vulnerability_changed(vulnerable: bool)
+signal attack_warned  ## Um ataque perigoso começou a ser avisado (som de alerta).
 
 enum State {
 	INATIVO,
@@ -21,9 +23,16 @@ enum State {
 	PREPARAR_ERUPCAO,
 	PREPARAR_RAJADA,
 	RECUPERAR,
+	ATORDOADO,
+	PREPARAR_PRISAO,
 }
 
-const ATTACKS := [State.PREPARAR_INVESTIDA, State.PREPARAR_ERUPCAO, State.PREPARAR_RAJADA]
+const ATTACKS := [
+	State.PREPARAR_INVESTIDA,
+	State.PREPARAR_ERUPCAO,
+	State.PREPARAR_RAJADA,
+	State.PREPARAR_PRISAO,
+]
 const DANGER := Color(1.0, 0.2, 0.25, 0.45)
 
 @export var max_hp := 3800.0
@@ -41,7 +50,13 @@ const DANGER := Color(1.0, 0.2, 0.25, 0.45)
 @export var volley_count := 14
 @export var volley_speed := 6.0
 @export var volley_damage := 12.0
-@export var recover_time := 1.4  ## Janela em que o chefe fica parado e vulnerável.
+@export var recover_time := 1.4  ## Janela em que o chefe fica parado entre ataques.
+@export var stun_time := 2.0  ## Depois da investida: atordoado e recebendo +50% de dano.
+@export var prison_windup := 1.3
+@export var prison_radius := 3.6  ## Distância dos círculos ao jogador.
+@export var prison_cells := 10  ## Círculos do anel (2 vizinhos ficam de fora: a saída).
+@export var prison_cell_radius := 1.25
+@export var prison_damage := 26.0
 @export var phase_two_ratio := 0.5
 @export var reinforcements := 6
 
@@ -156,13 +171,27 @@ func _process(delta: float) -> void:
 			_tint(Color.WHITE, 0.0)
 			if _time >= recover_time * _speed_up():
 				_enter(State.PERSEGUIR)
+		State.ATORDOADO:
+			_tint(Color.WHITE, 0.0)
+			if _time >= stun_time:
+				_set_vulnerable(false)
+				_enter(State.PERSEGUIR)
+		State.PREPARAR_PRISAO:
+			_tint(Color(0.4, 1.0, 0.9), _time / _windup(prison_windup))
+			if _time >= _windup(prison_windup):
+				_close_prison()
+				_enter(State.RECUPERAR)
 	if state == State.PREPARAR_ERUPCAO and _eruptions.is_empty():
 		_plan_eruptions(target, player_velocity)
+	if state == State.PREPARAR_PRISAO and _eruptions.is_empty():
+		_plan_prison(target)
 
 
 func _enter(next: State) -> void:
 	state = next
 	_time = 0.0
+	if ATTACKS.has(next):
+		attack_warned.emit()
 	if effects:
 		var active := _telegraphs.filter(func(id: int) -> bool: return effects.is_active(id))
 		_telegraphs.assign(active)
@@ -192,7 +221,7 @@ func _enter(next: State) -> void:
 			_charge_travelled = 0.0
 			_charge_hit = false
 			_count_attack("investida")
-		State.PREPARAR_ERUPCAO:
+		State.PREPARAR_ERUPCAO, State.PREPARAR_PRISAO:
 			_eruptions.clear()
 
 
@@ -208,7 +237,9 @@ func _update_charge(index: int, pos: Vector3, delta: float) -> void:
 			_charge_hit = true
 			player.take_damage(charge_damage, EnemyTypes.display_name(EnemyTypes.CHEFE))
 	if _charge_travelled >= charge_length - 0.001:
-		_enter(State.RECUPERAR)
+		# A investida termina com o chefe atordoado: a janela para contra-atacar.
+		_set_vulnerable(true)
+		_enter(State.ATORDOADO)
 
 
 ## Erupções: uma onde o jogador está, uma onde ele vai estar e outras ao redor.
@@ -227,6 +258,43 @@ func _plan_eruptions(target: Vector3, player_velocity: Vector3) -> void:
 			_telegraphs.append(
 				effects.warn_disc(point, eruption_radius, _windup(eruption_windup), DANGER)
 			)
+
+
+## Prisão de ecos: um anel de círculos em volta do jogador, com uma saída de dois círculos.
+func _plan_prison(target: Vector3) -> void:
+	var gap := randi() % prison_cells
+	for k in prison_cells:
+		if k == gap or k == (gap + 1) % prison_cells:
+			continue
+		var angle := TAU * float(k) / float(prison_cells)
+		_eruptions.append(target + Vector3(cos(angle), 0.0, sin(angle)) * prison_radius)
+	if effects:
+		for point in _eruptions:
+			var warn := Color(0.3, 1.0, 0.85, 0.45)
+			_telegraphs.append(
+				effects.warn_disc(point, prison_cell_radius, _windup(prison_windup), warn)
+			)
+
+
+func _close_prison() -> void:
+	_count_attack("prisão")
+	var p := player.global_position
+	var hit := false
+	for point in _eruptions:
+		if effects:
+			effects.burst(point, 0.3, prison_cell_radius, 0.3, Color(0.4, 1.0, 0.9, 0.9))
+		if not hit and Vector2(p.x - point.x, p.z - point.z).length() <= prison_cell_radius:
+			hit = true
+	if hit:
+		player.take_damage(prison_damage, EnemyTypes.display_name(EnemyTypes.CHEFE))
+	_eruptions.clear()
+
+
+func _set_vulnerable(value: bool) -> void:
+	if enemies.boss_vulnerable == value:
+		return
+	enemies.boss_vulnerable = value
+	vulnerability_changed.emit(value)
 
 
 func _erupt() -> void:
@@ -265,7 +333,10 @@ func _enter_phase_two(pos: Vector3) -> void:
 		effects.burst(pos, 0.5, 5.0, 0.7, Color(1.0, 0.3, 0.6, 0.9))
 	for k in reinforcements:
 		var angle := TAU * float(k) / float(reinforcements)
+		# Um Tecelão vem junto e protege o chefe: vale a pena derrubá-lo primeiro.
 		var kind := EnemyTypes.EXPLOSIVO if k % 2 == 0 else EnemyTypes.RAPIDO
+		if k == 0:
+			kind = EnemyTypes.TECELAO
 		var hp := enemies.base_hp * float(EnemyTypes.STATS[kind].hp) * enemies.time_hp_multiplier()
 		enemies.spawn_at(pos + Vector3(cos(angle), 0.0, sin(angle)) * 3.0, hp, kind)
 
@@ -294,6 +365,7 @@ func _count_attack(attack: String) -> void:
 ## Encerra o comportamento do chefe (morte ou fim da partida).
 func stop() -> void:
 	state = State.INATIVO
+	_set_vulnerable(false)
 	_crown.visible = false
 	enemies.boss_tint = Color(0, 0, 0, 0)
 	_second_ring = -1.0

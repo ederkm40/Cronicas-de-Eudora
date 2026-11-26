@@ -69,3 +69,17 @@ Fonte dos números: `scripts/weapon_catalog.gd` e `scripts/auto_weapon.gd`. Camp
 | **Estado de validação** | `TESTADO` (`armas_e_ofertas.gd`: órbita, giro, dano por corte, 1 × 4 lâminas, limite da recarga) |
 
 Medição de dano por segundo (simulação, não pessoas): ver [catálogo 30](30-testes-e-balanceamento.md).
+
+## Evoluções (0.4-alpha, PR #10, ainda não na `main`)
+
+**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `EM_DESENVOLVIMENTO` (PR #10, `WeaponCatalog.EVOLUTIONS`, `Arsenal.evolve`) · **V** `TESTADO` (`tests/suites/despertar.gd`, `armas_e_ofertas.gd`).
+
+Aparecem como carta dourada "EVOLUÇÃO · arma" no level-up (peso 5, contra 1 das outras), só quando a arma e as passivas cumprem os requisitos. Cada arma evolui uma vez. A carta mostra "Requisitos cumpridos: …".
+
+| Id | Nome | Arma e nível | Passivas exigidas | Efeito | Referência visual |
+|---|---|---|---|---|---|
+| `raio_em_cadeia` | Raio em cadeia | Raio arcano (nível 1) | Projétil adicional 2, Poder arcano 3 | cada acerto salta para os 2 vizinhos mais próximos a até 4 m, com 60% do dano; se o alvo estava queimando, salta para 3 e com +25% | faixas ciano entre os alvos |
+| `coroa_de_cinzas` | Coroa de cinzas | Aura de brasas 5 | Cadência 2 | +15% de raio; cada pulso queima (40% do dano do pulso por segundo, por 3 s) | chamas no anel da aura |
+| `vendaval_de_laminas` | Vendaval de lâminas | Lâmina orbital 5 | Passos ligeiros 2 | +2 lâminas (até 6); raio da órbita varia ±0,9 m; cada corte deixa lento (×0,55 por 1,5 s) e empurra para fora | lâminas e raio pulsante |
+
+Todas as armas também ganham **empurrão** no acerto do Raio (1,2 m/s). Medição de dano (simulação, não pessoas): ver o relatório da 0.4.

@@ -21,3 +21,17 @@
 | **Estado de implementação** | `IMPLEMENTADO` |
 | **Estado de validação** | `TESTADO` (`inimigos_e_chefe.gd`: surgimento, avisos antes dos ataques, fase 2, vitória; Playwright: vitória e reinício). **Equilíbrio não validado com pessoas:** na última simulação o piloto automático sobreviveu, mas não derrotou o chefe |
 | **Histórico** | 0.3: criado; vida 7.000 → 4.500 → 3.800 durante o balanceamento por simulação |
+
+### Em desenvolvimento na 0.4-alpha (PR #10, ainda não na `main`)
+
+**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `EM_DESENVOLVIMENTO` (PR #10) · **V** `TESTADO` (`tests/suites/despertar.gd`).
+
+| Mudança | Regra |
+|---|---|
+| Atordoado depois da investida | 2 s parado, com +50% de dano recebido; aviso "Ponto fraco exposto: ataque agora!" e brilho branco |
+| Prisão de ecos (4º ataque) | anel de 10 círculos (raio 1,25 m) a 3,6 m do jogador, com uma saída de 2 círculos; aviso de 1,3 s (×0,75 na fase 2); 26 de dano em quem fica em cima |
+| Ordem dos ataques | investida → erupção → rajada → prisão (repete) |
+| Reforços da fase 2 | o primeiro dos 6 é um Tecelão (o escudo não protege o chefe) |
+| Som | alerta no início de cada aviso; som próprio na fase 2 |
+
+Piloto automático (`--modo=chefe`, sementes 1–3, build típica): 3 vitórias, 166 a 264 s de luta. Na 0.3, o piloto não derrotava o chefe. **O chefe pode ter ficado fácil demais: revisar no teste com pessoas.**

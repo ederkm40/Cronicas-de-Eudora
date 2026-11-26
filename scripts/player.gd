@@ -31,6 +31,7 @@ var invulnerable := false  ## Só para testes e simulações longas.
 var scripted_input := Vector2.ZERO  ## Movimento comandado por testes e simulações (tem prioridade).
 var controls_enabled := true  ## Desligado no fim da partida.
 var dodges_used := 0
+var damage_taken_multiplier := 1.0  ## Pacto do eco aumenta o dano recebido.
 var joystick: FloatingJoystick
 var camera_rig: CameraRig
 var effects: GroundEffects
@@ -201,6 +202,7 @@ func _pressed(key: Key) -> bool:
 func take_damage(amount: float, source: String = "") -> void:
 	if not alive or is_invulnerable() or amount <= 0.0:
 		return
+	amount *= damage_taken_multiplier
 	var dealt := minf(amount, hp)
 	hp = maxf(hp - amount, 0.0)
 	damaged.emit(dealt, source)

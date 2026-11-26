@@ -16,6 +16,7 @@ const VITALITY := &"nucleo_vital"
 const SPEED := &"passos_ligeiros"
 const PROJECTILE := &"projetil_adicional"
 const RANGE := &"campo_de_ruptura"
+const PACT := &"pacto_do_eco"
 
 const DAMAGE_PER_STACK := 0.20
 const FIRE_RATE_PER_STACK := 0.15
@@ -24,6 +25,10 @@ const VITALITY_HEAL := 25.0
 const SPEED_PER_STACK := 0.15
 const RANGE_PER_STACK := 0.20
 const AURA_RANGE_SHARE := 0.5  ## A Aura ganha metade do bônus de alcance.
+## Pacto do eco (risco e recompensa): mais dano e experiência, em troca de mais dano recebido.
+const PACT_DAMAGE_PER_STACK := 0.25
+const PACT_XP_PER_STACK := 0.15
+const PACT_TAKEN_PER_STACK := 0.20
 
 ## Ordem fixa: também é a ordem usada nos testes e na documentação.
 const DEFINITIONS := [
@@ -63,6 +68,12 @@ const DEFINITIONS := [
 		"max": 5,
 		"description": "+20% de alcance do Raio (e +10% de área da Aura).",
 	},
+	{
+		"id": PACT,
+		"name": "Pacto do eco",
+		"max": 3,
+		"description": "+25% de dano e +15% de experiência, mas você recebe +20% de dano.",
+	},
 ]
 
 ## Armas extras que recebem os bônus (ligadas por main.gd; podem ficar vazias nos testes).
@@ -71,6 +82,8 @@ var blades: OrbitBlades
 ## Bônus permanentes (MetaProgress), multiplicados em cima das melhorias da partida.
 var meta_damage_multiplier := 1.0
 var meta_hp_multiplier := 1.0
+## Experiência recebida (Pacto do eco). Lida por main.gd ao coletar orbes.
+var xp_multiplier := 1.0
 
 var _stacks := {}
 
@@ -139,6 +152,17 @@ func describe_next(id: StringName) -> String:
 			text = "Projéteis por disparo: %d » %d" % [1 + n, 2 + n]
 		RANGE:
 			text = _percent_change("Alcance", RANGE_PER_STACK, n)
+		PACT:
+			text = (
+				"Dano e XP: +%d%%/+%d%% » +%d%%/+%d%% · dano recebido +%d%%"
+				% [
+					_pct(PACT_DAMAGE_PER_STACK * n),
+					_pct(PACT_XP_PER_STACK * n),
+					_pct(PACT_DAMAGE_PER_STACK * (n + 1)),
+					_pct(PACT_XP_PER_STACK * (n + 1)),
+					_pct(PACT_TAKEN_PER_STACK * (n + 1)),
+				]
+			)
 	return text
 
 
@@ -164,7 +188,14 @@ func apply(id: StringName, player: Player, weapon: AutoWeapon) -> bool:
 
 ## Recalcula todos os modificadores a partir dos níveis atuais.
 func refresh(player: Player, weapon: AutoWeapon) -> void:
-	var damage := (1.0 + DAMAGE_PER_STACK * stacks(DAMAGE)) * meta_damage_multiplier
+	var pact := stacks(PACT)
+	var damage := (
+		(1.0 + DAMAGE_PER_STACK * stacks(DAMAGE))
+		* (1.0 + PACT_DAMAGE_PER_STACK * pact)
+		* meta_damage_multiplier
+	)
+	xp_multiplier = 1.0 + PACT_XP_PER_STACK * pact
+	player.damage_taken_multiplier = 1.0 + PACT_TAKEN_PER_STACK * pact
 	var rate := 1.0 + FIRE_RATE_PER_STACK * stacks(FIRE_RATE)
 	var reach := RANGE_PER_STACK * stacks(RANGE)
 	weapon.damage_multiplier = damage

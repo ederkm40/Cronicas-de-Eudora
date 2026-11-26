@@ -8,6 +8,7 @@ extends RefCounted
 
 const MAIN_SCENE := "res://scenes/main.tscn"
 const TEST_SAVE := "user://teste_progresso.json"
+const TEST_SETTINGS := "user://teste_configuracoes.json"
 
 var runner: SceneTree
 var game: Node:
@@ -86,8 +87,9 @@ func _enemy_point(distance: float) -> Vector3:
 
 func _delete_save() -> void:
 	for suffix in ["", ".tmp", ".corrompido"]:
-		if FileAccess.file_exists(TEST_SAVE + suffix):
-			DirAccess.remove_absolute(TEST_SAVE + suffix)
+		for file in [TEST_SAVE, TEST_SETTINGS]:
+			if FileAccess.file_exists(file + suffix):
+				DirAccess.remove_absolute(file + suffix)
 
 
 ## Desliga o Raio arcano (alcance zero) para medir só a arma em teste.

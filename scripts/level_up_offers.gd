@@ -17,6 +17,7 @@ const BASE_BANISHES := 2
 const KIND_NEW_WEAPON := "nova_arma"
 const KIND_WEAPON_UP := "evolucao"
 const KIND_PASSIVE := "melhoria"
+const KIND_EVOLUTION := "evolucao_de_arma"
 
 var upgrades: Upgrades
 var arsenal: Arsenal
@@ -36,6 +37,8 @@ func _init(p_upgrades: Upgrades, p_arsenal: Arsenal, p_player: Player = null) ->
 
 ## Tipo da oferta: arma nova, evolução de arma ou melhoria passiva.
 func kind_of(id: StringName) -> String:
+	if not WeaponCatalog.evolution(id).is_empty():
+		return KIND_EVOLUTION
 	if WeaponCatalog.is_weapon(id):
 		return KIND_WEAPON_UP if arsenal.owns(id) else KIND_NEW_WEAPON
 	return KIND_PASSIVE
@@ -55,6 +58,8 @@ func banished_ids() -> Array[StringName]:
 func is_valid(id: StringName) -> bool:
 	if is_banished(id):
 		return false
+	if not WeaponCatalog.evolution(id).is_empty():
+		return arsenal.can_evolve(id, upgrades)
 	if WeaponCatalog.is_weapon(id):
 		return arsenal.can_offer(id)
 	return upgrades.stacks(id) < int(Upgrades.definition(id).get("max", 0))
@@ -69,6 +74,9 @@ func valid_ids() -> Array[StringName]:
 	for id in Upgrades.all_ids():
 		if is_valid(id):
 			ids.append(id)
+	for e in WeaponCatalog.EVOLUTIONS:
+		if is_valid(e.id):
+			ids.append(e.id)
 	return ids
 
 
@@ -77,6 +85,8 @@ func valid_ids() -> Array[StringName]:
 ## a vida está baixa.
 func weight_of(id: StringName) -> float:
 	match kind_of(id):
+		KIND_EVOLUTION:
+			return 5.0  # quase sempre aparece quando fica disponível
 		KIND_NEW_WEAPON:
 			return 2.2 if level_ups_seen < 6 else 1.4
 		KIND_WEAPON_UP:
@@ -176,6 +186,8 @@ func banish(
 func apply(id: StringName, p_player: Player, bolt: AutoWeapon) -> bool:
 	if not is_valid(id):
 		return false
+	if kind_of(id) == KIND_EVOLUTION:
+		return arsenal.evolve(id, upgrades)
 	if WeaponCatalog.is_weapon(id):
 		return arsenal.advance(id)
 	return upgrades.apply(id, p_player, bolt)
@@ -184,6 +196,9 @@ func apply(id: StringName, p_player: Player, bolt: AutoWeapon) -> bool:
 ## Título curto do tipo de oferta, para o cartão.
 func tag_of(id: StringName) -> String:
 	match kind_of(id):
+		KIND_EVOLUTION:
+			var weapon: StringName = WeaponCatalog.evolution(id).weapon
+			return "EVOLUÇÃO · %s" % WeaponCatalog.definition(weapon).name
 		KIND_NEW_WEAPON:
 			return "NOVA ARMA"
 		KIND_WEAPON_UP:
@@ -192,18 +207,36 @@ func tag_of(id: StringName) -> String:
 
 
 func name_of(id: StringName) -> String:
+	if kind_of(id) == KIND_EVOLUTION:
+		return WeaponCatalog.evolution(id).name
 	if WeaponCatalog.is_weapon(id):
 		return WeaponCatalog.definition(id).name
 	return Upgrades.definition(id).name
 
 
 func description_of(id: StringName) -> String:
+	if kind_of(id) == KIND_EVOLUTION:
+		return WeaponCatalog.evolution(id).description
 	if WeaponCatalog.is_weapon(id):
 		return WeaponCatalog.definition(id).description
 	return Upgrades.definition(id).description
 
 
 func detail_of(id: StringName) -> String:
+	if kind_of(id) == KIND_EVOLUTION:
+		return "Requisitos cumpridos: " + requirement_text(id)
 	if WeaponCatalog.is_weapon(id):
 		return WeaponCatalog.describe_change(id, arsenal.level(id))
 	return upgrades.describe_next(id)
+
+
+## "Aura de brasas Nv. 5 + Cadência 2", por exemplo.
+static func requirement_text(evolution_id: StringName) -> String:
+	var e := WeaponCatalog.evolution(evolution_id)
+	var parts: Array[String] = []
+	var weapon: Dictionary = WeaponCatalog.definition(e.weapon)
+	if int(e.weapon_level) > 1:
+		parts.append("%s Nv. %d" % [weapon.name, int(e.weapon_level)])
+	for upgrade_id: StringName in e.requires:
+		parts.append("%s %d" % [Upgrades.definition(upgrade_id).name, int(e.requires[upgrade_id])])
+	return " + ".join(parts)

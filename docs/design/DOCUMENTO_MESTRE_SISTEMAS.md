@@ -4,12 +4,14 @@
 
 | | |
 |---|---|
-| **Versão do documento** | 0.1 |
+| **Versão do documento** | 0.1.1 (estados atualizados com a etapa "O Despertar de Eudora", PR #10) |
 | **Data de início** | 26/11/2026 |
 | **Data desta revisão** | 26/11/2026 |
 | **Status geral** | `EM_ELABORAÇÃO` |
 | **Versão do jogo inventariada** | 0.3-alpha (`main` em `3d9102c`, com o PR #5 integrado em `51e7e5d`) |
 | **Catálogos** | [`catalogos/README.md`](catalogos/README.md) · modelo de entrada em [`catalogos/MODELO_ENTRADA.md`](catalogos/MODELO_ENTRADA.md) |
+
+> **Etapa 3, "O Despertar de Eudora" (0.4-alpha, PR #10, em revisão).** O código dessa etapa está completo na branch `feat/despertar-de-eudora-04` e passou nos testes automáticos, mas **ainda não está na `main`**. Por isso os elementos novos aparecem como `EM_DESENVOLVIMENTO (PR #10)`: viram `IMPLEMENTADO` com o merge. As mecânicas novas são **propostas experimentais** (`PROPOSTO_NAO_APROVADO (experimental)`): o proprietário pediu a evolução do núcleo de jogo, mas cada mecânica concreta só vira `APROVADO` quando ele aprovar o PR ou disser que fica. A personalização mobile já era `APROVADO` (seção 7.2). Nada está `VALIDADO`: não houve teste com pessoas nem em celular físico.
 
 > **Leia antes de usar.** Este documento organiza o design e o planejamento. Ele **não autoriza** implementar nada (seção 37). A lista de entregas aprovadas é o [`docs/ROADMAP.md`](../ROADMAP.md). O funcionamento real do jogo está no código e em [`docs/TECNICO.md`](../TECNICO.md). Quando este documento e o código discordarem, **o código vale** e este documento deve ser corrigido.
 
@@ -264,11 +266,23 @@ Regras de estudo:
 
 - Todo dano a inimigos passa por `EnemyManager.damage(índice, dano, arma)`: desconta a resistência, registra a vida realmente tirada e a arma de origem, faz o inimigo piscar e remove quem morre.
 - O jogador recebe dano de contato (soma de até 5 inimigos encostados, por segundo), projéteis, explosões e ataques do chefe. A esquiva bloqueia todos.
-- Não há crítico, tipos de dano nem estados.
+- Não há crítico nem tipos de dano.
+- **0.4 (PR #10):** a ordem do dano passou a ser: armadura do elite Blindado (−30%), escudo do Tecelão (−40%), chefe exposto (+50%), registro e morte. Golpes no chefe e em elites mostram um número de dano.
 
-### 6.3. Estados de combate e reações (todos `PROPOSTO_NAO_APROVADO` · `NÃO_IMPLEMENTADO`)
+### 6.3. Estados de combate e reações
 
-Estados a estudar: crítico, atordoamento, lentidão, congelamento, queimadura, envenenamento, sangramento, choque, vulnerabilidade, medo, enraizamento, maldição, marcação, silêncio, resistência temporária.
+**Estados em desenvolvimento na 0.4 (PR #10).** Guardados em arrays do `EnemyManager`, sem nós por inimigo, como pede a regra abaixo:
+
+| Estado | D | I | V | Regra (código) | Contrajogo e leitura |
+|---|---|---|---|---|---|
+| Queimadura | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | Coroa de cinzas: 40% do dano do pulso por segundo, por 3 s; renova, não acumula | inimigo alaranjado |
+| Lentidão | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | Vendaval de lâminas: velocidade ×0,55 por 1,5 s; o chefe é imune | inimigo azulado |
+| Empurrão | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | Raio: 1,2 m/s por acerto; Vendaval: 4 m/s para fora; Couraçado e elites ×0,3; o chefe é imune | some em ~0,1 s |
+| Escudo | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | Tecelão: −40% de dano em quem está a até 3,5 m dele; não protege a si mesmo nem o chefe | inimigo ciano; derrubar o Tecelão desfaz |
+| Vulnerabilidade | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | chefe atordoado 2 s depois da investida: +50% de dano | chefe pisca branco e aviso "Ponto fraco exposto" |
+| Reação queimado + raio | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | o Raio em cadeia salta para 3 alvos (em vez de 2), com +25%, se o primeiro estiver queimando | sinergia Raio + Aura |
+
+Estados ainda só a estudar (`PROPOSTO_NAO_APROVADO` · `NÃO_IMPLEMENTADO`): crítico, atordoamento, lentidão, congelamento, queimadura, envenenamento, sangramento, choque, vulnerabilidade, medo, enraizamento, maldição, marcação, silêncio, resistência temporária.
 
 Elementos a estudar: fogo, gelo, eletricidade, veneno, terra, vento, luz, sombra e arcano. A Aura **de brasas** e o Raio **arcano** têm nomes elementais, mas **não** existe sistema de elementos no código: são só nomes.
 
@@ -292,6 +306,10 @@ Exigências para qualquer estado ou reação futura: regra clara de aplicação 
 | Esquiva por duplo toque com direção | `APROVADO` | `IMPLEMENTADO` | `TESTADO` | toque ≤ 0,22 s e < 28 de arrasto; 2º toque em ≤ 0,32 s a ≤ 140; peteleco de 40 em 0,3 s dá a direção |
 | Esquiva: efeito | `APROVADO` | `IMPLEMENTADO` | `TESTADO` | 4 m em 0,18 s; 0,32 s invulnerável; recarga 1,4 s |
 | Retomada do joystick depois da pausa | `APROVADO` | `IMPLEMENTADO` | `TESTADO` | o dedo que ficou na tela volta a controlar; se foi solto, neutro (corrigido na manutenção pós-0.3) |
+| Joystick fixo (opção) | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | o toque pode começar em qualquer lugar, mas o centro fica parado no lado do polegar (x 72% destro, 28% canhoto) e na altura escolhida (66%, 76% ou 84% da tela) |
+| Tamanho do joystick | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | pequeno ×0,8 · médio ×1,0 · grande ×1,25 do raio de 90 (limites seguros: 72 a 112,5) |
+| Botão de pausa "II" | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | 76 × 64, no canto de cima, do lado oposto ao polegar; tocar nele não liga o joystick; Esc ou P no computador |
+| Tremor de câmera | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | explosões, dano forte, chefe, elites; pode ser desligado |
 | Colisão com cenário | `PROPOSTO_NAO_APROVADO` | `NÃO_IMPLEMENTADO` | — | não há obstáculos |
 | Habilidades de movimento além da esquiva | `PROPOSTO_NAO_APROVADO` | `NÃO_IMPLEMENTADO` | — | — |
 
@@ -303,16 +321,14 @@ Exigências para qualquer estado ou reação futura: regra clara de aplicação 
 | Joystick flutuante como controle central | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 | Ataques automáticos | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 | Esquiva por duplo toque com direção | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
-| Layout para destros e canhotos | `APROVADO` | `NÃO_IMPLEMENTADO` | `NÃO_TESTADO` |
-| Espelhamento dos controles | `APROVADO` | `NÃO_IMPLEMENTADO` | `NÃO_TESTADO` |
-| Persistência da preferência | `APROVADO` | `NÃO_IMPLEMENTADO` | `NÃO_TESTADO` |
-| Ajuste de posição e tamanho do joystick, dentro de limites seguros | `APROVADO` | `NÃO_IMPLEMENTADO` | `NÃO_TESTADO` |
+| Layout para destros e canhotos | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` |
+| Espelhamento dos controles | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` |
+| Persistência da preferência | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` |
+| Ajuste de posição e tamanho do joystick, dentro de limites seguros | `APROVADO` | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` |
 | Ações contextuais para reduzir botões | `APROVADO` | `NÃO_IMPLEMENTADO` | `NÃO_TESTADO` |
 | Compatibilidade com teclado e PC | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 
-Observação: o joystick atual flutua em qualquer ponto da tela; "posição" no ajuste aprovado se refere a uma área permitida para o toque inicial, a definir. A personalização **não** faz parte desta etapa de manutenção.
-
-**Como implementar (proposta):** configurações num arquivo próprio (`user://configuracoes.json`, versionado como o save); os parâmetros já são `@export` em `FloatingJoystick` (`radius`, `dead_zone`, `follow_finger`, `analog`). **Testes:** preferência salva e restaurada; espelhamento troca a área de toque; limites mínimo e máximo do tamanho; o duplo toque continua igual em qualquer tamanho.
+**Como ficou (0.4, PR #10):** tela de pausa com as configurações, salvas em `user://configuracoes.json` (versão 1, escrita em arquivo temporário e renomeada; arquivo inválido vira cópia `.corrompido` e valores inválidos voltam ao padrão). Opções: mão (destro/canhoto), joystick (flutuante/fixo), tamanho, altura (só no modo fixo), som, tremor e números de dano. O modo canhoto espelha o botão de pausa, o texto de estado, o indicador de esquiva e o lugar do joystick fixo. "Posição" virou a escolha entre flutuante (qualquer lugar) e fixo (lado do polegar, 3 alturas). **Testado:** Godot (`tests/suites/despertar.gd`) e Playwright nos 3 perfis (pausa pelo toque, troca para canhoto, retomada). **Não testado em celular físico.** Ações contextuais continuam não implementadas: o jogo segue sem botões de ataque e de esquiva.
 
 ---
 
@@ -406,7 +422,16 @@ Risco a evitar: três sistemas (relíquia, runa, catalisador) com funções sobr
 |---|---|---|---|---|
 | Sinergia arma + passivo | `APROVADO` | `IMPLEMENTADO` | `TESTADO` | Poder arcano em todas as armas; Cadência no Raio e na Aura; Campo de ruptura no Raio (+20%) e na Aura (+10%) |
 | Evolução por nível | `APROVADO` | `IMPLEMENTADO` | `TESTADO` | Aura e Lâmina, níveis 1–5 |
-| Evolução que transforma a arma | `PROPOSTO_NAO_APROVADO` | `NÃO_IMPLEMENTADO` | — | — |
+| Evolução que transforma a arma | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | carta dourada "EVOLUÇÃO" no level-up quando a arma e as passivas cumprem os requisitos; uma vez por arma (detalhes abaixo) |
+| Melhoria de risco (Pacto do eco) | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | +25% de dano e +15% de XP por nível, mas +20% de dano recebido; até 3 |
+
+**Evoluções da 0.4 (PR #10):**
+
+| Evolução | Arma e requisito | Efeito | DPS medido (`--modo=dps`, mesma build sem → com) |
+|---|---|---|---|
+| Raio em cadeia | Raio + Projétil adicional 2 + Poder arcano 3 | cada acerto salta para 2 vizinhos a até 4 m com 60% do dano (3 vizinhos e +25% se o alvo queima) | 73/s → 161/s |
+| Coroa de cinzas | Aura 5 + Cadência 2 | +15% de raio; o pulso queima (40% do dano por segundo, 3 s) | 204/s → 311/s |
+| Vendaval de lâminas | Lâmina 5 + Passos ligeiros 2 | +2 lâminas (até 6); o raio "respira" ±0,9 m; o corte deixa lento e empurra | 71/s → 87/s |
 
 ### 12.2. A estudar (`PROPOSTO_NAO_APROVADO`)
 
@@ -437,6 +462,14 @@ Ferramenta existente: `tests/balance_simulation.gd` (`--modo=dps` compara cargas
 
 Comportamentos existentes: perseguição (todos), interceptação (Espreitador), manter distância + ataque à distância com aviso (Lançador), aproximação + explosão com aviso (Volátil), separação entre inimigos, reaparecimento quando ficam longe demais.
 
+### 13.1.1. Em desenvolvimento na 0.4 (PR #10)
+
+| Arquétipo | Inimigo | D | I | V | Regra (código) |
+|---|---|---|---|---|---|
+| Suporte | Tecelão | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | vida ×2, mantém 7–9,5 m do jogador; escudo de −40% em quem está a até 3,5 m; surge a partir dos 4:30 (peso até 0,07) |
+| Controlador | Semeador | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | vida ×1,6; a cada 4,5 s deixa uma poça de cinzas (raio 1,6 m, aviso de 0,6 s, 12 de dano por segundo, 5 s); surge a partir dos 5:30 (peso até 0,09) |
+| Elite | Veloz, Blindado, Gerador | `PROPOSTO_NAO_APROVADO` (experimental) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` | vida ×5, tamanho ×1,45, contato ×1,5, brilho dourado; Veloz ×1,5 de velocidade; Blindado −30% de dano; Gerador chama 2 Errantes a cada 7 s. Recompensa: orbe de 12, cura de 15 e aviso na tela |
+
 ### 13.2. A estudar (`PROPOSTO_NAO_APROVADO` · `NÃO_IMPLEMENTADO`)
 
 - **Arquétipos:** voador · invocador · suporte · curandeiro · controlador · caçador · emboscador · defensor · elite · especial.
@@ -464,6 +497,8 @@ Ficha completa no [catálogo de chefes](catalogos/14-chefes.md): vida 3.800, inv
 - **Ficha obrigatória:** identidade, história, aparência, barra de vida, ataques, fases, habilidades, vulnerabilidades, resistências, indicadores visuais, recompensas, condições de surgimento.
 - **Padrões:** mudanças de comportamento, invocações, áreas perigosas, ataques direcionados, janelas de vulnerabilidade, mudanças de arena, enfurecimento.
 
+**0.4 (PR #10):** o Sentinela ganhou uma **janela de vulnerabilidade** (atordoado 2 s depois de cada investida, recebendo +50%) e um 4º ataque, a **Prisão de ecos** (anel de 10 círculos a 3,6 m do jogador com uma saída de 2 círculos; aviso de 1,3 s; 26 de dano em quem fica em cima). Na fase 2, o primeiro reforço é um Tecelão. Todos `PROPOSTO_NAO_APROVADO` (experimental) · `EM_DESENVOLVIMENTO` (PR #10) · `TESTADO`. No piloto automático (`--modo=chefe`, sementes 1–3) o chefe foi derrotado nas 3 rodadas (166 a 264 s); na 0.3 o piloto não o derrotava. **Precisa de teste com pessoas.**
+
 **Princípio:** chefes exigem movimentação, leitura de padrões e decisões de build; vida alta não substitui mecânica. O Sentinela segue isso (todos os ataques avisados e uma janela de recuperação), mas o tempo para derrotá-lo ainda não foi medido com pessoas.
 
 ---
@@ -485,7 +520,15 @@ O roadmap aprova **"1 fase com arte e som finais"** para a vertical slice (`APRO
 
 ## 16. Eventos, missões e desafios
 
-**Estado:** nenhum evento dinâmico nem missão existe. O único marco da partida é o encontro final. Tudo `PROPOSTO_NAO_APROVADO` · `NÃO_IMPLEMENTADO`.
+**Estado:** a 0.4 (PR #10) traz um **diretor de eventos** (`scripts/event_director.gd`) com três eventos, todos `PROPOSTO_NAO_APROVADO` (experimental) · `EM_DESENVOLVIMENTO` (PR #10) · `TESTADO`. Eles param no encontro final e quando as hordas automáticas estão desligadas.
+
+| Evento | Quando | Regra |
+|---|---|---|
+| Elite | 2:00 e depois a cada 1:15 | um elite de um tipo já presente, na borda da tela, com aviso |
+| Fenda do Eco | 2:30 e depois a cada 2:45 | círculo de 2,4 m perto do jogador; ficar 6 s dentro (no total) num prazo de 25 s dá um nível de escolha e cura de 20%; enquanto o jogador está dentro, as hordas dobram |
+| Maré e Calmaria | 4:00 e depois a cada 3:00 | 15 s de hordas ×2,5, seguidos de 10 s de hordas ×0,25 |
+
+Missões continuam inexistentes. Lista a estudar (`PROPOSTO_NAO_APROVADO` · `NÃO_IMPLEMENTADO`):
 
 - **Eventos dinâmicos:** hordas especiais · proteção de objetivos · eliminação de alvos · sobrevivência · caça a elites · defesa de estruturas · rupturas dimensionais · invasões · escoltas · tesouros · arenas temporárias.
 - **Missões:** principais · secundárias · diárias e semanais **só se justificadas** (o projeto não tem servidor; nada pode depender de serviço externo) · combate · descoberta · personagem · facção · secretas.
@@ -657,12 +700,12 @@ A estudar: conquistas, marcos, maestria, coleções, chefes derrotados, builds d
 | Partida (HUD) | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 | Level-up | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 | Resultados (com loja permanente) | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
-| Configurações | `APROVADO` (necessária para destro/canhoto e joystick) | `NÃO_IMPLEMENTADO` | — |
+| Configurações (pausa) | `APROVADO` (necessária para destro/canhoto e joystick) | `EM_DESENVOLVIMENTO` (PR #10) | `TESTADO` |
 | Menu principal, seleção de personagem, seleção de estágio, base, inventário, equipamentos, habilidades, coleções, bestiário, codex, fabricação, missões | `PROPOSTO_NAO_APROVADO` | `NÃO_IMPLEMENTADO` | — |
 
 ### 27.2. HUD atual
 
-Tempo e abates; barra de vida; nível e barra de XP; linha das armas com níveis; barra do chefe (só no encontro); avisos no meio da tela; indicador "Esquiva pronta"; FPS e número de inimigos. Na tela deitada, as barras ficam numa coluna central de até 720 de largura. **Não existem:** efeitos/estados, objetivos e recursos no HUD.
+Tempo e abates; barra de vida; nível e barra de XP; linha das armas com níveis (★ e o nome da evolução, quando evoluída); barra do chefe (só no encontro); avisos no meio da tela; indicador "Esquiva pronta"; FPS e número de inimigos. **0.4 (PR #10):** botão de pausa "II" e uma linha de evento (progresso da Fenda do Eco, Maré, Calmaria). Na tela deitada, as barras ficam numa coluna central de até 720 de largura. **Não existem:** efeitos/estados, objetivos e recursos no HUD.
 
 ### 27.3. Mobile e desktop
 
@@ -680,7 +723,9 @@ A estudar (`PROPOSTO_NAO_APROVADO` · `NÃO_IMPLEMENTADO`): escala de interface,
 
 ## 29. Áudio e identidade sensorial
 
-**Estado:** o jogo **não tem som**. Os efeitos visuais são provisórios: piscada branca ao levar dano, brilho dos inimigos antes de atacar, círculos e faixas de aviso, anel da esquiva, onda da Aura, rastro da Lâmina. Arte e som finais: `APROVADO` para a fase 2 ("1 fase com arte e som finais") · `NÃO_IMPLEMENTADO`.
+**0.4 (PR #10):** som **procedural** (gerado no código ao abrir o jogo, sem arquivos de áudio nem serviços externos; 12 sons: golpe, abate, orbe, dano, explosão, esquiva, nível, alerta, evolução, fenda, chefe, vitória; 10 vozes, com intervalo mínimo por som para não saturar), números de dano só em golpes no chefe e em elites (até 24 ao mesmo tempo), estouro colorido no chão em cada abate (até 6 por quadro) e tremor de câmera. Tudo `PROPOSTO_NAO_APROVADO` (experimental) · `EM_DESENVOLVIMENTO` (PR #10) · `TESTADO`, com opções para desligar som, tremor e números. **O som não foi ouvido por uma pessoa** nesta etapa: só a geração e a reprodução foram conferidas por teste.
+
+**Estado até a 0.3:** o jogo **não tinha som**. Os efeitos visuais são provisórios: piscada branca ao levar dano, brilho dos inimigos antes de atacar, círculos e faixas de aviso, anel da esquiva, onda da Aura, rastro da Lâmina. Arte e som finais: `APROVADO` para a fase 2 ("1 fase com arte e som finais") · `NÃO_IMPLEMENTADO`.
 
 A estudar (`PROPOSTO_NAO_APROVADO`): música por região, chefes e combate; sons de habilidades, armas, impactos, coleta, evoluções, alertas e interface; ambiência; identidade elemental, de raridade, de dano, de perigo e de estados. **Regra:** evitar poluição visual e perda de legibilidade; com 300 inimigos na tela, cada efeito novo precisa caber no orçamento de desempenho.
 
@@ -870,7 +915,8 @@ Nesta versão **nenhuma fonte foi consultada**: o acesso às páginas pedia uma 
 
 | Versão | Conteúdo | Situação |
 |---|---|---|
-| **0.1** | estrutura geral das 38 áreas, inventário da 0.3-alpha com os três estados, índice dos 30 catálogos, modelo de entrada, 9 catálogos com conteúdo comprovado | **esta versão** (26/11/2026) |
+| 0.1 | estrutura geral das 38 áreas, inventário da 0.3-alpha com os três estados, índice dos 30 catálogos, modelo de entrada, 9 catálogos com conteúdo comprovado | 26/11/2026 |
+| **0.1.1** | estados atualizados com a etapa "O Despertar de Eudora" (PR #10): estados de combate, evoluções, Pacto do eco, Tecelão, Semeador, elites, chefe, eventos, configurações mobile, som e retorno visual | **esta versão** (26/11/2026) |
 | 0.2 | catálogos detalhados e matrizes de relações | planejada |
 | 0.3 | regras completas de sistemas e dados | planejada |
 | 0.4 | conteúdo original e balanceamento inicial | planejada |

@@ -25,3 +25,22 @@ O peso de cada tipo cresce de 0 até o máximo depois da entrada (Espreitador em
 Regras gerais: até 300 inimigos (todos os tipos); dano de contato de até 5 inimigos ao mesmo tempo; inimigos longe demais reaparecem fora da tela; todos piscam em branco ao levar dano. No encontro final, novos Lançadores não nascem.
 
 Dependências: combate, `GroundEffects` (avisos), `EnemyProjectiles` (Lançador), progressão (XP), `RunStats`.
+
+## Em desenvolvimento na 0.4-alpha (PR #10, ainda não na `main`)
+
+**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `EM_DESENVOLVIMENTO` (PR #10) · **V** `TESTADO` (`tests/suites/despertar.gd`; sem teste com pessoas).
+
+| Tipo (número) | Nome | Arquétipo | Vida | Velocidade | Contato | XP | Entrada | Peso máximo | Comportamento | Referência visual |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 6 | Tecelão | suporte | 2× | 1,9 m/s | 5/s | 3 | 4:30 | 0,07 | fica entre 7 e 9,5 m; dá escudo de −40% a quem está a até 3,5 m dele (não a si nem ao chefe) | pilar ciano; protegidos ficam ciano |
+| 7 | Semeador | controlador | 1,6× | 2,1 m/s | 6/s | 3 | 5:30 | 0,09 | persegue; a cada 4,5 s deixa uma poça de cinzas: raio 1,6 m, 0,6 s de aviso, 12/s por 5 s (até 20 poças) | monte verde-oliva |
+
+### Elites
+
+Um elite é um inimigo comum com um **modificador**: vida ×5, tamanho ×1,45, contato ×1,5, brilho dourado pulsante, empurrão ×0,3. Recompensa: orbe de 12 de XP, cura de 15 e aviso "X derrotado!". Contados em `RunStats.elites_killed`. O diretor de eventos cria um aos 2:00 e depois a cada 1:15.
+
+| Modificador | Efeito | Contrajogo |
+|---|---|---|
+| Veloz | velocidade ×1,5 | esquiva; armas de área |
+| Blindado | −30% de dano recebido (soma-se à resistência, até 75%) | foco de dano; o empurrão quase não o afeta |
+| Gerador | chama 2 Errantes a cada 7 s | derrubar cedo |

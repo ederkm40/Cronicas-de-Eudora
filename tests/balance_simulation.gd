@@ -24,6 +24,19 @@ const DPS_LOADOUTS := [
 	["Raio + Lâmina 3", {&"lamina_orbital": 3}],
 	["Raio + Lâmina 5", {&"lamina_orbital": 5}],
 	["Raio + Aura 5 + Lâmina 5", {&"aura_de_brasas": 5, &"lamina_orbital": 5}],
+	# Evoluções (0.4): a mesma build com e sem a evolução, para medir só o ganho dela.
+	["Raio + Proj. 2 + Poder 3", {&"projetil_adicional": 2, &"poder_arcano": 3}],
+	[
+		"Raio em cadeia",
+		{&"projetil_adicional": 2, &"poder_arcano": 3, &"raio_em_cadeia": 1},
+	],
+	["Aura 5 + Cadência 2", {&"aura_de_brasas": 5, &"cadencia": 2}],
+	["Coroa de cinzas", {&"aura_de_brasas": 5, &"cadencia": 2, &"coroa_de_cinzas": 1}],
+	["Lâmina 5 + Passos 2", {&"lamina_orbital": 5, &"passos_ligeiros": 2}],
+	[
+		"Vendaval de lâminas",
+		{&"lamina_orbital": 5, &"passos_ligeiros": 2, &"vendaval_de_laminas": 1},
+	],
 ]
 ## Build típica de 10 minutos para o modo chefe (níveis medidos no modo partida).
 const BOSS_BUILD := {
@@ -37,6 +50,9 @@ const BOSS_BUILD := {
 	&"passos_ligeiros": 1,
 }
 const PRIORITY := [
+	&"raio_em_cadeia",
+	&"coroa_de_cinzas",
+	&"vendaval_de_laminas",
 	&"aura_de_brasas",
 	&"lamina_orbital",
 	&"poder_arcano",
@@ -45,6 +61,7 @@ const PRIORITY := [
 	&"nucleo_vital",
 	&"passos_ligeiros",
 	&"campo_de_ruptura",
+	&"pacto_do_eco",
 ]
 
 var game: Node
@@ -77,6 +94,7 @@ func _initialize() -> void:
 		elif arg == "--sem-esquiva":
 			_use_dodge = false
 	MetaProgress.path = "user://teste_balanceamento.json"
+	GameSettings.path = "user://teste_config_simulacao.json"
 	if FileAccess.file_exists(MetaProgress.path):
 		DirAccess.remove_absolute(MetaProgress.path)
 	seed(_seed)
@@ -327,6 +345,17 @@ func _report_match() -> bool:
 		if game.upgrades.stacks(id) > 0:
 			upgrades.append("%s %d" % [id, game.upgrades.stacks(id)])
 	lines.append("Melhorias: " + ", ".join(upgrades))
+	var events := (
+		"Eventos: elites %d · fendas %d/%d · marés %d · evoluções %d"
+		% [
+			stats.elites_killed,
+			stats.rifts_completed,
+			stats.rifts_completed + stats.rifts_failed,
+			stats.tides,
+			stats.evolutions,
+		]
+	)
+	lines.append(events)
 	if stats.boss_spawned_at >= 0.0:
 		lines.append(
 			(

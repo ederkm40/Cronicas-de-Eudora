@@ -10,8 +10,10 @@ const SUITES := [
 	"res://tests/suites/inimigos_e_chefe.gd",
 	"res://tests/suites/esquiva_e_encerramento.gd",
 	"res://tests/suites/save_e_joystick.gd",
+	"res://tests/suites/despertar.gd",
 ]
 const TEST_SAVE := "user://teste_progresso.json"
+const TEST_SETTINGS := "user://teste_configuracoes.json"
 
 var game: Node
 var _failures: Array[String] = []
@@ -22,6 +24,7 @@ var _checks := 0
 func _initialize() -> void:
 	# Progressão permanente num arquivo só dos testes, apagado antes de cada partida.
 	MetaProgress.path = TEST_SAVE
+	GameSettings.path = TEST_SETTINGS
 	_run_all.call_deferred()
 
 

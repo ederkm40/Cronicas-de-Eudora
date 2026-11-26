@@ -1,6 +1,6 @@
 # Documentação técnica
 
-Estado de referência: versão 0.3-alpha "grande expansão do combate" (integrada no `main` pelo PR #5), com a manutenção pós-0.3 (builds de produção e QA, save validado, retomada do joystick). Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
+Estado de referência: versão 0.3-alpha "grande expansão do combate" (integrada no `main` pelo PR #5), com a manutenção pós-0.3 (builds de produção e QA, save validado, retomada do joystick). **A seção "0.4-alpha: O Despertar de Eudora" descreve o que o PR #10 acrescenta (em revisão, ainda não na `main`).** Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
 
 ## Visão geral
 
@@ -19,12 +19,18 @@ Main (main.gd)
 ├── AuraWeapon (aura_weapon.gd)            Aura de brasas: 1 malha com shader
 ├── OrbitBlades (orbit_blades.gd)          Lâmina orbital: 1 MultiMesh (lâminas + rastro) e o anel da órbita
 ├── XpOrbManager (xp_orbs.gd)              orbes de experiência: arrays + 1 MultiMesh
+├── HazardZones (hazard_zones.gd)          0.4: poças de cinzas do Semeador (arrays; desenho por GroundEffects)
+├── EventDirector (event_director.gd)      0.4: elites, Fenda do Eco, Maré e Calmaria
+├── SoundBank (sound_bank.gd)              0.4: sons gerados no código, 10 vozes
+├── CombatFeedback (combat_feedback.gd)    0.4: números de dano (24 Label3D reaproveitados)
+├── GameFeel (game_feel.gd)                0.4: liga sinais a som, tremor, números e estouros
 ├── (web_bridge.gd)                      ponte de testes: só na build "Web QA" (ver Builds)
 └── CanvasLayer
     ├── FloatingJoystick                   joystick flutuante e duplo toque (esquiva)
     ├── Hud                                tempo, abates, vida, XP, armas, chefe, avisos, esquiva
     ├── LevelUpPanel                       ofertas do level-up, troca e bloqueio (funciona pausado)
-    └── ResultsScreen                      vitória/derrota, resumo e loja permanente (funciona pausado)
+    ├── ResultsScreen                      vitória/derrota, resumo e loja permanente (funciona pausado)
+    └── PauseMenu                          0.4: pausa com as configurações (funciona pausado)
 
 Objetos sem nó (RefCounted):
   Progression (progression.gd)        XP, nível, níveis pendentes
@@ -35,6 +41,7 @@ Objetos sem nó (RefCounted):
   EnemyTypes (enemy_types.gd)         atributos dos tipos de inimigo e a mistura por tempo
   RunStats (run_stats.gd)             estatísticas reais da partida
   MetaProgress (meta_progress.gd)     Ecos e melhorias permanentes, salvos em user://
+  GameSettings (game_settings.gd)     0.4: configurações do jogador, salvas em user://configuracoes.json
 ```
 
 ## Ciclo da partida
@@ -155,14 +162,14 @@ Medições: ver `docs/versoes/0.3-alpha/RELATORIO.md`. São tempos de CPU do ser
 
 | Arquivo | O que cobre |
 |---|---|
-| `tests/run_tests.gd` + `tests/suites/` | 51 testes em 5 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (7); esquiva, encerramento e progressão permanente (9); save e joystick (10) |
-| `tests/smoke_test.gd` | 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa |
+| `tests/run_tests.gd` + `tests/suites/` | 71 testes em 6 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (7); esquiva, encerramento e progressão permanente (9); save e joystick (10); despertar (20, 0.4) |
+| `tests/smoke_test.gd` | 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa; 0.4: elite e fenda forçados, pausa por Esc, sons e estouros |
 | `tests/long_simulation.gd` | partida longa (`--segundos=N`, `--invulneravel`): tempo por quadro, máximos, nós e memória, com reinícios |
 | `tests/balance_simulation.gd` | **não roda no CI**: comparação de armas (`--modo=dps`), partida com piloto (`--modo=partida`) e encontro final (`--modo=chefe`) |
 
 No CI, os scripts do Godot rodam por `tools/ci/rodar_godot.sh`, que **falha se aparecer erro de script no log** (o Godot nem sempre muda o código de saída quando um script quebra no meio).
 
-Ganchos de teste: `EnemyManager.spawning_enabled`, `spawn_at()`, `Player.invulnerable`, `scripted_input`, `Main.start_encounter()`, `Main.apply_offer()`, `Main.encounter_time` e `MetaProgress.path` (os testes usam arquivos próprios).
+Ganchos de teste: `EnemyManager.spawning_enabled`, `spawn_at()`, `Player.invulnerable`, `scripted_input`, `Main.start_encounter()`, `Main.apply_offer()`, `Main.encounter_time`, `MetaProgress.path` e `GameSettings.path` (os testes usam arquivos próprios).
 
 ### Verificação estática do GDScript (gdtoolkit 4.5.0)
 
@@ -242,11 +249,79 @@ Ferramentas de publicação (Python 3 e shell, sem dependências externas):
 - `docs/CHANGELOG.md`, `docs/versoes/*/RELATORIO.md` e `docs/decisoes/*.md` aparecem como páginas somente leitura do painel de desenvolvimento.
 - `docs/`, `tools/` e `wiki-src/` têm `.gdignore`, então não entram no `.pck` do jogo.
 
+## 0.4-alpha: O Despertar de Eudora (PR #10, em revisão)
+
+### Dano e estados nos inimigos
+
+`EnemyManager.damage()` chama `_hurt(índice, dano, arma, piscar)`. Ordem: armadura do elite Blindado (+0,3 de resistência, até 0,75) → escudo do Tecelão (×0,6) → chefe exposto (×1,5) → `RunStats` → morte. Golpes no chefe e em elites emitem `important_hit(posição, dano, exposto)`; mortes de elites emitem `elite_killed(posição, tipo, modificador)`.
+
+Estados por inimigo, em arrays paralelos (trocados com o último na remoção, como os outros):
+
+| Array | Estado | Origem | Regra |
+|---|---|---|---|
+| `_burn`, `_burn_dps` | queimadura | Coroa de cinzas | dano por segundo sem piscar, fonte `aura_de_brasas`; renova o tempo e fica com o maior dano |
+| `_slow` | lentidão | Vendaval de lâminas | velocidade ×0,55 enquanto durar; o chefe é imune |
+| `_knock` | empurrão | Raio, Vendaval | velocidade extra somada ao movimento, cai ×9/s; Couraçado e elites ×0,3; o chefe é imune |
+| `_shielded` | escudo | Tecelão | recalculado a cada quadro (`_update_weavers`): quem está a até `weaver_radius` (3,5 m) de um Tecelão; nem Tecelões nem o chefe |
+| `_elite` | modificador | `spawn_at(..., elite)` | 0 nenhum · 1 Veloz · 2 Blindado · 3 Gerador |
+
+`apply_effects(índice, queimadura_por_s, segundos, lentidão_s, empurrão)` aplica estados; `status_of(índice)` devolve as marcas `STATUS_BURN | SLOW | SHIELD | ELITE` (usadas pelos testes e pela cor). Cor por instância: elite dourado pulsante, queimando laranja, lento azul, com escudo ciano, chefe exposto branco pulsante.
+
+### Tipos novos
+
+`EnemyTypes`: `TECELAO` (6) e `SEMEADOR` (7), `COUNT` = 8. Tecelão: vida ×2, 1,9 m/s, contato 5, XP 3, fica entre 7 e 9,5 m (`_keep_distance`). Semeador: vida ×1,6, 2,1 m/s, contato 6, XP 3; a cada `sower_interval` (4,5 s) chama `HazardZones.add()`. `HazardZones`: até 20 poças, raio 1,6 m, 5 s, ativas depois de 0,6 s, 12 de dano por segundo no jogador (fonte "Semeador").
+
+Elites: vida ×`ELITE_HP` (5), escala ×1,45, contato ×1,5; Veloz ×1,5 de velocidade; Gerador chama 2 Errantes a cada `elite_spawner_interval` (7 s). Recompensa (em `Main`): orbe de 12, cura de 15, `stats.elites_killed`.
+
+### Evoluções
+
+`WeaponCatalog.EVOLUTIONS` (id, arma, nome, descrição, nível da arma, passivas exigidas). `Arsenal.can_evolve()` / `evolve()` / `is_evolved()`. `LevelUpOffers` inclui as evoluções disponíveis em `valid_ids()` com peso 5 (`KIND_EVOLUTION`); o `LevelUpPanel` usa borda dourada. `Main._sync_weapons()` liga `AutoWeapon.chain_enabled`, `AuraWeapon.evolved` e `OrbitBlades.evolved`.
+
+| Evolução | Requisitos | Código |
+|---|---|---|
+| Raio em cadeia | Raio + Projétil adicional 2 + Poder arcano 3 | `AutoWeapon._strike()`: `chain_targets` 2 vizinhos a até `chain_range` 4 m, `chain_damage_share` 0,6; 3 e ×1,25 se o alvo queimava |
+| Coroa de cinzas | Aura 5 + Cadência 2 | raio ×1,15; cada pulso aplica queimadura de 40% do dano por 3 s; `crown` no shader |
+| Vendaval de lâminas | Lâmina 5 + Passos ligeiros 2 | +2 lâminas (máximo 6); raio + 0,9·sen(1,6·t); corte aplica lentidão de 1,5 s e empurrão de 4 m/s para fora |
+
+O Raio sempre empurra o alvo (`knockback` 1,2 m/s). **Pacto do eco** (`Upgrades.PACT`, até 3): dano ×(1 + 0,25·n), `xp_multiplier` 1 + 0,15·n, `Player.damage_taken_multiplier` 1 + 0,2·n. A XP extra passa por `Main._on_xp_collected()`, que guarda as frações.
+
+### Chefe
+
+`BossController`: estados novos `ATORDOADO` e `PREPARAR_PRISAO`. Ciclo dos ataques: investida → erupção → rajada → prisão. Fim da investida → `_set_vulnerable(true)` (`EnemyManager.boss_vulnerable`, sinal `vulnerability_changed`) e 2 s (`stun_time`) atordoado; depois volta a perseguir. Prisão: `prison_cells` 10 círculos a `prison_radius` 3,6 m do jogador, 2 vizinhos de fora (saída), aviso de `prison_windup` 1,3 s, 26 de dano. `attack_warned` sai no início de cada aviso (som). Primeiro reforço da fase 2: Tecelão.
+
+### Eventos (`EventDirector`)
+
+Usa `EnemyManager.elapsed`. Só começa eventos com `spawning_enabled` e antes de `stop()` (chamado no encontro final e no fim da partida). Define `spawn_rate_multiplier` a cada quadro: `base_rate` × maré (2,5) ou calmaria (0,25) × fenda (2, com o jogador dentro).
+
+| Evento | Primeiro | Intervalo | Regra |
+|---|---|---|---|
+| Elite | 120 s | 75 s | `spawn_elite()`: tipo por `EnemyTypes.pick`, modificador aleatório, borda da tela |
+| Fenda do Eco | 150 s | 165 s | raio 2,4 m; 6 s dentro em até 25 s → `rift_completed` (Main dá um nível e cura 20%); senão `rift_failed` |
+| Maré | 240 s | 180 s | 15 s ×2,5, depois 10 s de calmaria ×0,25 |
+
+### Configurações, pausa e joystick
+
+`GameSettings` (versão 1, `user://configuracoes.json`, `static var path` para os testes): `mao`, `joystick_modo`, `joystick_tamanho` (0,8/1,0/1,25), `joystick_altura` (0,84/0,76/0,66 da tela), `som`, `tremor`, `numeros_dano`. Valor inválido volta ao padrão; arquivo inválido vira `.corrompido`. Gravação por arquivo temporário e renomeação.
+
+`PauseMenu` (sempre ativo): botões que trocam cada opção, salvam e emitem `settings_changed`; Continuar, Esc ou P fecham. `Main.open_pause()` não abre por cima do level-up nem do fim de partida. `Main._apply_settings()` chama `FloatingJoystick.configure(escala, fixo, âncora)`, `Hud.set_left_handed()`, `CameraRig.shake_enabled`, `SoundBank.enabled`, `CombatFeedback.enabled`.
+
+`FloatingJoystick`: no modo fixo o centro é `size × fixed_anchor` (x 0,72 destro, 0,28 canhoto); o centro não acompanha o dedo. `blocked_rects` (o botão de pausa, atualizado a cada quadro por `Main`) ignora toques que começam ali. O duplo toque é o mesmo em todos os modos.
+
+`CameraRig`: em paisagem usa `KEEP_HEIGHT` com `landscape_view_height` 11 m (antes mostrava uma faixa fina); `shake(força, segundos)` desloca `h_offset`/`v_offset`.
+
+### Som e retorno visual
+
+`SoundBank` gera 12 `AudioStreamWAV` (16 bits, 22.050 Hz, mono) no `_ready()`, cada um a partir de uma função `_wave_<nome>`. Nenhum arquivo de áudio. 10 `AudioStreamPlayer` em rodízio; `MIN_GAP` por som evita repetição no mesmo instante. `GameFeel` conecta: abate (som + estouro colorido no chão, até 6 por quadro), golpe importante (som + número), explosão (som + tremor), dano ≥ 6 no jogador (som + tremor), esquiva, nível, orbe, aviso e fase do chefe. `CombatFeedback`: 24 `Label3D` reaproveitados, 0,7 s, sobem 1,4 m.
+
+### Ponte de QA
+
+`web_bridge.gd` (só na build Web QA) informa também `pausa` (aberta, retângulos do botão II, da opção "mão" e de Continuar, `canhoto`) e `joystick_ativo`.
+
 ## Limitações conhecidas
 
 - **Sem teste em celular físico.** Os testes de navegador emulam toque e tela de Pixel 7 num Chromium de computador.
 - **Equilíbrio medido só com piloto automático:** os números da versão vêm de simulações. Falta testar com pessoas (critério da fase 1).
-- **Tela deitada:** a câmera mantém 14 m de largura e mostra pouco mapa na vertical; as interfaces ficam numa coluna central.
-- **Destro/canhoto e ajuste do joystick:** ainda não implementados (o joystick flutua em qualquer ponto da tela; os parâmetros já são `@export` em `FloatingJoystick`).
+- **Tela deitada:** na 0.4 a câmera passa a mostrar 11 m na vertical (antes, uma faixa fina); as interfaces continuam numa coluna central. Não testado em aparelho.
+- **Destro/canhoto e ajuste do joystick:** implementados no PR #10 (em revisão); não testados em celular físico.
 - **Orbes distantes** ficam no chão até o jogador passar perto.
-- **Sem som e sem arte final.**
+- **Som provisório (procedural) e sem arte final.** O som da 0.4 não foi ouvido por uma pessoa nesta etapa.

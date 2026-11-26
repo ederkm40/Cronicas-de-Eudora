@@ -39,6 +39,13 @@ var enemy_projectiles: EnemyProjectiles
 var boss: BossController
 var stats: RunStats
 var meta: MetaProgress
+var settings: GameSettings
+var hazards: HazardZones
+var director: EventDirector
+var sounds: SoundBank
+var feedback: CombatFeedback
+var feel: GameFeel
+var pause_menu: PauseMenu
 var xp_per_enemy := 1  ## Multiplicador da XP de cada inimigo (cada tipo tem a sua).
 var ecos_earned := 0
 
@@ -49,10 +56,12 @@ var _over := false
 var _won := false
 var _encounter_started := false
 var _warned := false
+var _xp_fraction := 0.0  ## Sobras de XP do Pacto do eco (acumulam até virar 1 ponto).
 
 
 func _ready() -> void:
 	meta = MetaProgress.load_from()
+	settings = GameSettings.load_from()
 	stats = RunStats.new()
 	_build_environment()
 	_build_ground()
@@ -82,7 +91,13 @@ func _ready() -> void:
 	add_child(enemies)
 	enemies.enemy_killed.connect(_on_enemy_killed)
 	enemies.boss_died.connect(_on_boss_died)
+	enemies.elite_killed.connect(_on_elite_killed)
 	add_child(enemy_projectiles)
+	hazards = HazardZones.new()
+	hazards.player = player
+	hazards.effects = effects
+	enemies.hazards = hazards
+	add_child(hazards)
 
 	boss = BossController.new()
 	boss.enemies = enemies
@@ -91,10 +106,21 @@ func _ready() -> void:
 	boss.projectiles = enemy_projectiles
 	add_child(boss)
 	boss.phase_changed.connect(_on_boss_phase)
+	boss.vulnerability_changed.connect(_on_boss_vulnerable)
+
+	director = EventDirector.new()
+	director.enemies = enemies
+	director.player = player
+	director.camera_rig = camera_rig
+	director.effects = effects
+	director.stats = stats
+	add_child(director)
+	director.rift_completed.connect(_on_rift_completed)
 
 	weapon = AutoWeapon.new()
 	weapon.player = player
 	weapon.enemies = enemies
+	weapon.effects = effects
 	add_child(weapon)
 	aura = AuraWeapon.new()
 	aura.player = player
@@ -120,7 +146,7 @@ func _ready() -> void:
 	arsenal = Arsenal.new()
 	offers = LevelUpOffers.new(upgrades, arsenal, player)
 	offers.rerolls_left += meta.extra_rerolls()
-	orbs.collected.connect(progression.add_xp)
+	orbs.collected.connect(_on_xp_collected)
 	progression.leveled_up.connect(_on_leveled_up)
 	orbs.collected.connect(func(amount: int) -> void: stats.orbs_xp += amount)
 
@@ -138,12 +164,32 @@ func _ready() -> void:
 	results = ResultsScreen.new()
 	ui.add_child(results)
 	results.restart_requested.connect(_on_restart)
+	pause_menu = PauseMenu.new()
+	pause_menu.settings = settings
+	ui.add_child(pause_menu)
+	pause_menu.resumed.connect(_on_resume)
+	pause_menu.settings_changed.connect(_apply_settings)
+	hud.pause_requested.connect(open_pause)
+
+	sounds = SoundBank.new()
+	add_child(sounds)
+	feedback = CombatFeedback.new()
+	add_child(feedback)
+	feel = GameFeel.new()
+	feel.sounds = sounds
+	feel.camera_rig = camera_rig
+	feel.feedback = feedback
+	feel.effects = effects
+	add_child(feel)
 
 	player.joystick = joystick
 	joystick.dodge_requested.connect(player.dodge_from_screen)
 	player.died.connect(_on_player_died)
 	player.damaged.connect(stats.record_damage_taken)
 	player.dodged.connect(func(_direction: Vector3) -> void: stats.dodges += 1)
+	feel.connect_to(self)
+	director.announced.connect(_on_announced)
+	_apply_settings()
 	_sync_weapons()
 	player.hp = player.max_hp  # começa com a vida cheia, já com o bônus permanente
 	_update_hud()
@@ -159,6 +205,41 @@ func _attach_qa_bridge() -> void:
 		return
 	var bridge: Node = (load(QA_BRIDGE_PATH) as GDScript).new()
 	add_child(bridge)
+
+
+## Esc ou P pausam (no computador). O botão "II" do HUD faz o mesmo no celular.
+func _unhandled_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key and key.pressed and not key.echo:
+		if key.physical_keycode == KEY_ESCAPE or key.physical_keycode == KEY_P:
+			open_pause()
+
+
+## Abre a pausa com as configurações. Não abre por cima do level-up nem do fim de partida.
+func open_pause() -> void:
+	if _over or get_tree().paused or level_up_panel.is_open():
+		return
+	get_tree().paused = true
+	joystick.set_enabled(false)
+	pause_menu.open()
+
+
+func _on_resume() -> void:
+	if level_up_panel.is_open() or _over:
+		return
+	get_tree().paused = false
+	joystick.set_enabled(true)
+
+
+## Aplica as configurações salvas: joystick, espelhamento, som, tremor e números de dano.
+func _apply_settings() -> void:
+	joystick.configure(
+		settings.joystick_scale(), settings.values.joystick_modo == "fixo", settings.fixed_anchor()
+	)
+	hud.set_left_handed(settings.left_handed())
+	camera_rig.shake_enabled = settings.values.tremor
+	sounds.enabled = settings.values.som
+	feedback.enabled = settings.values.numeros_dano
 
 
 func _process(delta: float) -> void:
@@ -205,6 +286,8 @@ func _update_hud() -> void:
 		progression.xp_to_next()
 	)
 	hud.set_dodge(player.dodge_charge())
+	hud.set_event(_event_text())
+	joystick.blocked_rects = [hud.pause_button().get_global_rect()]
 	var index := enemies.boss_index()
 	if index != -1:
 		var title := EnemyTypes.display_name(EnemyTypes.CHEFE)
@@ -216,6 +299,56 @@ func _update_hud() -> void:
 
 
 # ---------------------------------------------------------------- encontro final
+
+
+func _event_text() -> String:
+	if director.rift_active:
+		var text := (
+			"Fenda do Eco: %.1f/%.0f s dentro · %d s restantes"
+			% [director.rift_progress, director.rift_channel, ceili(director.rift_time_left())]
+		)
+		return text.replace(".", ",")
+	match director.tide:
+		EventDirector.Tide.MARE:
+			return "Maré da horda"
+		EventDirector.Tide.CALMARIA:
+			return "Calmaria"
+	return ""
+
+
+func _on_announced(text: String) -> void:
+	hud.show_banner(text, 3.0)
+	sounds.play(&"fenda" if text.begins_with("Uma Fenda") else &"alerta")
+
+
+## Fenda do Eco completada: um nível de escolha extra e um pouco de vida.
+func _on_rift_completed(_where: Vector3) -> void:
+	progression.add_xp(progression.xp_to_next() - progression.xp)
+	player.heal(player.max_hp * 0.2)
+	hud.show_banner("Fenda fechada: escolha extra!", 2.5)
+	sounds.play(&"fenda")
+
+
+func _on_elite_killed(where: Vector3, kind: int, modifier: int) -> void:
+	stats.elites_killed += 1
+	orbs.spawn(where, 12)
+	player.heal(15.0)
+	effects.burst(where, 0.5, 3.0, 0.6, Color(1.0, 0.85, 0.3, 0.95))
+	hud.show_banner("%s derrotado!" % EnemyTypes.elite_name(kind, modifier).capitalize(), 2.0)
+	camera_rig.shake(0.2, 0.3)
+
+
+func _on_boss_vulnerable(vulnerable: bool) -> void:
+	if vulnerable:
+		hud.show_banner("Ponto fraco exposto: ataque agora!", 1.8)
+
+
+## Experiência coletada, com o bônus do Pacto do eco (as frações vão acumulando).
+func _on_xp_collected(amount: int) -> void:
+	var total := amount * upgrades.xp_multiplier + _xp_fraction
+	var whole := int(total + 0.0001)  # 22,999… conta como 23
+	_xp_fraction = total - whole
+	progression.add_xp(whole)
 
 
 func _update_encounter() -> void:
@@ -237,6 +370,10 @@ func start_encounter() -> void:
 	var point := player.global_position + camera_rig.ground_forward() * maxf(half.y - 2.0, 4.0)
 	boss.spawn(point)
 	enemies.spawn_rate_multiplier = encounter_spawn_rate
+	director.stop()
+	director.base_rate = encounter_spawn_rate
+	sounds.play(&"chefe")
+	camera_rig.shake(0.35, 0.6)
 	enemies.excluded_kinds = [EnemyTypes.ATIRADOR]
 	stats.boss_spawned_at = _elapsed
 	hud.show_banner("O Sentinela do Eco despertou!\nDerrote-o para vencer.", 4.0)
@@ -312,8 +449,14 @@ func _on_banish(index: int) -> void:
 
 ## Aplica uma oferta (arma nova, evolução ou melhoria) e atualiza as armas na hora.
 func apply_offer(id: StringName) -> bool:
+	var evolution := offers.kind_of(id) == LevelUpOffers.KIND_EVOLUTION
 	var applied := offers.apply(id, player, weapon)
 	_sync_weapons()
+	if applied and evolution:
+		stats.evolutions += 1
+		hud.show_banner("Evolução: %s!" % WeaponCatalog.evolution(id).name, 2.5)
+		effects.burst(player.global_position, 0.5, 4.0, 0.7, Color(1.0, 0.9, 0.4, 0.95))
+		sounds.play(&"evolucao")
 	return applied
 
 
@@ -321,11 +464,16 @@ func apply_offer(id: StringName) -> bool:
 func _sync_weapons() -> void:
 	aura.set_level(arsenal.level(WeaponCatalog.AURA))
 	blades.set_level(arsenal.level(WeaponCatalog.BLADE))
+	weapon.chain_enabled = arsenal.is_evolved(WeaponCatalog.BOLT)
+	aura.evolved = arsenal.is_evolved(WeaponCatalog.AURA)
+	blades.evolved = arsenal.is_evolved(WeaponCatalog.BLADE)
 	upgrades.refresh(player, weapon)
 	var names: Array[String] = []
 	for id in arsenal.owned_ids():
 		var label: String = WeaponCatalog.definition(id).name
-		if WeaponCatalog.max_level(id) > 1:
+		if arsenal.is_evolved(id):
+			label = "★ " + WeaponCatalog.evolution_of_weapon(id).name
+		elif WeaponCatalog.max_level(id) > 1:
 			label += " %d" % arsenal.level(id)
 		names.append(label)
 	hud.set_weapons(" · ".join(names))
@@ -348,8 +496,11 @@ func _finish(won: bool) -> void:
 	level_up_panel.close()
 	hud.set_boss(false)
 	boss.stop()
+	director.stop()
+	pause_menu.visible = false
 	if won:
 		get_tree().paused = true  # congela a horda atrás da tela de vitória
+		sounds.play(&"vitoria")
 	ecos_earned = meta.record_run(_elapsed, _kills, stats.bosses_defeated, won)
 	meta.save()
 	results.show_results(result_data(), meta)
@@ -364,7 +515,12 @@ func result_data() -> Dictionary:
 			. append(
 				{
 					"id": id,
-					"name": WeaponCatalog.definition(id).name,
+					"name":
+					(
+						WeaponCatalog.evolution_of_weapon(id).name
+						if arsenal.is_evolved(id)
+						else WeaponCatalog.definition(id).name
+					),
 					"level": arsenal.level(id),
 					"damage": stats.damage_of(id),
 					"kills": stats.kills_of(id),
@@ -391,6 +547,9 @@ func result_data() -> Dictionary:
 		"weapons": weapons,
 		"upgrades": upgrade_lines,
 		"ecos_earned": ecos_earned,
+		"elites": stats.elites_killed,
+		"rifts": stats.rifts_completed,
+		"evolutions": stats.evolutions,
 	}
 
 

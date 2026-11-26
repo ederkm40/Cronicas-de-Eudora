@@ -3,6 +3,8 @@ extends Control
 ## Interface da partida: tempo, abates, vida, experiência, armas, barra do chefe,
 ## avisos no meio da tela e o indicador da esquiva. O fim da partida fica em ResultsScreen.
 
+signal pause_requested
+
 const MAX_COLUMN_WIDTH := 720
 
 var _status: Label
@@ -19,6 +21,10 @@ var _dodge_label: Label
 var _dodge_bar: ProgressBar
 var _debug: Label
 var _margin: MarginContainer
+var _top_row: HBoxContainer
+var _pause_button: Button
+var _dodge_row: HBoxContainer
+var _event_label: Label
 
 
 func _ready() -> void:
@@ -40,8 +46,22 @@ func _ready() -> void:
 	column.add_theme_constant_override("separation", 12)
 	margin.add_child(column)
 
+	# Linha de cima: tempo e abates, e o botão de pausa do lado oposto ao polegar.
+	_top_row = HBoxContainer.new()
+	_top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_top_row.add_theme_constant_override("separation", 16)
+	column.add_child(_top_row)
+	_pause_button = Button.new()
+	_pause_button.text = "II"
+	_pause_button.custom_minimum_size = Vector2(76, 64)
+	_pause_button.focus_mode = Control.FOCUS_NONE
+	_pause_button.add_theme_font_size_override("font_size", 30)
+	_pause_button.pressed.connect(func() -> void: pause_requested.emit())
+	_top_row.add_child(_pause_button)
 	_status = _make_label(34)
-	column.add_child(_status)
+	_status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_status.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_top_row.add_child(_status)
 
 	_hp_bar = _make_bar(Color(0.85, 0.25, 0.3), 22)
 	column.add_child(_hp_bar)
@@ -86,9 +106,16 @@ func _ready() -> void:
 	column.add_child(spacer)
 
 	# Esquiva: pequena e no rodapé, para não disputar espaço com o polegar.
+	# Evento em andamento (Fenda do Eco, maré): uma linha discreta acima da esquiva.
+	_event_label = _make_label(24)
+	_event_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_event_label.add_theme_color_override("font_color", Color(0.8, 0.65, 1.0))
+	column.add_child(_event_label)
+
 	var dodge_row := HBoxContainer.new()
+	_dodge_row = dodge_row
 	dodge_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	dodge_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	dodge_row.alignment = BoxContainer.ALIGNMENT_END
 	dodge_row.add_theme_constant_override("separation", 10)
 	column.add_child(dodge_row)
 	_dodge_label = _make_label(22)
@@ -166,6 +193,27 @@ func update_stats(
 
 func xp_bar_ratio() -> float:
 	return _xp_bar.value / _xp_bar.max_value
+
+
+## Espelha a interface para canhotos: pausa do lado direito, esquiva do lado esquerdo.
+func set_left_handed(left: bool) -> void:
+	_top_row.move_child(_pause_button, _top_row.get_child_count() - 1 if left else 0)
+	_status.horizontal_alignment = (
+		HORIZONTAL_ALIGNMENT_LEFT if left else HORIZONTAL_ALIGNMENT_RIGHT
+	)
+	_dodge_row.alignment = BoxContainer.ALIGNMENT_BEGIN if left else BoxContainer.ALIGNMENT_END
+
+
+func pause_button() -> Button:
+	return _pause_button
+
+
+func set_event(text: String) -> void:
+	_event_label.text = text
+
+
+func event_text() -> String:
+	return _event_label.text
 
 
 ## Linha com as armas e seus níveis.

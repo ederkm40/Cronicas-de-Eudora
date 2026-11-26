@@ -52,6 +52,7 @@ var _failures: Array[String] = []
 
 func _initialize() -> void:
 	MetaProgress.path = "user://teste_simulacao_progresso.json"
+	GameSettings.path = "user://teste_config_simulacao.json"
 	if FileAccess.file_exists(MetaProgress.path):
 		DirAccess.remove_absolute(MetaProgress.path)
 	for arg in OS.get_cmdline_user_args():

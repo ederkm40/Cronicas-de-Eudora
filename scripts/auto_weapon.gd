@@ -15,6 +15,11 @@ const SHOT_HEIGHT := 0.7
 @export var hit_radius := 0.55
 @export var spread_degrees := 10.0  ## Abertura entre projéteis quando há mais de um por disparo.
 @export var max_projectiles := 256
+@export var knockback := 1.2  ## Impulso (m/s) que cada acerto dá no inimigo.
+@export_group("Raio em cadeia (evolução)")
+@export var chain_targets := 2  ## Saltos por acerto (3 se o alvo estiver em chamas).
+@export var chain_range := 4.0
+@export var chain_damage_share := 0.6
 
 # Modificadores das melhorias (1.0 e 0 = sem melhoria).
 var damage_multiplier := 1.0
@@ -25,6 +30,9 @@ var extra_projectiles := 0
 var player: Player
 var enemies: EnemyManager
 var shots_fired := 0  ## Total de projéteis disparados na partida (usado pelos testes).
+var effects: GroundEffects
+var chain_enabled := false  ## Raio em cadeia (evolução do Raio arcano).
+var chain_hits := 0  ## Saltos da cadeia na partida (usado pelos testes).
 
 var _positions := PackedVector3Array()
 var _velocities := PackedVector3Array()
@@ -130,11 +138,46 @@ func _move_projectiles(delta: float) -> void:
 		_life[i] -= delta
 		var hit := enemies.hit_at(_positions[i], hit_radius)
 		if hit != -1:
-			enemies.damage(hit, effective_damage(), WeaponCatalog.BOLT)
+			_strike(hit, _velocities[i].normalized())
 			_remove(i)
 		elif _life[i] <= 0.0:
 			_remove(i)
 		i -= 1
+
+
+## Um acerto: dano, empurrão e, com o Raio em cadeia, os saltos para os vizinhos.
+func _strike(hit: int, direction: Vector3) -> void:
+	var where := enemies.position_of(hit)
+	var hit_id := enemies.id_of(hit)
+	var burning := enemies.status_of(hit) & EnemyManager.STATUS_BURN != 0
+	var amount := effective_damage()
+	if amount <= 0.0:
+		return
+	enemies.apply_effects(hit, 0.0, 0.0, 0.0, direction * knockback)
+	var killed := enemies.damage(hit, amount, WeaponCatalog.BOLT)
+	if not chain_enabled:
+		return
+	# Vizinhos mais próximos do ponto do acerto, sem repetir o alvo atingido.
+	var hops := chain_targets + (1 if burning else 0)
+	var bonus := 1.25 if burning else 1.0
+	var candidates := []
+	for index in enemies.indices_in_radius(where, chain_range):
+		if not killed and enemies.id_of(index) == hit_id:
+			continue
+		candidates.append([enemies.position_of(index).distance_squared_to(where), index])
+	candidates.sort()
+	var chosen := PackedInt32Array()
+	for k in mini(hops, candidates.size()):
+		chosen.append(candidates[k][1])
+	chosen.sort()
+	amount *= chain_damage_share * bonus
+	for k in range(chosen.size() - 1, -1, -1):  # do maior índice para o menor
+		var target := chosen[k]
+		chain_hits += 1
+		if effects:
+			var to := enemies.position_of(target) - where
+			effects.warn_strip(where, to, to.length(), 0.18, 0.12, Color(0.6, 1.0, 1.0, 0.9))
+		enemies.damage(target, amount, WeaponCatalog.BOLT)
 
 
 func _remove(index: int) -> void:
