@@ -4,42 +4,45 @@ resumo: Wiki oficial do RPG de ação isométrico de hordas, com combate automá
 ---
 **Crônicas de Eudora** é um RPG de ação isométrico com combate contínuo contra hordas. A experiência combina movimento controlado pelo jogador, ataques automáticos, escolhas de build durante a partida e progressão permanente entre partidas.
 
-A versão atual tem três armas, cinco tipos de inimigos, um chefe no encontro de dez minutos, esquiva por gesto, resultados de vitória ou derrota e uma primeira camada de progressão permanente com Ecos.
+A versão 0.4-alpha amplia o núcleo de gameplay com configurações mobile, evoluções de armas, uma melhoria de risco/recompensa, novos inimigos e elites, eventos temporários, novas mecânicas para a Sentinela do Eco e feedback audiovisual.
 
 {{jogar}}
 
-> **Versão oficial: 0.3-alpha — Grande expansão do combate** {PUBLICADO}
-> O jogo continua na fase de **protótipo**. Os gráficos ainda são provisórios, e a prioridade é validar o ciclo de combate e os controles em dispositivos reais.
+> **Versão oficial: 0.4-alpha — O Despertar de Eudora** {PUBLICADO}
+> O jogo continua na fase de **protótipo**. As novas mecânicas de gameplay da 0.4 são experimentais e aguardam aprovação de design. Os gráficos e sons ainda são provisórios. Testes com pessoas e em celulares físicos foram adiados para uma etapa posterior.
 
 ## Enciclopédia
 
 {{categorias}}
 
-## O que há na versão 0.3-alpha
+## O que há na versão 0.4-alpha
 
-- **Controles:** joystick flutuante, WASD e setas; esquiva por duplo toque no joystick ou pela tecla Espaço no computador.
-- **Armas:** [[armas/arma-automatica|Raio arcano]], [[armas/aura-de-brasas|Aura de brasas]] e [[armas/lamina-orbital|Lâmina orbital]].
-- **Level-up:** ofertas de arma nova, evolução de arma ou melhoria passiva; duas trocas e dois bloqueios por partida.
-- **Inimigos:** [[inimigos/inimigo-comum|Errante]], [[inimigos/espreitador|Espreitador]], [[inimigos/couracado|Couraçado]], [[inimigos/lancador|Lançador]] e [[inimigos/volatil|Volátil]].
-- **Chefe:** [[chefes/sentinela-do-eco|Sentinela do Eco]], que aparece aos dez minutos e precisa ser derrotado para vencer.
-- **Resultados:** resumo com estatísticas reais, vitória ou derrota e reinício limpo.
-- **Progressão permanente:** Ecos e quatro melhorias permanentes salvas no navegador.
+- **Controles:** joystick flutuante ou fixo, layouts para destros e canhotos, tamanhos e alturas configuráveis, pausa manual e esquiva por duplo toque no joystick.
+- **Armas:** [[armas/arma-automatica|Raio arcano]], [[armas/aura-de-brasas|Aura de brasas]] e [[armas/lamina-orbital|Lâmina orbital]], com as evoluções experimentais [[armas|Raio em cadeia, Coroa de cinzas e Vendaval de lâminas]].
+- **Progressão:** seis melhorias passivas anteriores e o novo [[melhorias/pacto-do-eco|Pacto do Eco]] experimental.
+- **Inimigos:** os cinco tipos anteriores, mais Tecelão e Semeador; elites Veloz, Blindado e Gerador.
+- **Eventos:** [[desenvolvimento/eventos-da-partida|Fenda do Eco, Maré e Calmaria]].
+- **Chefe:** [[chefes/sentinela-do-eco|Sentinela do Eco]], com janela de vulnerabilidade após a investida e o novo ataque Prisão de ecos.
+- **Feedback:** som procedural, estouros nos abates, números de dano seletivos e tremor de câmera.
+- **Resultados:** estatísticas de elites derrotados, Fendas fechadas e armas evoluídas.
 
 ## Últimas atualizações
 
 | Data | Versão | O que mudou |
 |---|---|---|
+| 26/11/2026 | 0.4-alpha | O Despertar de Eudora: personalização mobile, evoluções, Pacto do Eco, Tecelão, Semeador, elites, eventos, chefe e feedback audiovisual (PR #10) |
 | 26/11/2026 | infraestrutura | Manutenção pós-0.3: build publicada sem ponte de QA, recuperação de save, retomada do joystick e Documento Mestre de Sistemas (PR #7) |
-| 26/11/2026 | 0.3-alpha | [[armas|Duas armas novas]], [[inimigos|quatro tipos de inimigo adicionais]], [[chefes/sentinela-do-eco|Sentinela do Eco]], [[controles/esquiva|esquiva]], [[progressao/ecos|Ecos]] e resultados |
+| 26/11/2026 | 0.3-alpha | Duas armas novas, quatro tipos de inimigo adicionais, Sentinela do Eco, esquiva, Ecos e resultados |
 | 26/11/2026 | infraestrutura | Wiki pública, prévias jogáveis por Pull Request, testes de navegador e documentação permanente |
-| 26/11/2026 | 0.2-alpha | [[progressao/experiencia|experiência]], [[progressao/orbes-de-experiencia|orbes]], [[progressao/level-up|level-up]] e seis [[melhorias|melhorias]] |
-| 26/11/2026 | 0.1-alpha | Projeto base: [[controles/joystick-flutuante|joystick flutuante]], [[armas/arma-automatica|arma automática]] e [[combate/hordas|hordas]] |
+| 26/11/2026 | 0.2-alpha | Experiência, orbes, level-up e seis melhorias |
+| 26/11/2026 | 0.1-alpha | Projeto base: joystick flutuante, arma automática e hordas |
 
 O histórico completo fica no [[desenvolvimento/changelog|Changelog]].
 
 ## Estado do desenvolvimento
 
-- **Fase atual:** fase 1, protótipo. O objetivo é confirmar se o combate e a progressão são divertidos no celular.
-- **Versão oficial:** 0.3-alpha, integrada à `main`.
-- **Próxima prioridade:** testes com pessoas em celulares físicos e ajustes baseados nesses relatos.
+- **Fase atual:** fase 1, protótipo.
+- **Versão oficial:** 0.4-alpha, integrada à main e publicada.
+- **Próxima prioridade:** continuar evoluindo os sistemas e o conteúdo antes da validação externa.
+- **Validação com pessoas:** a rodada de 5 a 10 jogadores em celulares físicos continua prevista, mas foi adiada pelo proprietário.
 - **Acompanhe:** [[desenvolvimento|Painel de desenvolvimento]] · [[desenvolvimento/roadmap|Roadmap]] · [[desenvolvimento/relatorios|Relatórios]]

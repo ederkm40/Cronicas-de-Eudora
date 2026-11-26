@@ -1,8 +1,8 @@
 ---
 titulo: Sentinela do Eco
-resumo: Chefe do encontro final, com investida, erupções e rajadas de projéteis.
+resumo: Chefe do encontro final, com investida, erupções, rajadas e mecânicas experimentais da 0.4-alpha.
 estado: PUBLICADO
-versao: 0.3-alpha
+versao: 0.4-alpha
 ordem: 10
 ---
 O **Sentinela do Eco** é o chefe do encontro final. Um aviso aparece aos 9 min e 50 s; aos 10 min, o chefe surge na borda superior da área visível.
@@ -29,7 +29,12 @@ Durante o encontro, o ritmo das hordas cai para 30% do ritmo normal e novos Lan�
 | Erupção | Círculos perigosos no chão por 1,1 s | Causa 30 de dano em cada execução, se o jogador estiver em uma das áreas. |
 | Rajada | Brilho lilás por 0,7 s | Dispara um anel de 14 projéteis, cada um com 12 de dano. |
 
-Depois de atacar, o chefe fica parado e vulnerável durante a recuperação.
+## Mecânicas experimentais da 0.4-alpha
+
+- **Janela de vulnerabilidade:** depois de cada investida, o Sentinela fica atordoado por 2 s e recebe +50% de dano. O aviso é “Ponto fraco exposto: ataque agora!”.
+- **Prisão de ecos:** um anel de círculos aparece em torno do jogador, com uma única saída. O aviso dura 1,3 s; ficar sobre um círculo causa 26 de dano.
+- **Ordem dos ataques:** investida, erupção, rajada e Prisão de ecos.
+- Na fase 2, o primeiro reforço é um Tecelão. O escudo do Tecelão não protege o chefe.
 
 ## Fase 2
 
@@ -38,10 +43,10 @@ Quando a vida fica abaixo de 50%, o Sentinela entra na fase 2:
 - Avisos e pausas de ataque ficam 25% mais curtos.
 - A erupção passa a usar quatro áreas adicionais ao redor do jogador, em vez de duas.
 - A rajada passa a ser dupla.
-- Seis reforços surgem: Voláteis e Espreitadores.
+- Seis reforços surgem: Voláteis, Espreitadores e o primeiro Tecelão.
 
-## Estratégia
+## Equilíbrio e validação
 
-Leia os avisos no chão e priorize sair das áreas perigosas. A recuperação de 1,4 s depois dos ataques é uma janela para se aproximar e causar dano. Não confunda sobreviver ao tempo do encontro com vencer: o chefe precisa ser derrotado.
+O piloto automático venceu as três simulações de chefe da 0.4, entre 165,7 e 263,5 segundos. Isso é um alerta de possível facilidade excessiva, não uma conclusão sobre o equilíbrio para pessoas.
 
-O equilíbrio foi ajustado por simulações automáticas. Ainda falta validação com jogadores.
+As novas mecânicas do chefe estão implementadas e testadas automaticamente, mas permanecem PROPOSTO_NAO_APROVADO no eixo de design até decisão do proprietário. Não houve teste com pessoas nem em celular físico.

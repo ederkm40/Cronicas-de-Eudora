@@ -1,23 +1,25 @@
 ---
 titulo: Desempenho
-resumo: Medições da versão 0.3-alpha e limites do que elas demonstram.
+resumo: Medições das versões 0.3-alpha e 0.4-alpha e limites do que elas demonstram.
 ordem: 70
 ---
-O jogo foi projetado para suportar hordas de até **300 inimigos** (de todos os tipos; o chefe fica fora desse limite), além de orbes, projéteis e efeitos.
+O jogo foi projetado para suportar hordas de até **300 inimigos** de todos os tipos, além de orbes, projéteis e efeitos. O chefe é contado separadamente em algumas medições.
 
-## Medições registradas na 0.3-alpha
+## Medições registradas na 0.4-alpha
 
 Os números abaixo são tempo de CPU por quadro em simulações sem renderização. Não representam FPS de celular.
 
 | Cenário | Média | p95 | p99 | Pior quadro |
 |---|---:|---:|---:|---:|
-| 0.2 (referência), 300 s, piloto padrão | 0,57 ms | 1,43 ms | 2,00 ms | 12,3 ms |
-| 0.3, 300 s, piloto padrão | 1,30 ms | 3,30 ms | 3,61 ms | 13,9 ms |
-| 0.3, 660 s, armas no máximo e chefe | 3,01 ms | 4,40 ms | 5,67 ms | 17,5 ms |
+| 0.3, 600 s, piloto padrão | 1,48 ms | 3,33 ms | 3,81 ms | 13,1 ms |
+| 0.4, 600 s, piloto padrão | 1,64–1,83 ms | 3,71–4,12 ms | 5,05–5,17 ms | 54 ms* |
+| 0.4, 720 s, invulnerável, armas máximas e chefe | 3,29 ms | 5,42 ms | 6,03 ms | 59 ms* |
 
-As duas primeiras linhas rodaram na mesma máquina, em sequência: o custo por quadro da 0.3 **mais que dobrou** em relação à 0.2, por causa do comportamento por tipo de inimigo, da cor por instância e dos seis MultiMesh de inimigos. No CI (`ubuntu-latest`), a simulação de 300 s da 0.3 registrou média de 2,17 ms e p99 de 5,80 ms.
+\* O pior quadro é o primeiro, durante a geração dos 12 sons (aproximadamente 55 ms). Os sons ficam em cache e não são sintetizados novamente a cada partida.
 
-No pior caso medido, a simulação alcançou 301 entidades inimigas contando o chefe, 400 orbes e 39 projéteis inimigos. A memória aumentou cerca de 8,4 MB em 11 minutos, sem crescimento contínuo observado no teste.
+Em relação à 0.3, o custo médio por quadro subiu aproximadamente **10% a 20%**, e o p99 cerca de **33%**. O aumento foi associado aos estados por inimigo, ao recálculo do escudo e às cores por instância.
+
+Na simulação de 720 s, o cenário chegou a 301 inimigos contando o chefe, 400 orbes e 21 projéteis inimigos. A árvore manteve 187 nós, sem crescimento entre reinícios; a memória aumentou cerca de 13,8 MB no teste.
 
 ## Como o projeto reduz custo
 
@@ -25,6 +27,7 @@ No pior caso medido, a simulação alcançou 301 entidades inimigas contando o c
 - A colisão utiliza uma grade espacial.
 - A Aura causa dano por pulso, não a cada quadro.
 - O reinício recria a cena e os sistemas da partida.
+- Os sons gerados são armazenados em cache entre partidas.
 
 ## No celular
 

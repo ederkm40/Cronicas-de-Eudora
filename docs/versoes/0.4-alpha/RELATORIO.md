@@ -302,3 +302,13 @@ Tempo de CPU por quadro na `long_simulation`, no mesmo servidor, uma rodada depo
 2. Medir o FPS no celular com a horda cheia.
 3. Decidir quais mecânicas experimentais ficam (o proprietário aprova ou rejeita cada uma).
 4. Wiki e changelog: dados em `docs/IA/ENTREGA_PARA_CHATGPT.md` (tarefa do ChatGPT).
+
+
+## Revisão editorial (ChatGPT) — pós-merge
+
+- **Integração:** PR #10 foi integrado à main em 26/11/2026. Merge commit: f51db236fd0ae3954178b4354c6641729c58fdf8.
+- **Publicação:** o workflow pós-merge #45902410165 concluiu com sucesso os testes, a exportação e a publicação no GitHub Pages; a verificação do site publicado também passou.
+- **Versão oficial:** 0.4-alpha — O Despertar de Eudora.
+- **Estados de design:** a personalização mobile já estava aprovada. As mecânicas novas de gameplay permanecem experimentais e PROPOSTO_NAO_APROVADO até decisão individual do proprietário. Merge e publicação não equivalem a aprovação de design.
+- **Validação humana:** o proprietário decidiu adiar os testes com 5 a 10 pessoas e em celulares físicos até que o jogo avance mais. Nenhuma funcionalidade é considerada VALIDADA por pessoas nesta etapa.
+- **Documentação editorial:** Wiki e changelog estão sendo atualizados em uma branch documental separada, respeitando a divisão de responsabilidades do AGENTS.md.
