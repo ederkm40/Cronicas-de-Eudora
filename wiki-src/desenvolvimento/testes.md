@@ -1,53 +1,51 @@
 ---
 titulo: Testes
-resumo: Como a versão 0.3-alpha é validada e quais resultados foram registrados no PR #5.
+resumo: Testes automatizados registrados nas versões 0.3-alpha e 0.4-alpha; validação humana ainda pendente.
 ordem: 40
 ---
-O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados durante a entrega da 0.3-alpha, não uma nova execução desta atualização editorial.
+O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados em cada entrega, não uma nova execução desta atualização editorial.
 
-## Testes do Godot
+## 0.4-alpha — PR #10
 
-A 0.3-alpha registrou **41 testes em quatro suítes e 4.370 verificações**:
+### Godot e simulações
 
-| Suíte | Cobertura |
+A 0.4-alpha registrou **71 testes em seis suítes, 4.613 verificações e zero falhas**. A nova suíte despertar.gd acrescentou 20 testes, cobrindo evoluções, Pacto do Eco, elites, Tecelão, Semeador, chefe, Fenda, Maré, configurações mobile, canhoto, joystick fixo, pausa, sons e números de dano.
+
+| Verificação | Resultado registrado |
 |---|---|
-| `progressao.gd` | XP, coleta, level-up, melhorias, limites, pausa, derrota e reinício |
-| `armas_e_ofertas.gd` | Arsenal, Aura, Lâmina, níveis, ofertas, troca e bloqueio |
-| `inimigos_e_chefe.gd` | Mistura por tempo, comportamentos, avisos, chefe, fases e vitória |
-| `esquiva_e_encerramento.gd` | Esquiva, invulnerabilidade, resultados, reinício e progressão permanente |
+| gdlint | Sem problemas no CI |
+| gdformat --check | 34 arquivos sem alterações de formatação |
+| Testes do Godot | 71 testes, 4.613 verificações, 0 falhas |
+| Smoke test | Aprovado; elite, Fenda, pausa, sons e estouros forçados |
+| Simulação prolongada no CI | 300 s, aprovada |
+| Simulações locais prolongadas | 600 s e 720 s no cenário invulnerável com armas máximas; nós constantes e memória estável |
+| Wiki / montagem do site | Testes aprovados |
+| Build de produção | Sem ponte de QA; QA permanece restrita aos testes |
 
-Também foram registrados:
+### Navegador
 
-- `tests/smoke_test.gd`: teste de ponta a ponta.
-- `tests/long_simulation.gd`: simulação prolongada de 300 s.
-- `tests/balance_simulation.gd`: simulações de armas, partidas e encontro final. Não é executada no CI.
-
-## CI e navegador
-
-No PR #5, o relatório registrou:
-
-| Verificação | Resultado informado |
+| Build | Resultado registrado |
 |---|---|
-| `gdlint` | Sem problemas |
-| `gdformat --check` | Arquivos GDScript alterados formatados |
-| Testes do Godot | 41 testes, 4.370 verificações, zero falhas |
-| Smoke test | Aprovado |
-| Simulação prolongada | Aprovada |
-| Testes da Wiki e montagem do site | 14 e 7 testes aprovados |
-| Playwright | 18 aprovados e 3 pulados por desenho, nos três perfis |
+| QA, computador, celular em pé e deitado | 24 aprovados, 3 pulados por desenho |
+| Produção, computador, celular em pé e deitado | 11 aprovados, 1 pulado por desenho |
 
-Os testes Playwright abrem o jogo exportado e verificam joystick, esquiva, teclado, level-up, vitória, derrota e reinício.
+Os perfis de celular são emulações de tela e toque no Chromium de computador. Não equivalem a aparelhos físicos.
 
-## Limite importante
+### Balanceamento e desempenho
 
-Os perfis de Pixel 7 são emulação de tela e toque em Chromium de computador. **Não equivalem a teste em celular físico.** O desempenho de CPU medido sem renderização também não representa FPS real em um aparelho.
+As simulações de balanceamento são instrumentos automáticos, não jogadores humanos:
 
-Consulte [[desenvolvimento/relatorios|os relatórios por versão]] para os detalhes e as condições de cada medição.
+- O piloto automático venceu a Sentinela nas 3 sementes do encontro final, levando de 165,7 a 263,5 segundos. Isso sugere que o chefe pode ter ficado fácil demais.
+- O piloto não entra na Fenda do Eco; portanto, o valor real da recompensa não foi medido.
+- O custo médio de CPU por quadro subiu aproximadamente 10% a 20% e o p99 cerca de 33% em relação à 0.3, no mesmo servidor de testes.
+- O primeiro quadro pode chegar a aproximadamente 55 ms pela geração dos sons. Os sons ficam em cache e não são sintetizados novamente a cada partida.
+- **O FPS em celular físico não foi medido.**
 
+Relatório técnico: [0.4-alpha — O Despertar de Eudora](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.4-alpha/RELATORIO.md). Workflow de integração: [GitHub Actions #45902410165](https://github.com/ederkm40/Cronicas-de-Eudora/actions/runs/45902410165).
 
 ## Manutenção pós-0.3-alpha (PR #7)
 
-A etapa de manutenção ampliou a cobertura para **51 testes em cinco suítes, com 4.482 verificações e zero falhas**. Esses números são os registrados no CI e no relatório do PR #7, não uma execução feita durante esta atualização editorial.
+A etapa de manutenção registrou **51 testes em cinco suítes, 4.482 verificações e zero falhas**.
 
 | Verificação | Resultado registrado |
 |---|---|
@@ -60,6 +58,17 @@ A etapa de manutenção ampliou a cobertura para **51 testes em cinco suítes, c
 | Playwright na build Web QA, 3 perfis | 21 aprovados, 3 pulados por desenho |
 | Playwright na build de produção, 3 perfis | 11 aprovados, 1 pulado por desenho |
 
-A build de produção é a única publicada. A build Web QA, que contém a ponte usada pelos testes de jogabilidade, é restrita ao CI. Os três perfis de navegador incluem desktop e emulações de Pixel 7 em retrato e paisagem. **A emulação não substitui testes em aparelhos físicos**, que continuam pendentes.
+## 0.3-alpha
 
-Relatório técnico: `docs/versoes/manutencao-pos-0.3/RELATORIO.md`. Pull Request: [#7](https://github.com/ederkm40/Cronicas-de-Eudora/pull/7).
+A 0.3-alpha registrou **41 testes em quatro suítes e 4.370 verificações**.
+
+| Suíte | Cobertura |
+|---|---|
+| progressao.gd | XP, coleta, level-up, melhorias, limites, pausa, derrota e reinício |
+| armas_e_ofertas.gd | Arsenal, Aura, Lâmina, níveis, ofertas, troca e bloqueio |
+| inimigos_e_chefe.gd | Mistura por tempo, comportamentos, avisos, chefe, fases e vitória |
+| esquiva_e_encerramento.gd | Esquiva, invulnerabilidade, resultados, reinício e progressão permanente |
+
+## Limite da validação
+
+**Ainda não houve teste com pessoas nem em celular físico.** A validação com 5 a 10 jogadores foi adiada pelo proprietário para depois de mais evolução do jogo. Os testes automatizados continuam necessários, mas não provam conforto de uso, diversão ou equilíbrio para pessoas.
