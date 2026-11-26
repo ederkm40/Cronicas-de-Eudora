@@ -101,20 +101,26 @@ func roll_choices(amount: int = 3, rng: RandomNumberGenerator = null) -> Array[S
 ## Texto curto para o cartão: o que muda do nível atual para o próximo.
 func describe_next(id: StringName) -> String:
 	var n := stacks(id)
+	var text := ""
 	match id:
 		DAMAGE:
-			return "Dano: +%d%% » +%d%%" % [_pct(DAMAGE_PER_STACK * n), _pct(DAMAGE_PER_STACK * (n + 1))]
+			text = _percent_change("Dano", DAMAGE_PER_STACK, n)
 		FIRE_RATE:
-			return "Disparos: +%d%% » +%d%%" % [_pct(FIRE_RATE_PER_STACK * n), _pct(FIRE_RATE_PER_STACK * (n + 1))]
+			text = _percent_change("Disparos", FIRE_RATE_PER_STACK, n)
 		VITALITY:
-			return "Vida máxima: +%d%% » +%d%%" % [_pct(VITALITY_HP_PER_STACK * n), _pct(VITALITY_HP_PER_STACK * (n + 1))]
+			text = _percent_change("Vida máxima", VITALITY_HP_PER_STACK, n)
 		SPEED:
-			return "Velocidade: +%d%% » +%d%%" % [_pct(SPEED_PER_STACK * n), _pct(SPEED_PER_STACK * (n + 1))]
+			text = _percent_change("Velocidade", SPEED_PER_STACK, n)
 		PROJECTILE:
-			return "Projéteis por disparo: %d » %d" % [1 + n, 2 + n]
+			text = "Projéteis por disparo: %d » %d" % [1 + n, 2 + n]
 		RANGE:
-			return "Alcance: +%d%% » +%d%%" % [_pct(RANGE_PER_STACK * n), _pct(RANGE_PER_STACK * (n + 1))]
-	return ""
+			text = _percent_change("Alcance", RANGE_PER_STACK, n)
+	return text
+
+
+## "Rótulo: +X% » +Y%", do nível atual (n) para o próximo.
+static func _percent_change(label: String, per_stack: float, n: int) -> String:
+	return "%s: +%d%% » +%d%%" % [label, _pct(per_stack * n), _pct(per_stack * (n + 1))]
 
 
 static func _pct(value: float) -> int:

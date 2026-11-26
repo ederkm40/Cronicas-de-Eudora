@@ -14,6 +14,8 @@ extends SceneTree
 ## Sai com código 1 se encontrar sinais de problema: memória ou nós crescendo sem parar,
 ## partida travada na pausa, ou nenhuma subida de nível.
 
+const KITE_SECONDS := 120.0
+
 var game: Node
 var _target_seconds := 600.0
 var _invulnerable := false
@@ -22,7 +24,6 @@ var _rng := RandomNumberGenerator.new()
 var _sim_time := 0.0 ## Tempo de partida (sem pausas), somado entre reinícios.
 var _game_time := 0.0 ## Tempo da partida atual.
 var _configured := false
-const KITE_SECONDS := 120.0
 var _frames := 0
 var _frame_usec := PackedInt32Array()
 var _last_tick := 0

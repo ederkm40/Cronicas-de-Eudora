@@ -6,6 +6,12 @@ extends Node3D
 
 signal enemy_killed(position: Vector3)
 
+const CELL := 1.0
+const BODY_HEIGHT := 0.55
+const INDEX_BITS := 16
+const INDEX_MASK := (1 << INDEX_BITS) - 1
+const CELL_OFFSET := 1 << 20 ## Deixa as coordenadas de célula sempre positivas.
+
 @export var max_enemies := 300
 @export var base_speed := 2.2
 @export var base_hp := 20.0
@@ -37,11 +43,6 @@ var _multimesh: MultiMesh
 var _buffer := PackedFloat32Array() ## 12 floats por inimigo (matriz 3x4), enviados de uma vez.
 var _sorted := PackedInt64Array() ## (célula << 16) | índice, ordenado: inimigos agrupados por célula.
 var _cell_start := {} ## célula -> posição em _sorted onde ela começa.
-const CELL := 1.0
-const BODY_HEIGHT := 0.55
-const INDEX_BITS := 16
-const INDEX_MASK := (1 << INDEX_BITS) - 1
-const CELL_OFFSET := 1 << 20 ## Deixa as coordenadas de célula sempre positivas.
 
 
 func _ready() -> void:

@@ -4,7 +4,8 @@ extends Node3D
 ## O giro e a inclinação ficam no próprio rig; a câmera fica afastada no eixo Z local.
 
 @export var yaw_degrees := 45.0 ## Giro horizontal (45 = isométrico clássico).
-@export var pitch_degrees := 40.0 ## Inclinação para baixo. Em retrato, um pouco acima de 35 mostra menos "profundidade".
+## Inclinação para baixo. Em retrato, um pouco acima de 35 mostra menos "profundidade".
+@export var pitch_degrees := 40.0
 @export var view_width := 14.0 ## Largura visível do mundo, em metros. Menor = mais zoom.
 @export var distance := 30.0
 @export var follow_speed := 10.0

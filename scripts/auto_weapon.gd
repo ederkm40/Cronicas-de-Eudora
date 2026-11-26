@@ -5,6 +5,8 @@ extends Node3D
 ## Os valores base ficam nos @export. As melhorias mexem só nos modificadores abaixo,
 ## e os valores usados na partida (efetivos) são calculados a partir dos dois.
 
+const SHOT_HEIGHT := 0.7
+
 @export var fire_interval := 0.45 ## Segundos entre disparos, sem melhorias.
 @export var attack_range := 11.0 ## Metros, sem melhorias.
 @export var projectile_speed := 14.0
@@ -29,7 +31,6 @@ var _velocities := PackedVector3Array()
 var _life := PackedFloat32Array()
 var _cooldown := 0.0
 var _multimesh: MultiMesh
-const SHOT_HEIGHT := 0.7
 
 
 func _ready() -> void:

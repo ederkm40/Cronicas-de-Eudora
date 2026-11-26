@@ -5,6 +5,9 @@ extends Node3D
 
 signal died
 
+const BODY_COLOR := Color(0.35, 0.65, 1.0)
+const FLASH_COLOR := Color(1.0, 1.0, 1.0)
+
 @export var move_speed := 5.0 ## Metros por segundo, sem melhorias.
 @export var base_max_hp := 100.0 ## Vida máxima sem melhorias.
 @export var hit_flash_time := 0.12
@@ -20,8 +23,6 @@ var camera_rig: CameraRig
 
 var _material: StandardMaterial3D
 var _flash := 0.0
-const BODY_COLOR := Color(0.35, 0.65, 1.0)
-const FLASH_COLOR := Color(1.0, 1.0, 1.0)
 
 
 func _ready() -> void:

@@ -12,21 +12,11 @@ jobs:
         with: { persist-credentials: false }
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - name: gdtoolkit
+      - name: gdformat e gdlint
         run: |
           python -m venv /tmp/gd && /tmp/gd/bin/pip install -q gdtoolkit==4.5.0
-          echo "== pip freeze"; /tmp/gd/bin/pip freeze
-          echo "== gdlint"; /tmp/gd/bin/gdlint scripts tests || true
-          echo "== gdformat check"; /tmp/gd/bin/gdformat --check scripts tests || true
-      - uses: actions/setup-node@v4
-        with: { node-version: "22" }
-      - name: playwright
-        run: |
-          node --version; npm --version
-          npm view @playwright/test dist-tags --json
-          mkdir -p /tmp/e2e && cd /tmp/e2e
-          V=$(npm view @playwright/test dist-tags.latest)
-          printf '{"name":"x","private":true,"devDependencies":{"@playwright/test":"%s"}}' "$V" > package.json
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-          echo "== LOCK"; cat package-lock.json; echo "== FIM LOCK"
-          dpkg -l | grep -E "libgl1-mesa|mesa-vulkan|libegl-mesa|xvfb" | awk '{print $2, $3}'
+          ARQS="scripts/camera_rig.gd scripts/player.gd scripts/level_up_panel.gd scripts/upgrades.gd scripts/auto_weapon.gd scripts/enemy_manager.gd tests/run_tests.gd tests/smoke_test.gd tests/long_simulation.gd"
+          cp -r . /tmp/copia && cd /tmp/copia
+          /tmp/gd/bin/gdformat $ARQS
+          echo "== DIFF INICIO"; git -c core.quotepath=off diff -- $ARQS | base64 -w0; echo; echo "== DIFF FIM"
+          echo "== gdlint depois"; /tmp/gd/bin/gdlint scripts tests || true
