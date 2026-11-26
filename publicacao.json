@@ -3,12 +3,5 @@
     "commit": "f51db236fd0ae3954178b4354c6641729c58fdf8",
     "publicado_em": "2026-11-26T22:11:16Z"
   },
-  "previas": {
-    "11": {
-      "branch": "docs/wiki-changelog-04-alpha",
-      "commit": "965f70b8749eadf55f8ef96055ecf6c8bc21061f",
-      "publicado_em": "2026-11-26T22:24:56Z",
-      "titulo": "Wiki e changelog: registrar 0.4-alpha — O Despertar de Eudora"
-    }
-  }
+  "previas": {}
 }
