@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aura de brasas · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Círculo de fogo que causa dano em pulsos aos inimigos próximos.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #6, branch <code>docs/wiki-0-3-alpha-atualizacao</code>, commit <code>34cddf4</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../" aria-current=page>Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../" aria-current=page>Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Armas</a></nav>
+<article>
+<h1>Aura de brasas</h1>
+<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.3-alpha</span></p>
+
+<p>A <strong>Aura de brasas</strong> cria uma área de fogo ao redor do personagem. Em cada pulso, todos os inimigos cujo corpo toca o círculo recebem dano. O dano é aplicado por pulso, não a cada quadro.</p>
+<p>A arma pode ser adquirida no <a href="../../progressao/level-up/">level-up</a> e evoluída até o nível 5.</p>
+<h2 id="valores-por-nivel">Valores por nível</h2>
+<div class="tabela"><table><thead><tr><th>Nível</th><th style="text-align:right">Dano por pulso</th><th style="text-align:right">Raio</th><th style="text-align:right">Intervalo entre pulsos</th></tr></thead><tbody><tr><td>1</td><td style="text-align:right">6</td><td style="text-align:right">2,2 m</td><td style="text-align:right">0,60 s</td></tr><tr><td>2</td><td style="text-align:right">7</td><td style="text-align:right">2,4 m</td><td style="text-align:right">0,60 s</td></tr><tr><td>3</td><td style="text-align:right">9</td><td style="text-align:right">2,6 m</td><td style="text-align:right">0,55 s</td></tr><tr><td>4</td><td style="text-align:right">11</td><td style="text-align:right">2,9 m</td><td style="text-align:right">0,50 s</td></tr><tr><td>5</td><td style="text-align:right">14</td><td style="text-align:right">3,2 m</td><td style="text-align:right">0,45 s</td></tr></tbody></table></div>
+<h2 id="sinergias">Sinergias</h2>
+<ul><li><a href="../../melhorias/poder-arcano/">Poder arcano</a> aumenta o dano da Aura.</li><li><a href="../../melhorias/cadencia/">Cadência</a> acelera os pulsos.</li><li><a href="../../melhorias/campo-de-ruptura/">Campo de ruptura</a> aumenta o raio da Aura em 10% por nível.</li></ul>
+<p>O visual atual usa um disco com shader, borda de brasas e uma onda que se expande a cada pulso. A aparência ainda é provisória.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 34cddf4</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/docs/wiki-0-3-alpha-atualizacao/wiki-src/armas/aura-de-brasas.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>

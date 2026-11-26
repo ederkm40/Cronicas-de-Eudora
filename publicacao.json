@@ -3,5 +3,12 @@
     "commit": "51e7e5da0f5fe1bf53083b85f545fe9152a09c09",
     "publicado_em": "2026-11-26T16:44:49Z"
   },
-  "previas": {}
+  "previas": {
+    "6": {
+      "branch": "docs/wiki-0-3-alpha-atualizacao",
+      "commit": "34cddf4d95ce8b8cec8d8c6ba2c3993fce6a332c",
+      "publicado_em": "2026-11-26T17:25:36Z",
+      "titulo": "docs: atualiza Wiki para a versão 0.3-alpha"
+    }
+  }
 }
