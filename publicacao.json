@@ -3,5 +3,12 @@
     "commit": "3d9102cddca2a88aef0fd82b13899985a87e5c6f",
     "publicado_em": "2026-11-26T17:41:42Z"
   },
-  "previas": {}
+  "previas": {
+    "7": {
+      "branch": "feat/manutencao-e-documento-mestre-03",
+      "commit": "845489d918e1bf56a503ef32190d0efea2ef446f",
+      "publicado_em": "2026-11-26T18:50:28Z",
+      "titulo": "Manutenção pós-0.3-alpha e Documento Mestre de Sistemas"
+    }
+  }
 }

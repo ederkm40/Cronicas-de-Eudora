@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Melhorias permanentes · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Quatro melhorias compradas com Ecos e mantidas entre as partidas.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #7, branch <code>feat/manutencao-e-documento-mestre-03</code>, commit <code>845489d</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../" aria-current=page>Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../" aria-current=page>Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Progressão</a></nav>
+<article>
+<h1>Melhorias permanentes</h1>
+<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.3-alpha</span></p>
+
+<p>A tela de resultados permite gastar <a href="../ecos/">Ecos</a> em quatro melhorias permanentes. Os bônus se aplicam às partidas seguintes e são salvos no navegador.</p>
+<div class="tabela"><table><thead><tr><th>Melhoria</th><th>Efeito por nível</th><th style="text-align:right">Limite</th><th>Custos por nível</th></tr></thead><tbody><tr><td>Vigor ancestral</td><td>+8% de vida máxima</td><td style="text-align:right">5</td><td>15, 30, 50, 75, 110</td></tr><tr><td>Fúria latente</td><td>+5% de dano de todas as armas</td><td style="text-align:right">5</td><td>20, 40, 65, 95, 130</td></tr><tr><td>Atração do eco</td><td>+20% no raio do ímã dos orbes (3 m na base)</td><td style="text-align:right">3</td><td>12, 25, 45</td></tr><tr><td>Renovação</td><td>+1 troca de ofertas no level-up</td><td style="text-align:right">2</td><td>40, 90</td></tr></tbody></table></div>
+<p>Na tela do jogo, a descrição da Atração do eco diz "raio de coleta"; o efeito real é aumentar a distância em que os orbes começam a voar até o personagem (o ímã), não a distância final de coleta (0,6 m).</p>
+<p>Os limites são independentes: cada melhoria pode chegar ao próprio nível máximo.</p>
+<h2 id="salvamento">Salvamento</h2>
+<p>O progresso fica em <code>user://progresso.json</code>, com formato versionado. No navegador, <code>user://</code> usa o armazenamento local do site. O save tem migração entre versões. Um arquivo de uma versão mais nova do jogo é lido sem ser sobrescrito. Um arquivo com JSON inválido é copiado como <code>.corrompido</code> e o progresso recomeça do zero. A validação da estrutura interna ainda é incompleta: veja <a href="../../desenvolvimento/problemas-conhecidos/">Problemas conhecidos</a>.</p>
+<p>O formato atual é a versão 1.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 845489d</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/feat/manutencao-e-documento-mestre-03/wiki-src/progressao/melhorias-permanentes.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>
