@@ -6,8 +6,8 @@
   "previas": {
     "4": {
       "branch": "infra/ferramentas-qa-web",
-      "commit": "951c63f216402d629f188e78ebf59f59a25a7ac1",
-      "publicado_em": "2026-11-26T14:22:46Z",
+      "commit": "0984423b2c396968fb94061ed9fb5e2036ed1d01",
+      "publicado_em": "2026-11-26T14:28:36Z",
       "titulo": "Infraestrutura: GDScript Toolkit, testes de navegador (Playwright) e formulários do GitHub"
     }
   }
