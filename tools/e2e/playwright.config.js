@@ -4,7 +4,9 @@
 // Variáveis de ambiente:
 //   E2E_DIR           pasta com a exportação (index.html, .js, .pck, .wasm). Padrão: ../../build/parte
 //   E2E_PORTA         porta do servidor local. Padrão: 8060
-//   E2E_RENDERIZADOR  "mesa" (padrão: Mesa/llvmpipe via ANGLE-GL) ou "swiftshader" (padrão do Chromium)
+//   E2E_RENDERIZADOR  "mesa" (padrão: pede Mesa/llvmpipe via ANGLE-GL) ou "swiftshader".
+//                     "mesa" só funciona com uma tela (no CI: xvfb-run); sem tela o Chromium
+//                     cai no SwiftShader. O renderizador usado de verdade é impresso pelo teste.
 //   E2E_CHROME        caminho de um Chrome já instalado (só para rodar fora do CI)
 const path = require("path");
 const { defineConfig, devices } = require("@playwright/test");

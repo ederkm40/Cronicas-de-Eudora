@@ -135,7 +135,9 @@ jobs:
           E2E_DIR: ${{ runner.temp }}/parte
           E2E_PORTA: "8060"
           E2E_RENDERIZADOR: mesa
-        run: npx playwright test
+        # Tela virtual (Xvfb, já instalada no runner): sem ela o Chromium cai no SwiftShader.
+        # O renderizador realmente usado aparece no log ("WebGL 2: ...").
+        run: xvfb-run -a npx playwright test
 
       - name: Guardar relatório e evidências da falha (7 dias)
         if: failure()
