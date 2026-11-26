@@ -10,8 +10,16 @@ extends RefCounted
 ## - arquivo antigo (versão menor): migra para a versão atual e mantém os dados;
 ## - arquivo de uma versão mais nova que este jogo: lê o que entende e NÃO salva por cima,
 ##   para não apagar dados de uma versão futura;
-## - arquivo corrompido: guarda uma cópia (.corrompido) e começa do zero.
-## O salvamento escreve num arquivo temporário e só então troca pelo definitivo.
+## - arquivo corrompido (JSON inválido, raiz que não é objeto, versão inválida, ou
+##   "estatisticas"/"melhorias" que não são objetos): guarda uma cópia (.corrompido) e
+##   começa do zero;
+## - campo com valor inválido (tipo errado, negativo, fracionado, nível acima do limite):
+##   guarda a cópia (.corrompido), troca só aquele campo por um valor seguro (0 ou o limite)
+##   e mantém o resto.
+## Os motivos ficam em `load_issues` e são avisados no console. O arquivo original só é
+## substituído no próximo salvamento, depois que a cópia já existe. Campos desconhecidos são
+## mantidos ao salvar. O salvamento escreve num arquivo temporário e só então troca pelo
+## definitivo.
 
 const VERSION := 1
 const DEFAULT_PATH := "user://progresso.json"
@@ -51,6 +59,7 @@ const UPGRADES := [
 const VIGOR_PER_LEVEL := 0.08
 const FURY_PER_LEVEL := 0.05
 const MAGNET_PER_LEVEL := 0.2
+const MAX_COUNT := 1000000000  ## Teto para números lidos do arquivo (evita estouro).
 
 ## Caminho usado por main.gd. Os testes trocam para um arquivo próprio.
 static var path := DEFAULT_PATH
@@ -62,9 +71,11 @@ var best_time := 0.0
 var total_kills := 0
 var read_only := false  ## true se o arquivo veio de uma versão mais nova do jogo.
 var load_note := ""  ## O que aconteceu ao carregar (para a documentação e os testes).
+var load_issues: Array[String] = []  ## Problemas encontrados no arquivo (vazio = íntegro).
 
 var _levels := {}
 var _path := DEFAULT_PATH
+var _raw := {}  ## Dados lidos, para manter campos desconhecidos ao salvar.
 
 
 static func load_from(file_path: String = "") -> MetaProgress:
@@ -75,20 +86,56 @@ static func load_from(file_path: String = "") -> MetaProgress:
 		return meta
 	var json := JSON.new()
 	var parsed := json.parse(FileAccess.get_file_as_string(meta._path))
-	var data: Variant = json.data if parsed == OK else null
+	if parsed != OK:
+		return meta._start_over("JSON inválido (linha %d)" % json.get_error_line())
+	var data: Variant = json.data
 	if not (data is Dictionary):
-		DirAccess.copy_absolute(meta._path, meta._path + ".corrompido")
-		meta.load_note = "corrompido"
-		return meta
-	var version := int(data.get("versao", 0))
+		return meta._start_over("a raiz não é um objeto")
+	var version_value: Variant = data.get("versao", 0)
+	if not _is_number(version_value) or float(version_value) < 0.0:
+		return meta._start_over("versão inválida")
+	var version := int(version_value)
 	if version > VERSION:
+		# Versão futura: lê o que entende, sem validar a estrutura nova e sem nunca salvar.
 		meta.read_only = true
 		meta.load_note = "versão mais nova (%d)" % version
+		meta._read(data, false)
+		return meta
+	for container in ["estatisticas", "melhorias"]:
+		if data.has(container) and not (data[container] is Dictionary):
+			return meta._start_over("\"%s\" não é um objeto" % container)
+	data = migrate(data)
+	meta._read(data, true)
+	if version < VERSION:
+		meta.load_note = "migrado de %d" % version
+	elif not meta.load_issues.is_empty():
+		meta.load_note = "ajustado"
 	else:
-		data = migrate(data)
-		meta.load_note = "migrado de %d" % version if version < VERSION else "carregado"
-	meta._read(data)
+		meta.load_note = "carregado"
+	if not meta.load_issues.is_empty():
+		meta._backup()
+		push_warning("Progresso ajustado ao carregar: " + "; ".join(meta.load_issues))
 	return meta
+
+
+## Arquivo inutilizável: guarda uma cópia e começa do zero (sem apagar o original agora).
+func _start_over(reason: String) -> MetaProgress:
+	load_note = "corrompido"
+	load_issues.append(reason)
+	_backup()
+	push_warning("Progresso corrompido (%s): cópia em %s.corrompido" % [reason, _path])
+	return self
+
+
+func _backup() -> void:
+	DirAccess.copy_absolute(_path, _path + ".corrompido")
+
+
+static func _is_number(value: Variant) -> bool:
+	var kind := typeof(value)
+	if kind == TYPE_INT:
+		return true
+	return kind == TYPE_FLOAT and not is_nan(value) and not is_inf(value)
 
 
 ## Converte dados de versões anteriores para a atual.
@@ -105,35 +152,81 @@ static func migrate(data: Dictionary) -> Dictionary:
 	return migrated
 
 
-func _read(data: Dictionary) -> void:
-	ecos = maxi(int(data.get("ecos", 0)), 0)
-	var stats: Dictionary = data.get("estatisticas", {})
-	runs = int(stats.get("partidas", 0))
-	victories = int(stats.get("vitorias", 0))
-	best_time = float(stats.get("melhor_tempo", 0.0))
-	total_kills = int(stats.get("abates", 0))
-	var saved: Dictionary = data.get("melhorias", {})
+## Lê os campos conhecidos. Cada campo inválido vira um valor seguro e é anotado
+## (`strict`); numa versão futura (`strict` = false) os problemas não são anotados.
+func _read(data: Dictionary, strict: bool) -> void:
+	_raw = data.duplicate(true)
+	var stats := _object(data, "estatisticas")
+	var saved := _object(data, "melhorias")
+	ecos = _count(data, "ecos", "ecos", -1, strict)
+	runs = _count(stats, "partidas", "estatisticas.partidas", -1, strict)
+	victories = _count(stats, "vitorias", "estatisticas.vitorias", -1, strict)
+	total_kills = _count(stats, "abates", "estatisticas.abates", -1, strict)
+	best_time = _seconds(stats, "melhor_tempo", "estatisticas.melhor_tempo", strict)
 	for definition in UPGRADES:
 		var key := String(definition.id)
-		_levels[definition.id] = clampi(int(saved.get(key, 0)), 0, definition.costs.size())
+		var label := "melhorias." + key
+		_levels[definition.id] = _count(saved, key, label, definition.costs.size(), strict)
 
 
+## Número inteiro, de 0 até `limit` (-1 = sem limite além de MAX_COUNT). Ausente = 0.
+func _count(source: Dictionary, key: String, label: String, limit: int, strict: bool) -> int:
+	if not source.has(key):
+		return 0
+	var value: Variant = source[key]
+	if not _is_number(value):
+		_note(strict, "%s não é um número" % label)
+		return 0
+	var number := float(value)
+	if number < 0.0:
+		_note(strict, "%s negativo (%s)" % [label, value])
+		return 0
+	if number != floorf(number):
+		_note(strict, "%s fracionado (%s)" % [label, value])
+	var top := limit if limit >= 0 else MAX_COUNT
+	if number > float(top):
+		_note(strict, "%s acima do limite (%s > %d)" % [label, value, top])
+		return top
+	return int(number)
+
+
+func _seconds(source: Dictionary, key: String, label: String, strict: bool) -> float:
+	if not source.has(key):
+		return 0.0
+	var value: Variant = source[key]
+	if not _is_number(value) or float(value) < 0.0:
+		_note(strict, "%s inválido" % label)
+		return 0.0
+	return minf(float(value), float(MAX_COUNT))
+
+
+## O objeto em `key`, ou um objeto vazio se não existir ou não for objeto.
+static func _object(data: Dictionary, key: String) -> Dictionary:
+	var value: Variant = data.get(key)
+	return value if value is Dictionary else {}
+
+
+func _note(strict: bool, issue: String) -> void:
+	if strict:
+		load_issues.append(issue)
+
+
+## Dados para salvar. Campos desconhecidos lidos do arquivo são mantidos.
 func to_dict() -> Dictionary:
-	var saved := {}
+	var data := _raw.duplicate(true)
+	var saved := _object(data, "melhorias")
 	for definition in UPGRADES:
 		saved[String(definition.id)] = level_of(definition.id)
-	return {
-		"versao": VERSION,
-		"ecos": ecos,
-		"melhorias": saved,
-		"estatisticas":
-		{
-			"partidas": runs,
-			"vitorias": victories,
-			"melhor_tempo": best_time,
-			"abates": total_kills,
-		},
-	}
+	var stats := _object(data, "estatisticas")
+	stats["partidas"] = runs
+	stats["vitorias"] = victories
+	stats["melhor_tempo"] = best_time
+	stats["abates"] = total_kills
+	data["versao"] = VERSION
+	data["ecos"] = ecos
+	data["melhorias"] = saved
+	data["estatisticas"] = stats
+	return data
 
 
 func save() -> bool:
