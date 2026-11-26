@@ -20,6 +20,13 @@ Os limites são independentes: cada melhoria pode chegar ao próprio nível máx
 
 ## Salvamento
 
-O progresso fica em `user://progresso.json`, com formato versionado. No navegador, `user://` usa o armazenamento local do site. O save tem migração entre versões. Um arquivo de uma versão mais nova do jogo é lido sem ser sobrescrito. Um arquivo com JSON inválido é copiado como `.corrompido` e o progresso recomeça do zero. A validação da estrutura interna ainda é incompleta: veja [[desenvolvimento/problemas-conhecidos]].
+O progresso fica em `user://progresso.json`, com formato versionado. No navegador, `user://` usa o armazenamento local do site. O save tem migração entre versões e valida a estrutura e os tipos antes de usar os dados.
+
+- **Estrutura inválida** (JSON inválido, raiz que não é objeto ou campos estruturais obrigatórios com tipo errado): o arquivo original é preservado numa cópia `.corrompido` e o jogo inicia um progresso novo.
+- **Campo individual inválido** (tipo errado, valor negativo, fracionado ou nível acima do limite): o campo é corrigido, preservando os demais dados válidos; também é mantida cópia de recuperação.
+- **Versão futura:** o arquivo é tratado como somente leitura e nunca é sobrescrito por uma versão antiga do jogo.
+- **Campos desconhecidos:** são preservados.
+
+Essas regras foram implementadas na manutenção pós-0.3-alpha e cobertas pela suíte de testes de save.
 
 O formato atual é a versão 1.
