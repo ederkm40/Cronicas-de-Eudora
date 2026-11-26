@@ -1,9 +1,9 @@
 ---
 titulo: Roadmap
-resumo: Próximas etapas do desenvolvimento e o que já foi antecipado pela versão 0.3-alpha.
+resumo: Etapas integradas, desenvolvimento futuro e validação externa adiada.
 ordem: 20
 ---
-O projeto está na **fase 1, protótipo**. O critério para sair dela é testar o jogo com 5 a 10 pessoas em celulares físicos e confirmar que elas querem jogar novamente.
+O projeto está na **fase 1, protótipo**. O critério para sair dela continua sendo testar o jogo com 5 a 10 pessoas em celulares físicos e confirmar que elas querem jogar novamente. Por decisão do proprietário, essa validação fica para depois de mais evolução do jogo.
 
 ## Etapas concluídas
 
@@ -13,27 +13,26 @@ O projeto está na **fase 1, protótipo**. O critério para sair dela é testar 
 | 0.2-alpha | Experiência, level-up e seis melhorias | {PUBLICADO} |
 | Infraestrutura | Wiki, prévias por PR, memória e ferramentas de QA | {PUBLICADO} |
 | 0.3-alpha | Expansão do combate e progressão inicial | {PUBLICADO} |
+| Manutenção pós-0.3 + Documento Mestre | Estabilidade, save, build de produção/QA e documentação | {PUBLICADO} |
+| 0.4-alpha — O Despertar de Eudora | Configurações mobile, feedback audiovisual, evoluções, inimigos, elites, eventos e chefe | {PUBLICADO} |
 
-## Funcionalidades antecipadas na 0.3
+## Situação após a 0.4-alpha
 
-| Área originalmente prevista | O que já entrou | O que continua pendente |
-|---|---|---|
-| 0.4 — variedade de inimigos e chefe | Quatro tipos especiais e Sentinela do Eco aos 10 min | Teste e ajuste com pessoas |
-| 0.5 — esquiva e controles | Esquiva por duplo toque e Espaço | Opções de destro/canhoto e ajuste do joystick |
-| 0.6 — fim de partida | Vitória ao derrotar o chefe, resultados e reinício limpo | Equilíbrio validado com jogadores |
-| Fase 2 — progressão permanente | Ecos e quatro melhorias permanentes | Loot, equipamentos, cidade e demais sistemas da fase 2 |
+A 0.4 ampliou o núcleo de gameplay e implementou a personalização mobile aprovada. As mecânicas novas de gameplay (evoluções, Pacto do Eco, novos inimigos e elites, eventos e alterações no chefe) permanecem experimentais no eixo de design até decisão do proprietário.
 
 ## Próxima prioridade
 
-A próxima proposta é testar com 5 a 10 pessoas em celulares físicos, observando:
+Continuar a evolução do jogo antes de iniciar a validação externa. A próxima etapa de desenvolvimento deverá ser definida com base no estado atual do código, no Documento Mestre e nas prioridades do proprietário.
 
-- Ritmo das hordas.
-- Dificuldade e legibilidade dos ataques do chefe.
+A validação com 5 a 10 pessoas não foi cancelada: está **adiada**. Quando retomada, deverá observar:
+
+- Ritmo das hordas e variedade das partidas.
+- Dificuldade e legibilidade dos ataques da Sentinela.
+- Valor e risco da Fenda do Eco.
 - Naturalidade do duplo toque para esquivar.
-- Legibilidade da interface em retrato e paisagem.
+- Usabilidade das configurações para destros e canhotos.
+- Legibilidade em retrato e paisagem.
 - Desempenho real e FPS com a horda cheia.
-
-Essa proposta de validação não altera automaticamente o escopo aprovado da próxima versão.
 
 ## Depois do protótipo
 
