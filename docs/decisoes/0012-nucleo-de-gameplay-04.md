@@ -1,4 +1,4 @@
-# 0012: Núcleo de gameplay 0.4: estados em arrays, diretor de eventos, configurações próprias e som gerado no código
+# 0012: Gameplay da 0.4: estados em arrays, diretor de eventos, configurações próprias e som gerado no código
 
 | | |
 |---|---|

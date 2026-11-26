@@ -19,7 +19,7 @@
 1–9: Godot 4.7.2/Compatibility/Web sem threads; projeto em texto; arrays + MultiMesh; pausa nativa; melhorias recalculadas; `gh-pages` com prévias; Wiki própria; Claude desenvolve e ChatGPT documenta; QA só no CI.
 10. Arquitetura do combate 0.3 (item 9, a ponte por `?teste=1`, substituído pela 0011).
 11. Build de produção (preset `Web`) sem a ponte de testes; build `Web QA` só no CI para o Playwright.
-12. Núcleo de gameplay 0.4: estados em arrays do `EnemyManager`, um ponto de entrada para o dano (`_hurt`), evoluções como dados, `EventDirector` separado, configurações em arquivo próprio, som gerado no código.
+12. Gameplay da 0.4: estados em arrays do `EnemyManager`, um ponto de entrada para o dano (`_hurt`), evoluções como dados, `EventDirector` separado, configurações em arquivo próprio, som gerado no código.
 
 ## Pendências
 
