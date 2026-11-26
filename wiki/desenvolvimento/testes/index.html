@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Testes · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Como a versão 0.3-alpha é validada e quais resultados foram registrados no PR #5.">
+<meta name="description" content="Testes automatizados registrados nas versões 0.3-alpha e 0.4-alpha; validação humana ainda pendente.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -36,30 +36,32 @@
 <article>
 <h1>Testes</h1>
 
-<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#testes-do-godot">Testes do Godot</a></li><li><a href="#ci-e-navegador">CI e navegador</a></li><li><a href="#limite-importante">Limite importante</a></li><li><a href="#manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</a></li></ol></details>
-<p>O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados durante a entrega da 0.3-alpha, não uma nova execução desta atualização editorial.</p>
-<h2 id="testes-do-godot">Testes do Godot</h2>
-<p>A 0.3-alpha registrou <strong>41 testes em quatro suítes e 4.370 verificações</strong>:</p>
-<div class="tabela"><table><thead><tr><th>Suíte</th><th>Cobertura</th></tr></thead><tbody><tr><td><code>progressao.gd</code></td><td>XP, coleta, level-up, melhorias, limites, pausa, derrota e reinício</td></tr><tr><td><code>armas_e_ofertas.gd</code></td><td>Arsenal, Aura, Lâmina, níveis, ofertas, troca e bloqueio</td></tr><tr><td><code>inimigos_e_chefe.gd</code></td><td>Mistura por tempo, comportamentos, avisos, chefe, fases e vitória</td></tr><tr><td><code>esquiva_e_encerramento.gd</code></td><td>Esquiva, invulnerabilidade, resultados, reinício e progressão permanente</td></tr></tbody></table></div>
-<p>Também foram registrados:</p>
-<ul><li><code>tests/smoke_test.gd</code>: teste de ponta a ponta.</li><li><code>tests/long_simulation.gd</code>: simulação prolongada de 300 s.</li><li><code>tests/balance_simulation.gd</code>: simulações de armas, partidas e encontro final. Não é executada no CI.</li></ul>
-<h2 id="ci-e-navegador">CI e navegador</h2>
-<p>No PR #5, o relatório registrou:</p>
-<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado informado</th></tr></thead><tbody><tr><td><code>gdlint</code></td><td>Sem problemas</td></tr><tr><td><code>gdformat --check</code></td><td>Arquivos GDScript alterados formatados</td></tr><tr><td>Testes do Godot</td><td>41 testes, 4.370 verificações, zero falhas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação prolongada</td><td>Aprovada</td></tr><tr><td>Testes da Wiki e montagem do site</td><td>14 e 7 testes aprovados</td></tr><tr><td>Playwright</td><td>18 aprovados e 3 pulados por desenho, nos três perfis</td></tr></tbody></table></div>
-<p>Os testes Playwright abrem o jogo exportado e verificam joystick, esquiva, teclado, level-up, vitória, derrota e reinício.</p>
-<h2 id="limite-importante">Limite importante</h2>
-<p>Os perfis de Pixel 7 são emulação de tela e toque em Chromium de computador. <strong>Não equivalem a teste em celular físico.</strong> O desempenho de CPU medido sem renderização também não representa FPS real em um aparelho.</p>
-<p>Consulte <a href="../relatorios/">os relatórios por versão</a> para os detalhes e as condições de cada medição.</p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#0-4-alpha-pr-10">0.4-alpha — PR #10</a></li><li><a href="#manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</a></li><li><a href="#0-3-alpha">0.3-alpha</a></li><li><a href="#limite-da-validacao">Limite da validação</a></li></ol></details>
+<p>O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados em cada entrega, não uma nova execução desta atualização editorial.</p>
+<h2 id="0-4-alpha-pr-10">0.4-alpha — PR #10</h2>
+<h3 id="godot-e-simulacoes">Godot e simulações</h3>
+<p>A 0.4-alpha registrou <strong>71 testes em seis suítes, 4.613 verificações e zero falhas</strong>. A nova suíte despertar.gd acrescentou 20 testes, cobrindo evoluções, Pacto do Eco, elites, Tecelão, Semeador, chefe, Fenda, Maré, configurações mobile, canhoto, joystick fixo, pausa, sons e números de dano.</p>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado registrado</th></tr></thead><tbody><tr><td>gdlint</td><td>Sem problemas no CI</td></tr><tr><td>gdformat --check</td><td>34 arquivos sem alterações de formatação</td></tr><tr><td>Testes do Godot</td><td>71 testes, 4.613 verificações, 0 falhas</td></tr><tr><td>Smoke test</td><td>Aprovado; elite, Fenda, pausa, sons e estouros forçados</td></tr><tr><td>Simulação prolongada no CI</td><td>300 s, aprovada</td></tr><tr><td>Simulações locais prolongadas</td><td>600 s e 720 s no cenário invulnerável com armas máximas; nós constantes e memória estável</td></tr><tr><td>Wiki / montagem do site</td><td>Testes aprovados</td></tr><tr><td>Build de produção</td><td>Sem ponte de QA; QA permanece restrita aos testes</td></tr></tbody></table></div>
+<h3 id="navegador">Navegador</h3>
+<div class="tabela"><table><thead><tr><th>Build</th><th>Resultado registrado</th></tr></thead><tbody><tr><td>QA, computador, celular em pé e deitado</td><td>24 aprovados, 3 pulados por desenho</td></tr><tr><td>Produção, computador, celular em pé e deitado</td><td>11 aprovados, 1 pulado por desenho</td></tr></tbody></table></div>
+<p>Os perfis de celular são emulações de tela e toque no Chromium de computador. Não equivalem a aparelhos físicos.</p>
+<h3 id="balanceamento-e-desempenho">Balanceamento e desempenho</h3>
+<p>As simulações de balanceamento são instrumentos automáticos, não jogadores humanos:</p>
+<ul><li>O piloto automático venceu a Sentinela nas 3 sementes do encontro final, levando de 165,7 a 263,5 segundos. Isso sugere que o chefe pode ter ficado fácil demais.</li><li>O piloto não entra na Fenda do Eco; portanto, o valor real da recompensa não foi medido.</li><li>O custo médio de CPU por quadro subiu aproximadamente 10% a 20% e o p99 cerca de 33% em relação à 0.3, no mesmo servidor de testes.</li><li>O primeiro quadro pode chegar a aproximadamente 55 ms pela geração dos sons. Os sons ficam em cache e não são sintetizados novamente a cada partida.</li><li><strong>O FPS em celular físico não foi medido.</strong></li></ul>
+<p>Relatório técnico: <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.4-alpha/RELATORIO.md" rel="noopener">0.4-alpha — O Despertar de Eudora</a>. Workflow de integração: <a href="https://github.com/ederkm40/Cronicas-de-Eudora/actions/runs/45902410165" rel="noopener">GitHub Actions #45902410165</a>.</p>
 <h2 id="manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</h2>
-<p>A etapa de manutenção ampliou a cobertura para <strong>51 testes em cinco suítes, com 4.482 verificações e zero falhas</strong>. Esses números são os registrados no CI e no relatório do PR #7, não uma execução feita durante esta atualização editorial.</p>
+<p>A etapa de manutenção registrou <strong>51 testes em cinco suítes, 4.482 verificações e zero falhas</strong>.</p>
 <div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado registrado</th></tr></thead><tbody><tr><td>Testes do Godot</td><td>51 testes, 4.482 verificações, 0 falhas</td></tr><tr><td>Conferência ao contrário (save e joystick)</td><td>5 testes falham quando as correções são removidas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação prolongada de 300 s</td><td>Aprovada</td></tr><tr><td>Wiki / montagem do site</td><td>14 / 7 testes aprovados</td></tr><tr><td>Verificação das builds</td><td>Produção: 0 referências à ponte de QA; QA: 3</td></tr><tr><td>Playwright na build Web QA, 3 perfis</td><td>21 aprovados, 3 pulados por desenho</td></tr><tr><td>Playwright na build de produção, 3 perfis</td><td>11 aprovados, 1 pulado por desenho</td></tr></tbody></table></div>
-<p>A build de produção é a única publicada. A build Web QA, que contém a ponte usada pelos testes de jogabilidade, é restrita ao CI. Os três perfis de navegador incluem desktop e emulações de Pixel 7 em retrato e paisagem. <strong>A emulação não substitui testes em aparelhos físicos</strong>, que continuam pendentes.</p>
-<p>Relatório técnico: <code>docs/versoes/manutencao-pos-0.3/RELATORIO.md</code>. Pull Request: <a href="https://github.com/ederkm40/Cronicas-de-Eudora/pull/7" rel="noopener">#7</a>.</p>
+<h2 id="0-3-alpha">0.3-alpha</h2>
+<p>A 0.3-alpha registrou <strong>41 testes em quatro suítes e 4.370 verificações</strong>.</p>
+<div class="tabela"><table><thead><tr><th>Suíte</th><th>Cobertura</th></tr></thead><tbody><tr><td>progressao.gd</td><td>XP, coleta, level-up, melhorias, limites, pausa, derrota e reinício</td></tr><tr><td>armas_e_ofertas.gd</td><td>Arsenal, Aura, Lâmina, níveis, ofertas, troca e bloqueio</td></tr><tr><td>inimigos_e_chefe.gd</td><td>Mistura por tempo, comportamentos, avisos, chefe, fases e vitória</td></tr><tr><td>esquiva_e_encerramento.gd</td><td>Esquiva, invulnerabilidade, resultados, reinício e progressão permanente</td></tr></tbody></table></div>
+<h2 id="limite-da-validacao">Limite da validação</h2>
+<p><strong>Ainda não houve teste com pessoas nem em celular físico.</strong> A validação com 5 a 10 jogadores foi adiada pelo proprietário para depois de mais evolução do jogo. Os testes automatizados continuam necessários, mas não provam conforto de uso, diversão ou equilíbrio para pessoas.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit f51db23</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 7a7daf2</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/testes.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

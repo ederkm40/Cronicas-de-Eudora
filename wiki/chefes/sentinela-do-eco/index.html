@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sentinela do Eco · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Chefe do encontro final, com investida, erupções e rajadas de projéteis.">
+<meta name="description" content="Chefe do encontro final, com investida, erupções, rajadas e mecânicas experimentais da 0.4-alpha.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -35,8 +35,8 @@
 <nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Chefes</a></nav>
 <article>
 <h1>Sentinela do Eco</h1>
-<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.3-alpha</span></p>
-<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#valores-e-encontro">Valores e encontro</a></li><li><a href="#ataques">Ataques</a></li><li><a href="#fase-2">Fase 2</a></li><li><a href="#estrategia">Estratégia</a></li></ol></details>
+<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.4-alpha</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#valores-e-encontro">Valores e encontro</a></li><li><a href="#ataques">Ataques</a></li><li><a href="#mecanicas-experimentais-da-0-4-alpha">Mecânicas experimentais da 0.4-alpha</a></li><li><a href="#fase-2">Fase 2</a></li><li><a href="#equilibrio-e-validacao">Equilíbrio e validação</a></li></ol></details>
 <p>O <strong>Sentinela do Eco</strong> é o chefe do encontro final. Um aviso aparece aos 9 min e 50 s; aos 10 min, o chefe surge na borda superior da área visível.</p>
 <p>A partida não termina quando ele aparece. <strong>A vitória só acontece quando o Sentinela é derrotado.</strong></p>
 <h2 id="valores-e-encontro">Valores e encontro</h2>
@@ -44,18 +44,19 @@
 <p>Durante o encontro, o ritmo das hordas cai para 30% do ritmo normal e novos Lançadores deixam de surgir. Os que já estão em campo permanecem.</p>
 <h2 id="ataques">Ataques</h2>
 <div class="tabela"><table><thead><tr><th>Ataque</th><th>Aviso</th><th>Efeito</th></tr></thead><tbody><tr><td>Investida</td><td>Faixa vermelha no chão por 1 s</td><td>Avança 9 m a 16 m/s; causa 28 de dano se atingir o jogador.</td></tr><tr><td>Erupção</td><td>Círculos perigosos no chão por 1,1 s</td><td>Causa 30 de dano em cada execução, se o jogador estiver em uma das áreas.</td></tr><tr><td>Rajada</td><td>Brilho lilás por 0,7 s</td><td>Dispara um anel de 14 projéteis, cada um com 12 de dano.</td></tr></tbody></table></div>
-<p>Depois de atacar, o chefe fica parado e vulnerável durante a recuperação.</p>
+<h2 id="mecanicas-experimentais-da-0-4-alpha">Mecânicas experimentais da 0.4-alpha</h2>
+<ul><li><strong>Janela de vulnerabilidade:</strong> depois de cada investida, o Sentinela fica atordoado por 2 s e recebe +50% de dano. O aviso é “Ponto fraco exposto: ataque agora!”.</li><li><strong>Prisão de ecos:</strong> um anel de círculos aparece em torno do jogador, com uma única saída. O aviso dura 1,3 s; ficar sobre um círculo causa 26 de dano.</li><li><strong>Ordem dos ataques:</strong> investida, erupção, rajada e Prisão de ecos.</li><li>Na fase 2, o primeiro reforço é um Tecelão. O escudo do Tecelão não protege o chefe.</li></ul>
 <h2 id="fase-2">Fase 2</h2>
 <p>Quando a vida fica abaixo de 50%, o Sentinela entra na fase 2:</p>
-<ul><li>Avisos e pausas de ataque ficam 25% mais curtos.</li><li>A erupção passa a usar quatro áreas adicionais ao redor do jogador, em vez de duas.</li><li>A rajada passa a ser dupla.</li><li>Seis reforços surgem: Voláteis e Espreitadores.</li></ul>
-<h2 id="estrategia">Estratégia</h2>
-<p>Leia os avisos no chão e priorize sair das áreas perigosas. A recuperação de 1,4 s depois dos ataques é uma janela para se aproximar e causar dano. Não confunda sobreviver ao tempo do encontro com vencer: o chefe precisa ser derrotado.</p>
-<p>O equilíbrio foi ajustado por simulações automáticas. Ainda falta validação com jogadores.</p>
+<ul><li>Avisos e pausas de ataque ficam 25% mais curtos.</li><li>A erupção passa a usar quatro áreas adicionais ao redor do jogador, em vez de duas.</li><li>A rajada passa a ser dupla.</li><li>Seis reforços surgem: Voláteis, Espreitadores e o primeiro Tecelão.</li></ul>
+<h2 id="equilibrio-e-validacao">Equilíbrio e validação</h2>
+<p>O piloto automático venceu as três simulações de chefe da 0.4, entre 165,7 e 263,5 segundos. Isso é um alerta de possível facilidade excessiva, não uma conclusão sobre o equilíbrio para pessoas.</p>
+<p>As novas mecânicas do chefe estão implementadas e testadas automaticamente, mas permanecem PROPOSTO_NAO_APROVADO no eixo de design até decisão do proprietário. Não houve teste com pessoas nem em celular físico.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit f51db23</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 7a7daf2</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/chefes/sentinela-do-eco.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

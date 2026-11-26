@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Problemas conhecidos · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Limitações da versão 0.3-alpha que ainda precisam de validação ou correção.">
+<meta name="description" content="Limitações da versão 0.4-alpha que ainda precisam de observação, correção ou validação.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -37,14 +37,14 @@
 <h1>Problemas conhecidos</h1>
 
 
-<div class="tabela"><table><thead><tr><th>Problema ou limitação</th><th>Situação</th></tr></thead><tbody><tr><td>Jogo ainda não testado em celular físico</td><td>Pendente de teste com pessoas e aparelhos reais.</td></tr><tr><td>Destro/canhoto e ajuste do joystick</td><td>Direção de design aprovada, mas ainda não implementada.</td></tr><tr><td>Equilíbrio do encontro com o chefe</td><td>Ajustado por simulações automáticas, sem balanceamento definitivo contra jogadores humanos. Na última simulação, o piloto automático sobreviveu ao encontro, mas não derrotou o chefe (tirou 2.457 e 3.018 dos 3.800 de vida). A vida do chefe é o primeiro número a revisar com pessoas.</td></tr><tr><td>Câmera em paisagem</td><td>Mantém aproximadamente 14 m de largura e revela pouco mapa na vertical.</td></tr><tr><td>Orbes distantes</td><td>Permanecem no chão até o jogador se aproximar; decisão sobre descarte, fusão ou atração de longe continua pendente.</td></tr><tr><td>Desempenho no celular</td><td>O custo de CPU por quadro dobrou em relação à 0.2; o FPS em aparelhos reais ainda não foi medido.</td></tr><tr><td>Arte e áudio</td><td>Gráficos ainda provisórios e sem som final.</td></tr></tbody></table></div>
-<p>A retomada do joystick após o level-up foi corrigida e testada no Godot e no Chromium emulado, mas ainda precisa de confirmação em celulares físicos. A ponte de QA foi removida da build de produção; a build com ferramentas de QA existe apenas no CI. O save agora valida estrutura e tipos, preserva cópia de estruturas/campos inválidos e não sobrescreve arquivos de versão futura.</p>
+<div class="tabela"><table><thead><tr><th>Problema ou limitação</th><th>Situação</th></tr></thead><tbody><tr><td>Jogo ainda não testado em celular físico nem por pessoas</td><td>Pendente. O proprietário adiou a rodada de 5 a 10 jogadores até o jogo avançar mais.</td></tr><tr><td>Equilíbrio da Sentinela do Eco</td><td>O piloto automático venceu 3 de 3 simulações na 0.4, em 165,7 a 263,5 s. É um alerta de possível facilidade excessiva, não uma conclusão sobre a experiência humana.</td></tr><tr><td>Fenda do Eco</td><td>O piloto automático não entra na área; o valor real da recompensa e o risco de permanecer nela ainda não foram medidos.</td></tr><tr><td>Som procedural</td><td>Os 12 efeitos são gerados pelo código e passaram por testes técnicos, mas não foram ouvidos nem avaliados por uma pessoa. São provisórios.</td></tr><tr><td>Botão de pausa e áreas seguras</td><td>Não foi conferido em aparelhos físicos com entalhes, recortes de câmera ou bordas arredondadas.</td></tr><tr><td>Desempenho em celulares</td><td>No servidor de testes, o custo médio por quadro subiu aproximadamente 10% a 20% e o p99 cerca de 33% em relação à 0.3. O FPS real em celular não foi medido.</td></tr><tr><td>Primeiro quadro de áudio</td><td>A geração inicial dos sons pode provocar um quadro de cerca de 55 ms; ocorre uma vez e os sons ficam em cache entre partidas.</td></tr><tr><td>Atração do eco</td><td>O texto ainda diz “raio de coleta”, mas o efeito real altera o raio do ímã.</td></tr><tr><td>Orbes distantes</td><td>Permanecem no chão até o jogador se aproximar; não há atração global.</td></tr><tr><td>Arte e áudio finais</td><td>Os efeitos visuais e sonoros ainda são provisórios; não há pacote audiovisual final.</td></tr><tr><td>Organização do EnemyManager</td><td>O relatório da 0.4 registra 20 métodos públicos e 890 linhas; acompanhar a manutenção da responsabilidade do gerenciador.</td></tr></tbody></table></div>
+<p>A retomada do joystick após o level-up e as configurações mobile passaram por testes automatizados em Godot e Chromium emulado. Isso não confirma o comportamento em aparelhos físicos.</p>
 <p>O piloto automático usado nas simulações é uma ferramenta simples e não substitui observações de jogadores.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit f51db23</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 7a7daf2</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/problemas-conhecidos.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

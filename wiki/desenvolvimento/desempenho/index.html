@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Desempenho · Crônicas de Eudora Wiki</title>
-<meta name="description" content="Medições da versão 0.3-alpha e limites do que elas demonstram.">
+<meta name="description" content="Medições das versões 0.3-alpha e 0.4-alpha e limites do que elas demonstram.">
 <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../../assets/wiki.css">
 </head>
@@ -36,15 +36,16 @@
 <article>
 <h1>Desempenho</h1>
 
-<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#medicoes-registradas-na-0-3-alpha">Medições registradas na 0.3-alpha</a></li><li><a href="#como-o-projeto-reduz-custo">Como o projeto reduz custo</a></li><li><a href="#no-celular">No celular</a></li></ol></details>
-<p>O jogo foi projetado para suportar hordas de até <strong>300 inimigos</strong> (de todos os tipos; o chefe fica fora desse limite), além de orbes, projéteis e efeitos.</p>
-<h2 id="medicoes-registradas-na-0-3-alpha">Medições registradas na 0.3-alpha</h2>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#medicoes-registradas-na-0-4-alpha">Medições registradas na 0.4-alpha</a></li><li><a href="#como-o-projeto-reduz-custo">Como o projeto reduz custo</a></li><li><a href="#no-celular">No celular</a></li></ol></details>
+<p>O jogo foi projetado para suportar hordas de até <strong>300 inimigos</strong> de todos os tipos, além de orbes, projéteis e efeitos. O chefe é contado separadamente em algumas medições.</p>
+<h2 id="medicoes-registradas-na-0-4-alpha">Medições registradas na 0.4-alpha</h2>
 <p>Os números abaixo são tempo de CPU por quadro em simulações sem renderização. Não representam FPS de celular.</p>
-<div class="tabela"><table><thead><tr><th>Cenário</th><th style="text-align:right">Média</th><th style="text-align:right">p95</th><th style="text-align:right">p99</th><th style="text-align:right">Pior quadro</th></tr></thead><tbody><tr><td>0.2 (referência), 300 s, piloto padrão</td><td style="text-align:right">0,57 ms</td><td style="text-align:right">1,43 ms</td><td style="text-align:right">2,00 ms</td><td style="text-align:right">12,3 ms</td></tr><tr><td>0.3, 300 s, piloto padrão</td><td style="text-align:right">1,30 ms</td><td style="text-align:right">3,30 ms</td><td style="text-align:right">3,61 ms</td><td style="text-align:right">13,9 ms</td></tr><tr><td>0.3, 660 s, armas no máximo e chefe</td><td style="text-align:right">3,01 ms</td><td style="text-align:right">4,40 ms</td><td style="text-align:right">5,67 ms</td><td style="text-align:right">17,5 ms</td></tr></tbody></table></div>
-<p>As duas primeiras linhas rodaram na mesma máquina, em sequência: o custo por quadro da 0.3 <strong>mais que dobrou</strong> em relação à 0.2, por causa do comportamento por tipo de inimigo, da cor por instância e dos seis MultiMesh de inimigos. No CI (<code>ubuntu-latest</code>), a simulação de 300 s da 0.3 registrou média de 2,17 ms e p99 de 5,80 ms.</p>
-<p>No pior caso medido, a simulação alcançou 301 entidades inimigas contando o chefe, 400 orbes e 39 projéteis inimigos. A memória aumentou cerca de 8,4 MB em 11 minutos, sem crescimento contínuo observado no teste.</p>
+<div class="tabela"><table><thead><tr><th>Cenário</th><th style="text-align:right">Média</th><th style="text-align:right">p95</th><th style="text-align:right">p99</th><th style="text-align:right">Pior quadro</th></tr></thead><tbody><tr><td>0.3, 600 s, piloto padrão</td><td style="text-align:right">1,48 ms</td><td style="text-align:right">3,33 ms</td><td style="text-align:right">3,81 ms</td><td style="text-align:right">13,1 ms</td></tr><tr><td>0.4, 600 s, piloto padrão</td><td style="text-align:right">1,64–1,83 ms</td><td style="text-align:right">3,71–4,12 ms</td><td style="text-align:right">5,05–5,17 ms</td><td style="text-align:right">54 ms*</td></tr><tr><td>0.4, 720 s, invulnerável, armas máximas e chefe</td><td style="text-align:right">3,29 ms</td><td style="text-align:right">5,42 ms</td><td style="text-align:right">6,03 ms</td><td style="text-align:right">59 ms*</td></tr></tbody></table></div>
+<p>\* O pior quadro é o primeiro, durante a geração dos 12 sons (aproximadamente 55 ms). Os sons ficam em cache e não são sintetizados novamente a cada partida.</p>
+<p>Em relação à 0.3, o custo médio por quadro subiu aproximadamente <strong>10% a 20%</strong>, e o p99 cerca de <strong>33%</strong>. O aumento foi associado aos estados por inimigo, ao recálculo do escudo e às cores por instância.</p>
+<p>Na simulação de 720 s, o cenário chegou a 301 inimigos contando o chefe, 400 orbes e 21 projéteis inimigos. A árvore manteve 187 nós, sem crescimento entre reinícios; a memória aumentou cerca de 13,8 MB no teste.</p>
 <h2 id="como-o-projeto-reduz-custo">Como o projeto reduz custo</h2>
-<ul><li>Inimigos, projéteis, orbes, lâminas e efeitos repetidos usam arrays e MultiMesh.</li><li>A colisão utiliza uma grade espacial.</li><li>A Aura causa dano por pulso, não a cada quadro.</li><li>O reinício recria a cena e os sistemas da partida.</li></ul>
+<ul><li>Inimigos, projéteis, orbes, lâminas e efeitos repetidos usam arrays e MultiMesh.</li><li>A colisão utiliza uma grade espacial.</li><li>A Aura causa dano por pulso, não a cada quadro.</li><li>O reinício recria a cena e os sistemas da partida.</li><li>Os sons gerados são armazenados em cache entre partidas.</li></ul>
 <h2 id="no-celular">No celular</h2>
 <p>Os testes Pixel 7 são emulação em Chromium de computador. <strong>Ainda não há medição em aparelho físico.</strong> O rodapé do jogo exibe o contador de FPS e o número de inimigos; esses dados precisam ser observados com a horda cheia em dispositivos reais.</p>
 <p>Relatórios e contexto: <a href="../relatorios/">Relatórios</a>.</p>
@@ -52,7 +53,7 @@
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit f51db23</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 7a7daf2</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/desempenho.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>
