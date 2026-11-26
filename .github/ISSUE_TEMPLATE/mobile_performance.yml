@@ -1,0 +1,64 @@
+name: Desempenho e tela no celular
+description: Travamentos, FPS baixo, tela cortada, orientação ou controles de toque.
+title: "[Celular] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        O jogo mostra no rodapé o **FPS** (quadros por segundo) e o número de **inimigos**. Se puder, anote esses números quando o problema acontecer.
+  - type: dropdown
+    id: problema
+    attributes:
+      label: Tipo de problema
+      multiple: true
+      options:
+        - Jogo lento ou travando
+        - Tela cortada ou fora do lugar
+        - Problema na tela deitada (paisagem)
+        - Joystick ou toque não responde bem
+        - Jogo não abre
+        - Aparelho esquenta ou gasta muita bateria
+    validations:
+      required: true
+  - type: input
+    id: fps
+    attributes:
+      label: FPS e número de inimigos no momento do problema
+      placeholder: "Ex.: FPS 18 · Inimigos 250"
+  - type: dropdown
+    id: orientacao
+    attributes:
+      label: Orientação da tela
+      options:
+        - Em pé (retrato)
+        - Deitada (paisagem)
+        - As duas
+    validations:
+      required: true
+  - type: input
+    id: aparelho
+    attributes:
+      label: Modelo do celular
+      placeholder: "Ex.: Motorola Moto G54"
+    validations:
+      required: true
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador
+      placeholder: "Ex.: Chrome, Samsung Internet, Safari"
+    validations:
+      required: true
+  - type: input
+    id: endereco
+    attributes:
+      label: Endereço jogado
+      placeholder: "https://ederkm40.github.io/Cronicas-de-Eudora/"
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que aconteceu?
+      description: Capturas de tela ou vídeos ajudam muito.
+    validations:
+      required: true

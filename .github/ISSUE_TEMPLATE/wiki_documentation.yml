@@ -1,0 +1,34 @@
+name: Wiki e documentação
+description: Correção ou sugestão para a Wiki ou para os documentos do projeto.
+title: "[Wiki] "
+labels: ["documentation"]
+body:
+  - type: input
+    id: pagina
+    attributes:
+      label: Página
+      description: Endereço da página da Wiki ou caminho do arquivo.
+      placeholder: "https://ederkm40.github.io/Cronicas-de-Eudora/wiki/melhorias/cadencia/"
+    validations:
+      required: true
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo
+      options:
+        - Informação errada (não bate com o jogo)
+        - Informação faltando
+        - Texto confuso
+        - Link quebrado
+        - Sugestão de artigo novo
+    validations:
+      required: true
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que precisa mudar?
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: A Wiki é mantida pelo ChatGPT a partir do repositório (pasta `wiki-src/`). Esta issue serve de pedido para a próxima revisão.

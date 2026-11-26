@@ -1,7 +1,9 @@
 extends SceneTree
 ## Simulação prolongada para avaliar desempenho e estabilidade.
 ##
-## Uso: godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=600
+## Uso:
+##   godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd \
+##     -- --segundos=600
 ## Opções (depois de "--"):
 ##   --segundos=N     tempo de partida simulado (padrão 600 = 10 minutos)
 ##   --invulneravel   o personagem não morre (bom para medir a horda cheia)
@@ -14,15 +16,16 @@ extends SceneTree
 ## Sai com código 1 se encontrar sinais de problema: memória ou nós crescendo sem parar,
 ## partida travada na pausa, ou nenhuma subida de nível.
 
+const KITE_SECONDS := 120.0
+
 var game: Node
 var _target_seconds := 600.0
 var _invulnerable := false
 var _rng := RandomNumberGenerator.new()
 
-var _sim_time := 0.0 ## Tempo de partida (sem pausas), somado entre reinícios.
-var _game_time := 0.0 ## Tempo da partida atual.
+var _sim_time := 0.0  ## Tempo de partida (sem pausas), somado entre reinícios.
+var _game_time := 0.0  ## Tempo da partida atual.
 var _configured := false
-const KITE_SECONDS := 120.0
 var _frames := 0
 var _frame_usec := PackedInt32Array()
 var _last_tick := 0
@@ -52,7 +55,12 @@ func _initialize() -> void:
 	_start_game()
 	_memory_start = OS.get_static_memory_usage()
 	_last_tick = Time.get_ticks_usec()
-	print("Simulação: %.0f s de partida, %s" % [_target_seconds, "invulnerável" if _invulnerable else "reinicia ao morrer"])
+	print(
+		(
+			"Simulação: %.0f s de partida, %s"
+			% [_target_seconds, "invulnerável" if _invulnerable else "reinicia ao morrer"]
+		)
+	)
 
 
 func _start_game() -> void:
@@ -113,10 +121,23 @@ func _process(delta: float) -> bool:
 
 	if _sim_time >= _next_report:
 		_next_report += 60.0
-		print("  %3d s · nível %d · inimigos %d · orbes %d · projéteis %d · nós %d · memória %.1f MB · mortes %d" % [
-			int(_sim_time), game.progression.level, game.enemies.count, game.orbs.count,
-			game.weapon.active_projectiles(), int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
-			OS.get_static_memory_usage() / 1048576.0, _deaths])
+		var linha := "  %3d s · nível %d · inimigos %d · orbes %d · projéteis %d"
+		linha += " · nós %d · memória %.1f MB · mortes %d"
+		print(
+			(
+				linha
+				% [
+					int(_sim_time),
+					game.progression.level,
+					game.enemies.count,
+					game.orbs.count,
+					game.weapon.active_projectiles(),
+					int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+					OS.get_static_memory_usage() / 1048576.0,
+					_deaths
+				]
+			)
+		)
 
 	if _sim_time >= _target_seconds:
 		_report()
@@ -140,10 +161,34 @@ func _report() -> void:
 	print("")
 	print("Resultado")
 	print("  Quadros: %d · tempo de partida: %.0f s" % [_frames, _sim_time])
-	print("  Tempo por quadro (CPU, este computador): média %.2f ms · p95 %.2f ms · p99 %.2f ms · pior %.1f ms" % [avg, p95, p99, worst])
-	print("  Máximos: inimigos %d · orbes %d · projéteis %d" % [_max_enemies, _max_orbs, _max_projectiles])
-	print("  Níveis escolhidos: %d · maior nível numa partida: %d · mortes/reinícios: %d" % [_level_ups, _max_level, _deaths])
-	print("  Nós na árvore agora: %d%s" % [nodes_now, "" if _nodes_after_first_game == -1 else " (na 1ª morte: %d)" % _nodes_after_first_game])
+	var tempos := "  Tempo por quadro (CPU, este computador): média %.2f ms · p95 %.2f ms"
+	tempos += " · p99 %.2f ms · pior %.1f ms"
+	print(tempos % [avg, p95, p99, worst])
+	print(
+		(
+			"  Máximos: inimigos %d · orbes %d · projéteis %d"
+			% [_max_enemies, _max_orbs, _max_projectiles]
+		)
+	)
+	print(
+		(
+			"  Níveis escolhidos: %d · maior nível numa partida: %d · mortes/reinícios: %d"
+			% [_level_ups, _max_level, _deaths]
+		)
+	)
+	print(
+		(
+			"  Nós na árvore agora: %d%s"
+			% [
+				nodes_now,
+				(
+					""
+					if _nodes_after_first_game == -1
+					else " (na 1ª morte: %d)" % _nodes_after_first_game
+				)
+			]
+		)
+	)
 	print("  Memória: %+.1f MB desde o início" % memory_growth)
 	print("  Pausa mais longa: %d quadros" % _longest_pause)
 
@@ -152,7 +197,10 @@ func _report() -> void:
 		_check(_deaths > 0, "o piloto deveria ter morrido e reiniciado pelo menos uma vez")
 	_check(_longest_pause < 120, "a partida ficou presa na pausa (%d quadros)" % _longest_pause)
 	if _nodes_after_first_game != -1:
-		_check(nodes_now <= _nodes_after_first_game + 40, "os nós cresceram entre reinícios (%d -> %d)" % [_nodes_after_first_game, nodes_now])
+		_check(
+			nodes_now <= _nodes_after_first_game + 40,
+			"os nós cresceram entre reinícios (%d -> %d)" % [_nodes_after_first_game, nodes_now]
+		)
 	_check(memory_growth < 64.0, "a memória cresceu %.1f MB" % memory_growth)
 
 	if _failures.is_empty():

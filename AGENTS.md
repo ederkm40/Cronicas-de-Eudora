@@ -51,6 +51,7 @@ Regras para não haver conflito:
 - Prioridade mobile. Objetos repetidos (inimigos, projéteis, orbes) em **arrays + MultiMesh**, nunca um nó por objeto. Sem sombras em tempo real; use `BlobShadow`.
 - Sistemas de jogo **pausáveis** por padrão. O level-up usa `SceneTree.paused`.
 - Melhorias recalculadas a partir da base em `Upgrades.refresh()`.
+- GDScript passa no `gdlint` (regras padrão do gdtoolkit 4.5.0, sem exceções). Todo arquivo `.gd` criado ou alterado segue o `gdformat`. O código antigo não é reformatado em massa.
 - Tudo em texto. Commite os `.uid` e `.import` gerados pelo Godot. Não commite `.godot/`, `build/`, arquivos temporários, saves ou credenciais.
 - Pastas sem conteúdo do jogo (`docs/`, `tools/`, `wiki-src/`) têm `.gdignore`, para não entrarem no `.pck`.
 
@@ -64,13 +65,26 @@ Regras para não haver conflito:
 
 ## Custo zero
 
-O proprietário **não autoriza despesas**. Use só: GitHub Free, GitHub Pages, GitHub Actions com runners padrão, Godot, Python e Node já disponíveis, e recursos do navegador.
+O proprietário **não autoriza despesas**. Use só: GitHub Free, GitHub Pages, GitHub Actions com runners `ubuntu-latest` padrão, Godot, Python, Node.js, ferramentas gratuitas de código aberto e recursos do navegador.
 
-Não use: Codespaces, runners pagos, hospedagem ou domínios pagos, bancos de dados externos, APIs pagas, serviços externos de Wiki, bibliotecas por CDN, dependências externas obrigatórias, ou qualquer coisa que possa gerar cobrança.
+Não use: Codespaces, runners pagos ou maiores, serviços de navegadores na nuvem (BrowserStack, LambdaTest etc.), hospedagem ou domínios pagos, bancos de dados externos, APIs pagas, serviços externos de Wiki, plugins com assinatura, tokens pessoais (PAT) ou credenciais extras, ou qualquer coisa que possa gerar cobrança.
+
+### Dependências: desenvolvimento × jogo publicado
+
+| Tipo | Regra | Exemplos |
+|---|---|---|
+| **De desenvolvimento** (testes, lint, build) | Permitidas **só no CI**, gratuitas, de código aberto, com **versão exata fixada** (`requirements-ci.txt`, `tools/e2e/package-lock.json`). Instaladas em ambiente temporário do runner, nunca no computador do proprietário | gdtoolkit 4.5.0, Playwright 1.65.1 + Chromium |
+| **Do jogo publicado** (o que roda no navegador de quem joga) | **Nenhuma dependência externa.** Nada de CDN, biblioteca de terceiros ou serviço externo | — |
+
+Pastas de ferramentas (`tools/`, `docs/`, `wiki-src/`) têm `.gdignore` e nunca entram no `.pck`.
 
 ## Comandos de verificação
 
+Todos rodam no GitHub Actions, no job "Testar e exportar". Localmente, só se as ferramentas estiverem disponíveis.
+
 ```bash
+gdlint scripts tests                                 # estilo e sintaxe do GDScript (gdtoolkit 4.5.0)
+gdformat --check <arquivos .gd alterados>            # formatação dos arquivos alterados
 godot --headless --path . --import
 godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd        # "TESTES: OK"
 godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd       # "SMOKE TEST: OK"
@@ -78,4 +92,7 @@ godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd
 python3 tools/wiki/test_wiki.py                      # Wiki
 python3 tools/site/test_montar_site.py               # montagem do site
 python3 tools/wiki/build_wiki.py --saida build/wiki  # gerar a Wiki localmente
+cd tools/e2e && npm ci && E2E_DIR=<exportação> xvfb-run -a npx playwright test   # navegador
 ```
+
+Os checks obrigatórios da `main` são **`Testar e exportar`** e **`Publicar`**. Não renomeie esses jobs nem crie um terceiro job obrigatório sem combinar com o proprietário.

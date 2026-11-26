@@ -58,7 +58,14 @@ A arte ainda é provisória (cápsulas e cristais): o objetivo agora é testar s
 
 ## Testes
 
-Rodam sem tela e também no GitHub Actions, antes de cada publicação:
+Rodam no GitHub Actions, no job "Testar e exportar", antes de cada publicação. Os checks **Testar e exportar** e **Publicar** são obrigatórios para integrar no `main`.
+
+- **GDScript:** `gdlint` em todo o código e `gdformat --check` nos arquivos alterados (GDScript Toolkit 4.5.0).
+- **Jogo:** testes específicos, partida de ponta a ponta e simulação prolongada (Godot sem tela).
+- **Wiki e site:** geração, links, busca (com Node.js) e montagem das prévias.
+- **Navegador:** o jogo exportado é aberto no Chromium (Playwright 1.65.1) no computador, no Pixel 7 em pé e no Pixel 7 deitado. A emulação não substitui o teste num celular físico.
+
+As ferramentas de teste só existem no CI. O jogo publicado não carrega nenhuma dependência externa.
 
 ```bash
 godot --headless --path . --import
@@ -66,4 +73,8 @@ godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd      
 godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd       # partida de ponta a ponta
 godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=600
 python3 tools/wiki/test_wiki.py && python3 tools/site/test_montar_site.py        # Wiki e site
+gdlint scripts tests                                                              # GDScript
+cd tools/e2e && npm ci && E2E_DIR=<exportação> xvfb-run -a npx playwright test     # navegador
 ```
+
+Para relatar um erro ou dar uma opinião sobre o jogo, use os formulários em **Issues → New issue**.

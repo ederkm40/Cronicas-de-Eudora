@@ -1,0 +1,38 @@
+name: Sugestão de funcionalidade
+description: Uma ideia nova para o jogo (arma, inimigo, melhoria, tela, modo...).
+title: "[Sugestão] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: ideia
+    attributes:
+      label: Qual é a ideia?
+      placeholder: "Ex.: uma arma que gira em volta do personagem."
+    validations:
+      required: true
+  - type: textarea
+    id: motivo
+    attributes:
+      label: Por que ela deixaria o jogo melhor?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área do jogo
+      options:
+        - Armas
+        - Melhorias
+        - Inimigos ou chefes
+        - Progressão (experiência, níveis)
+        - Controles
+        - Interface e telas
+        - Visual e som
+        - Outra
+    validations:
+      required: true
+  - type: textarea
+    id: referencias
+    attributes:
+      label: Referências (opcional)
+      description: Jogos ou exemplos parecidos com o que você imagina.

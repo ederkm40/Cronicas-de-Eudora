@@ -106,13 +106,41 @@ Os testes usam ganchos que só existem para isso: `EnemyManager.spawning_enabled
 
 Os testes também foram conferidos ao contrário: quebrando o jogo de propósito (sem pausa, sem orbes, sorteio com repetição, sem a cura do Núcleo vital), os testes correspondentes falham.
 
+### Verificação estática do GDScript (gdtoolkit 4.5.0)
+
+Decisão [0009](decisoes/0009-ferramentas-qa-web.md). Instalado só no runner, com versões fixadas em `requirements-ci.txt`. Roda por `tools/ci/verificar_gdscript.sh`:
+
+| Modo | O que faz |
+|---|---|
+| `lint` | `gdlint scripts tests` com as regras padrão da versão 4.5.0, sem exceções (`gdlint --dump-default-config` mostra a lista) |
+| `formato <commit-base>` | `gdformat --check` só nos `.gd` adicionados ou alterados desde o ponto comum com o commit-base (PR: base do PR; `main`: commit anterior ao envio) |
+
+As regras que exigiram ajustes no código existente foram `max-line-length` (100 caracteres), `class-definitions-order` (constantes antes de variáveis) e `max-returns` (no máximo 6 `return` por função). O ajuste não mudou a lógica: o texto de `Upgrades.describe_next` foi conferido nas 67 combinações.
+
+### Testes de navegador (Playwright 1.65.1)
+
+Em `tools/e2e/`, com guia de manutenção em `tools/e2e/README.md`. Abrem o **jogo exportado de verdade**, servido em `127.0.0.1:8060`, no Chromium, em 3 perfis: computador 1366 × 768, Pixel 7 em pé (412 × 915, toque) e Pixel 7 deitado (915 × 412, toque).
+
+| Verificação | Como |
+|---|---|
+| Motor iniciado | a página do Godot remove `#status` quando o `startGame()` termina; em caso de erro, o teste mostra `#status-notice` |
+| Versão do motor | "Godot Engine v4.7.2" no console |
+| WebGL 2 | `getContext("webgl2")`; o renderizador é impresso no log |
+| Arquivos essenciais | `index.html`, `.js`, `.wasm` e `.pck` com 200 e nenhuma requisição falhando |
+| Canvas | visível, dentro da tela, ocupando a janela, com resolução interna válida |
+| Jogo rodando | a imagem do canvas muda com o tempo |
+| Sem erros | nenhuma exceção nem `console.error` |
+| Toque e orientação | nos perfis de celular |
+
+**Renderizador:** dentro do `xvfb-run`, com `--use-angle=gl`, o Chromium usa Mesa/llvmpipe (OpenGL 4.5). Sem tela virtual, cai no SwiftShader, que não mostra as atualizações de MultiMesh. **A emulação de Pixel 7 não equivale a um celular físico.**
+
 ## Publicação, Wiki e prévias
 
 Workflow `.github/workflows/publicar.yml` (decisão [0006](decisoes/0006-publicacao-gh-pages-previas.md)). O site fica no branch `gh-pages`, e o GitHub Pages precisa usar *Deploy from a branch → gh-pages / (root)*.
 
 | Evento | Job `testar` | Job `publicar` / `remover-previa` |
 |---|---|---|
-| Push no `main` (ou execução manual no `main`) | importa → `run_tests` → smoke → simulação de 5 min → testes da Wiki e do site → exporta e gera a Wiki → verifica os arquivos | publica o jogo na raiz e a Wiki em `/wiki/`; remove prévias de PRs que já não estão abertos; verifica no ar |
+| Push no `main` (ou execução manual no `main`) | Godot, Python + gdtoolkit, Node 22 + Playwright → `gdlint` → `gdformat --check` (alterados) → importa → `run_tests` → smoke → simulação de 5 min → testes da Wiki (com Node obrigatório) e do site → exporta e gera a Wiki → servidor local → Playwright (3 perfis) → guarda a montagem | publica o jogo na raiz e a Wiki em `/wiki/`; remove prévias de PRs que já não estão abertos; verifica no ar |
 | Pull Request do próprio repositório (aberto ou novo envio) | o mesmo, com o commit da branch | publica em `/previews/pr-N/` (jogo + Wiki com faixa de prévia), sem tocar na raiz; comenta o endereço e a verificação no PR |
 | Pull Request fechado ou integrado | — | `remover-previa` apaga `/previews/pr-N/` |
 | Pull Request de fork | testa com permissão só de leitura | nunca publica |
@@ -124,7 +152,9 @@ Garantias:
 - **Verificação real:** `tools/ci/verificar_publicacao.sh` espera o `versao.json` do endereço mostrar o commit publicado e testa `index.html`, `.js`, `.pck`, `.wasm` e a Wiki. Se o endereço não abrir, **o job `Publicar` termina como falha**: o PR fica com o check vermelho. O resumo da execução e o comentário do PR são publicados mesmo assim, com o motivo e o endereço.
 - **Segurança:** permissões mínimas por job, sem `pull_request_target`, sem segredos. Forks não publicam.
 
-Ferramentas (Python 3 e shell, sem dependências externas):
+Os nomes dos jobs **`Testar e exportar`** e **`Publicar`** são os checks obrigatórios da proteção da `main`. Não renomeie.
+
+Ferramentas de publicação (Python 3 e shell, sem dependências externas):
 
 | Arquivo | Papel |
 |---|---|

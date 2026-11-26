@@ -1,0 +1,52 @@
+name: Opinião sobre a jogabilidade
+description: Dificuldade, equilíbrio, ritmo e diversão de uma partida.
+title: "[Jogabilidade] "
+body:
+  - type: markdown
+    attributes:
+      value: Conte como foi jogar. Não existe resposta errada; o importante é a sua experiência.
+  - type: input
+    id: versao
+    attributes:
+      label: Versão jogada
+      description: Aparece na Wiki e no Pull Request. Se não souber, diga a data em que jogou.
+      placeholder: "Ex.: 0.2-alpha (oficial) ou prévia do PR #4"
+    validations:
+      required: true
+  - type: dropdown
+    id: dificuldade
+    attributes:
+      label: Como achou a dificuldade?
+      options:
+        - Fácil demais
+        - Um pouco fácil
+        - Na medida
+        - Um pouco difícil
+        - Difícil demais
+    validations:
+      required: true
+  - type: input
+    id: resultado
+    attributes:
+      label: Até onde chegou?
+      placeholder: "Ex.: 4 minutos, nível 7, 230 abates"
+  - type: textarea
+    id: melhorias
+    attributes:
+      label: Quais melhorias escolheu e o que achou delas?
+  - type: textarea
+    id: divertido
+    attributes:
+      label: O que foi divertido? O que foi chato ou frustrante?
+    validations:
+      required: true
+  - type: dropdown
+    id: jogaria
+    attributes:
+      label: Jogaria de novo?
+      options:
+        - Sim, várias vezes
+        - Talvez
+        - Não
+    validations:
+      required: true

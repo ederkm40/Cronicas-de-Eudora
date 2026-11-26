@@ -9,7 +9,7 @@ extends SceneTree
 const SIMULATED_SECONDS := 60.0
 
 var _main: Node
-var _time := 0.0 ## Tempo real da simulação (corre mesmo com a partida pausada).
+var _time := 0.0  ## Tempo real da simulação (corre mesmo com a partida pausada).
 var _start_pos := Vector3.ZERO
 var _touched := false
 var _moved_with_joystick := false
@@ -42,7 +42,10 @@ func _process(delta: float) -> bool:
 		_check(moved > 3.0, "joystick deveria mover o jogador (moveu %.2f m)" % moved)
 		var right: Vector3 = _main.camera_rig.ground_right()
 		var direction := (player.global_position - _start_pos).normalized()
-		_check(direction.dot(right) > 0.95, "arrastar para a direita deveria andar para a direita da tela")
+		_check(
+			direction.dot(right) > 0.95,
+			"arrastar para a direita deveria andar para a direita da tela"
+		)
 		_send_touch(false, Vector2(460, 900))
 
 	# Teclado: segura D por meio segundo.
@@ -82,7 +85,12 @@ func _report() -> void:
 	print("Inimigos ativos: %d" % enemies.count)
 	print("Abates: %d" % _main._kills)
 	var progression: Progression = _main.progression
-	print("Nível: %d · XP coletada: %d · Melhorias escolhidas: %d" % [progression.level, progression.total_xp, _choices_made])
+	print(
+		(
+			"Nível: %d · XP coletada: %d · Melhorias escolhidas: %d"
+			% [progression.level, progression.total_xp, _choices_made]
+		)
+	)
 	var stacks := []
 	for id in Upgrades.all_ids():
 		stacks.append("%s=%d" % [id, _main.upgrades.stacks(id)])
@@ -93,7 +101,10 @@ func _report() -> void:
 	_check(enemies.count > 0 or _main._kills > 0, "inimigos deveriam aparecer")
 	_check(progression.total_xp > 0, "deveria coletar experiência")
 	_check(progression.level >= 2, "deveria subir pelo menos 1 nível em 60 s")
-	_check(_choices_made == progression.level - 1, "cada nível ganho deveria ter uma melhoria escolhida")
+	_check(
+		_choices_made == progression.level - 1,
+		"cada nível ganho deveria ter uma melhoria escolhida"
+	)
 	_check(_paused_frames > 0, "a partida deveria ter pausado nas escolhas")
 	_check(not paused or not player.alive, "a partida não deveria terminar presa na pausa")
 	if _failures.is_empty():

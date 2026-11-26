@@ -5,23 +5,24 @@ extends Node3D
 
 signal died
 
-@export var move_speed := 5.0 ## Metros por segundo, sem melhorias.
-@export var base_max_hp := 100.0 ## Vida máxima sem melhorias.
+const BODY_COLOR := Color(0.35, 0.65, 1.0)
+const FLASH_COLOR := Color(1.0, 1.0, 1.0)
+
+@export var move_speed := 5.0  ## Metros por segundo, sem melhorias.
+@export var base_max_hp := 100.0  ## Vida máxima sem melhorias.
 @export var hit_flash_time := 0.12
 
-var max_hp := 100.0 ## Vida máxima atual (base x melhorias).
+var max_hp := 100.0  ## Vida máxima atual (base x melhorias).
 var hp := 100.0
 var alive := true
-var speed_multiplier := 1.0 ## Alterado pela melhoria "Passos ligeiros".
-var invulnerable := false ## Só para testes e simulações longas.
-var scripted_input := Vector2.ZERO ## Movimento comandado por testes e simulações (tem prioridade).
+var speed_multiplier := 1.0  ## Alterado pela melhoria "Passos ligeiros".
+var invulnerable := false  ## Só para testes e simulações longas.
+var scripted_input := Vector2.ZERO  ## Movimento comandado por testes e simulações (tem prioridade).
 var joystick: FloatingJoystick
 var camera_rig: CameraRig
 
 var _material: StandardMaterial3D
 var _flash := 0.0
-const BODY_COLOR := Color(0.35, 0.65, 1.0)
-const FLASH_COLOR := Color(1.0, 1.0, 1.0)
 
 
 func _ready() -> void:
@@ -85,7 +86,10 @@ func _read_input() -> Vector2:
 	if scripted_input != Vector2.ZERO:
 		return scripted_input.limit_length(1.0)
 	var keys := Vector2(
-		float(_pressed(KEY_D) or _pressed(KEY_RIGHT)) - float(_pressed(KEY_A) or _pressed(KEY_LEFT)),
+		(
+			float(_pressed(KEY_D) or _pressed(KEY_RIGHT))
+			- float(_pressed(KEY_A) or _pressed(KEY_LEFT))
+		),
 		float(_pressed(KEY_S) or _pressed(KEY_DOWN)) - float(_pressed(KEY_W) or _pressed(KEY_UP))
 	)
 	if keys != Vector2.ZERO:

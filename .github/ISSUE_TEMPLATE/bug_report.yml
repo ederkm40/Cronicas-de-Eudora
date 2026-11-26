@@ -1,0 +1,69 @@
+name: Relato de erro
+description: Algo não funciona como deveria no jogo ou na Wiki.
+title: "[Erro] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por avisar! Quanto mais detalhes, mais rápido dá para corrigir.
+        Para problemas de desempenho no celular (travamentos, FPS baixo, tela), use o formulário **Desempenho e tela no celular**.
+  - type: textarea
+    id: o_que_aconteceu
+    attributes:
+      label: O que aconteceu?
+      description: Descreva o erro com suas palavras.
+      placeholder: "Ex.: depois de escolher a melhoria, o personagem parou de andar."
+    validations:
+      required: true
+  - type: textarea
+    id: esperado
+    attributes:
+      label: O que você esperava que acontecesse?
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Como repetir o erro
+      description: Passo a passo, se souber.
+      placeholder: |
+        1. Abrir o jogo
+        2. Jogar até o nível 2
+        3. ...
+  - type: dropdown
+    id: onde
+    attributes:
+      label: Onde aconteceu?
+      options:
+        - Versão oficial (ederkm40.github.io/Cronicas-de-Eudora)
+        - Prévia de um Pull Request (/previews/pr-...)
+        - Wiki
+    validations:
+      required: true
+  - type: input
+    id: endereco
+    attributes:
+      label: Endereço da página (se for prévia ou Wiki)
+      placeholder: "https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-4/"
+  - type: dropdown
+    id: aparelho
+    attributes:
+      label: Aparelho
+      options:
+        - Celular Android
+        - iPhone
+        - Tablet
+        - Computador
+    validations:
+      required: true
+  - type: input
+    id: navegador
+    attributes:
+      label: Navegador e modelo do aparelho
+      placeholder: "Ex.: Chrome no Samsung Galaxy A54"
+  - type: textarea
+    id: imagens
+    attributes:
+      label: Imagens ou vídeo (opcional)
+      description: Arraste capturas de tela ou vídeos para cá.

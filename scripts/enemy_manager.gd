@@ -6,23 +6,29 @@ extends Node3D
 
 signal enemy_killed(position: Vector3)
 
+const CELL := 1.0
+const BODY_HEIGHT := 0.55
+const INDEX_BITS := 16
+const INDEX_MASK := (1 << INDEX_BITS) - 1
+const CELL_OFFSET := 1 << 20  ## Deixa as coordenadas de célula sempre positivas.
+
 @export var max_enemies := 300
 @export var base_speed := 2.2
 @export var base_hp := 20.0
-@export var hp_growth_per_minute := 0.6 ## +60% de vida por minuto de partida.
+@export var hp_growth_per_minute := 0.6  ## +60% de vida por minuto de partida.
 @export var contact_radius := 0.8
-@export var contact_dps := 9.0 ## Dano por segundo de cada inimigo encostado.
-@export var max_contact_hitters := 5 ## No máximo 5 inimigos causam dano ao mesmo tempo.
+@export var contact_dps := 9.0  ## Dano por segundo de cada inimigo encostado.
+@export var max_contact_hitters := 5  ## No máximo 5 inimigos causam dano ao mesmo tempo.
 @export var separation_radius := 0.75
 @export var separation_strength := 4.0
 @export var spawn_interval_start := 1.0
 @export var spawn_interval_min := 0.12
-@export var spawn_margin := 2.5 ## Distância extra fora da tela onde os inimigos nascem.
+@export var spawn_margin := 2.5  ## Distância extra fora da tela onde os inimigos nascem.
 
 var player: Player
 var camera_rig: CameraRig
 var elapsed := 0.0
-var spawning_enabled := true ## Desligado pelos testes para controlar os inimigos um a um.
+var spawning_enabled := true  ## Desligado pelos testes para controlar os inimigos um a um.
 var count: int:
 	get:
 		return _positions.size()
@@ -30,18 +36,14 @@ var count: int:
 var _positions := PackedVector3Array()
 var _hp := PackedFloat32Array()
 var _speed := PackedFloat32Array()
-var _push := PackedVector3Array() ## Empurrão de separação calculado no último quadro.
+var _push := PackedVector3Array()  ## Empurrão de separação calculado no último quadro.
 var _spawn_timer := 0.0
 var _frame := 0
 var _multimesh: MultiMesh
-var _buffer := PackedFloat32Array() ## 12 floats por inimigo (matriz 3x4), enviados de uma vez.
-var _sorted := PackedInt64Array() ## (célula << 16) | índice, ordenado: inimigos agrupados por célula.
-var _cell_start := {} ## célula -> posição em _sorted onde ela começa.
-const CELL := 1.0
-const BODY_HEIGHT := 0.55
-const INDEX_BITS := 16
-const INDEX_MASK := (1 << INDEX_BITS) - 1
-const CELL_OFFSET := 1 << 20 ## Deixa as coordenadas de célula sempre positivas.
+var _buffer := PackedFloat32Array()  ## 12 floats por inimigo (matriz 3x4), enviados de uma vez.
+## (célula << 16) | índice, ordenado: inimigos agrupados por célula.
+var _sorted := PackedInt64Array()
+var _cell_start := {}  ## célula -> posição em _sorted onde ela começa.
 
 
 func _ready() -> void:
@@ -101,9 +103,11 @@ func _spawn(delta: float) -> void:
 func _random_spawn_point() -> Vector3:
 	var half := camera_rig.visible_ground_half_extent()
 	var angle := randf() * TAU
-	var point := player.global_position \
-		+ camera_rig.ground_right() * cos(angle) * (half.x + spawn_margin) \
+	var point := (
+		player.global_position
+		+ camera_rig.ground_right() * cos(angle) * (half.x + spawn_margin)
 		+ camera_rig.ground_forward() * sin(angle) * (half.y + spawn_margin)
+	)
 	point.y = 0.0
 	return point
 
@@ -235,7 +239,6 @@ func spawn_at(point: Vector3, hp: float = -1.0) -> int:
 	_speed.append(base_speed)
 	_push.append(Vector3.ZERO)
 	return count - 1
-
 
 
 ## Aplica dano. Retorna true se o inimigo morreu.

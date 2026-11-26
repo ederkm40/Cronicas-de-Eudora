@@ -7,6 +7,7 @@
 ├── AGENTS.md                 regras para qualquer IA (leia primeiro)
 ├── CLAUDE.md                 complemento só para o Claude Code
 ├── README.md                 apresentação e links
+├── requirements-ci.txt       versões fixadas do GDScript Toolkit (só para o CI)
 ├── project.godot             configuração do Godot (retrato 720x1280, Compatibility, toque pelo mouse)
 ├── export_presets.cfg        preset "Web" (sem threads; ensure_cross_origin_isolation_headers=false)
 ├── icon.svg (+ .import)      ícone do jogo
@@ -16,7 +17,8 @@
 ├── tools/                    ferramentas em Python e shell (.gdignore: fora do jogo)
 │   ├── wiki/                 gerador da Wiki e testes
 │   ├── site/                 montagem do site publicado e testes
-│   └── ci/                   scripts usados pelo workflow
+│   ├── ci/                   scripts usados pelo workflow
+│   └── e2e/                  testes de navegador (Playwright 1.65.1; package.json + package-lock.json)
 ├── wiki-src/                 fontes da Wiki (.gdignore)
 │   ├── site.json             nome, versão oficial, categorias
 │   ├── index.md              página inicial
@@ -31,7 +33,10 @@
 │   ├── versoes/<v>/RELATORIO.md   relatório de cada versão
 │   ├── decisoes/NNNN-*.md    decisões técnicas
 │   └── IA/                   estado, mapa, continuidade, entrega para o ChatGPT
-└── .github/workflows/publicar.yml   testes, prévias e publicação
+└── .github/
+    ├── workflows/publicar.yml       testes, prévias e publicação
+    ├── ISSUE_TEMPLATE/*.yml         5 formulários de Issue
+    └── PULL_REQUEST_TEMPLATE.md     modelo de Pull Request
 ```
 
 `build/` e `.godot/` são gerados e ficam fora do Git.
@@ -64,6 +69,8 @@ Fluxo de uma partida: `EnemyManager.damage()` → `enemy_killed` → `XpOrbManag
 | `tests/long_simulation.gd` | Godot `--script -- --segundos=N [--invulneravel]` | estabilidade, desempenho, memória, reinícios |
 | `tools/wiki/test_wiki.py` | Python 3 (+ Node, se houver) | geração, links, busca, determinismo, erros esperados |
 | `tools/site/test_montar_site.py` | Python 3 | montagem: oficial × prévia, remoção, limpeza |
+| `tools/ci/verificar_gdscript.sh lint` / `formato <base>` | gdtoolkit 4.5.0 (CI) | `gdlint` em `scripts/` e `tests/`; `gdformat --check` nos `.gd` alterados |
+| `tools/e2e/testes/jogo.spec.js` | Playwright 1.65.1 + Chromium (CI, `xvfb-run`) | jogo exportado no navegador: computador, Pixel 7 em pé e deitado |
 
 Ganchos de teste no código: `EnemyManager.spawning_enabled`, `spawn_at()`, `hp_of()`; `Player.invulnerable`, `scripted_input`; `AutoWeapon.shots_fired`.
 
@@ -71,7 +78,9 @@ Ganchos de teste no código: `EnemyManager.spawning_enabled`, `spawn_at()`, `hp_
 
 | Arquivo | Papel |
 |---|---|
-| `.github/workflows/publicar.yml` | jobs `testar` → `publicar` (main ou PR do próprio repo) e `remover-previa` (PR fechado) |
+| `.github/workflows/publicar.yml` | jobs `testar` ("Testar e exportar") → `publicar` ("Publicar"), os dois checks obrigatórios da `main`, e `remover-previa` (PR fechado) |
+| `requirements-ci.txt` | gdtoolkit e dependências, versões fixadas, instalados num ambiente virtual temporário do runner |
+| `tools/e2e/playwright.config.js` | perfis, servidor local, renderizador (`E2E_RENDERIZADOR`), evidências só em falha |
 | `tools/ci/instalar_godot.sh` | baixa o Godot e os modelos Web (com cache) |
 | `tools/ci/construir_parte.sh` | exporta o jogo, gera a Wiki e grava `versao.json` |
 | `tools/site/montar_site.py` | aplica a parte no `gh-pages`: raiz (oficial) ou `previews/pr-N/` |

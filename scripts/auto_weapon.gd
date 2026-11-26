@@ -5,13 +5,15 @@ extends Node3D
 ## Os valores base ficam nos @export. As melhorias mexem só nos modificadores abaixo,
 ## e os valores usados na partida (efetivos) são calculados a partir dos dois.
 
-@export var fire_interval := 0.45 ## Segundos entre disparos, sem melhorias.
-@export var attack_range := 11.0 ## Metros, sem melhorias.
+const SHOT_HEIGHT := 0.7
+
+@export var fire_interval := 0.45  ## Segundos entre disparos, sem melhorias.
+@export var attack_range := 11.0  ## Metros, sem melhorias.
 @export var projectile_speed := 14.0
-@export var projectile_damage := 10.0 ## Dano por projétil, sem melhorias.
-@export var projectile_lifetime := 1.2 ## Segundos, sem melhorias (cresce junto com o alcance).
+@export var projectile_damage := 10.0  ## Dano por projétil, sem melhorias.
+@export var projectile_lifetime := 1.2  ## Segundos, sem melhorias (cresce junto com o alcance).
 @export var hit_radius := 0.55
-@export var spread_degrees := 10.0 ## Abertura entre projéteis quando há mais de um por disparo.
+@export var spread_degrees := 10.0  ## Abertura entre projéteis quando há mais de um por disparo.
 @export var max_projectiles := 256
 
 # Modificadores das melhorias (1.0 e 0 = sem melhoria).
@@ -22,14 +24,13 @@ var extra_projectiles := 0
 
 var player: Player
 var enemies: EnemyManager
-var shots_fired := 0 ## Total de projéteis disparados na partida (usado pelos testes).
+var shots_fired := 0  ## Total de projéteis disparados na partida (usado pelos testes).
 
 var _positions := PackedVector3Array()
 var _velocities := PackedVector3Array()
 var _life := PackedFloat32Array()
 var _cooldown := 0.0
 var _multimesh: MultiMesh
-const SHOT_HEIGHT := 0.7
 
 
 func _ready() -> void:

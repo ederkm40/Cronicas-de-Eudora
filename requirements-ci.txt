@@ -1,0 +1,12 @@
+# Ferramentas de desenvolvimento usadas SÓ no GitHub Actions (ambiente virtual temporário do runner).
+# Nada disto entra no jogo publicado nem precisa ser instalado no computador do proprietário.
+# Versões fixadas e conferidas no runner ubuntu-latest com Python 3.12 (26/11/2026).
+gdtoolkit==4.5.0
+lark==1.2.2
+regex==2026.11.25
+docopt-ng==0.9.0
+PyYAML==6.0.4
+radon==6.0.1
+mando==0.7.1
+colorama==0.4.6
+six==1.17.0

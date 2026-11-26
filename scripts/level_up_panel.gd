@@ -8,12 +8,13 @@ extends Control
 
 signal chosen(id: StringName)
 
-@export var input_delay := 0.35 ## Segundos com os cartões travados, para um toque do joystick não escolher sem querer.
-
 const CARD_COLOR := Color(0.13, 0.11, 0.18, 0.96)
 const CARD_HOVER := Color(0.2, 0.17, 0.28, 0.98)
 const CARD_BORDER := Color(0.48, 0.36, 1.0)
 const ACCENT := Color(0.45, 0.95, 1.0)
+
+## Segundos com os cartões travados, para um toque do joystick não escolher sem querer.
+@export var input_delay := 0.35
 
 var _title: Label
 var _cards_box: VBoxContainer
