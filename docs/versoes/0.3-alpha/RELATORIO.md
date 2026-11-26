@@ -104,20 +104,20 @@ Sem mudança: `scenes/`, `project.godot`, `export_presets.cfg`, jobs `publicar` 
 
 ### CI (GitHub Actions, `ubuntu-latest`)
 
-Execução 45855975630, commit `11b822d`:
+Execução 45858257785, commit `996ac94` (último commit de código; depois dele só entra esta atualização do relatório):
 
 | Etapa | Resultado |
 |---|---|
 | `gdlint scripts tests` | Success: no problems found |
 | `gdformat --check` | 30 arquivos alterados, todos sem mudança |
-| `run_tests.gd` | 41 testes, 4.369 verificações, 0 falhas |
+| `run_tests.gd` | 41 testes, 4.370 verificações, 0 falhas |
 | `smoke_test.gd` | SMOKE TEST: OK |
-| `long_simulation.gd --segundos=300` | OK; CPU por quadro: média 2,24 ms, p95 5,76 ms, p99 6,07 ms, pior 15,5 ms; até 300 inimigos |
+| `long_simulation.gd --segundos=300` | OK; CPU por quadro: média 2,17 ms, p95 5,56 ms, p99 5,80 ms, pior 15,3 ms; até 300 inimigos |
 | Wiki e site | 14 e 7 testes, OK |
 | Playwright (3 perfis) | 18 aprovados, 3 pulados de propósito (toque no computador; Espaço nos perfis de celular), Mesa/llvmpipe |
-| Prévia | verificada no ar (jogo e Wiki com o commit `11b822d`) |
+| Prévia | verificada no ar (jogo e Wiki com o commit `996ac94`) |
 
-Os resultados do commit final estão no PR #5.
+O commit de documentação que vem depois roda o mesmo workflow; o resultado dele aparece no PR #5.
 
 ### Navegador (controles reais)
 
