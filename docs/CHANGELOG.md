@@ -8,6 +8,25 @@ Categorias: **Jogabilidade**, **Interface**, **Desempenho**, **Correção**, **T
 
 ---
 
+## 0.3-alpha: grande expansão do combate (em revisão)
+
+**Data:** 26/11/2026 · **Pull Request:** #5 · *Entrada escrita pelo Claude Code a pedido do proprietário; a revisão editorial continua com o ChatGPT.* Detalhes e números em `docs/versoes/0.3-alpha/RELATORIO.md`.
+
+| Categoria | Descrição | Motivo | Efeito no jogo | Arquivos | Testes |
+|---|---|---|---|---|---|
+| Jogabilidade | Armas novas **Aura de brasas** (pulsos de dano em área) e **Lâmina orbital** (lâminas que giram e cortam), cada uma num espaço próprio, com 5 níveis | Variedade de combate (0.3) | Mais escolhas de build; o Raio arcano continua como arma inicial | `scripts/weapon_catalog.gd`, `arsenal.gd`, `aura_weapon.gd`, `orbit_blades.gd` | suíte `armas_e_ofertas` |
+| Jogabilidade | Level-up oferece arma nova, evolução de arma ou melhoria; **trocar opções** (2 por partida) e **bloquear** (2 por partida) | Escolhas com mais controle | Cartões com o tipo da oferta e o que muda | `scripts/level_up_offers.gd`, `level_up_panel.gd` | suíte `armas_e_ofertas`, navegador |
+| Jogabilidade | 4 inimigos novos: Espreitador (rápido), Couraçado (resistente), Lançador (atira com aviso), Volátil (explode com aviso) | Antecipação da 0.4 | Entram aos 45 s, 100 s, 150 s e 210 s | `scripts/enemy_types.gd`, `enemy_manager.gd`, `enemy_projectiles.gd`, `ground_effects.gd` | suíte `inimigos_e_chefe` |
+| Jogabilidade | **Sentinela do Eco** aos 10 minutos: investida, erupção e rajada com aviso, fase 2 abaixo de 50% | Antecipação da 0.4 e do fim de partida da 0.6 | A partida só é vencida derrotando o chefe | `scripts/boss_controller.gd`, `main.gd` | suíte `inimigos_e_chefe`, navegador |
+| Jogabilidade | **Esquiva** por duplo toque no joystick (ou Espaço): 4 m, invulnerável por 0,32 s, recarga de 1,4 s | Antecipação da 0.5 | Mais recursos de movimento sem botão novo | `scripts/floating_joystick.gd`, `player.gd` | suíte `esquiva_e_encerramento`, navegador |
+| Interface | Tela de **resultados** (vitória ou derrota) com estatísticas reais e reinício limpo; barra do chefe, linha de armas e indicador de esquiva no HUD | Antecipação da 0.6 | Resumo de cada partida | `scripts/results_screen.gd`, `run_stats.gd`, `hud.gd` | suíte `esquiva_e_encerramento`, navegador |
+| Jogabilidade | **Ecos** e 4 melhorias permanentes, salvos no navegador | Primeira progressão entre partidas | Bônus moderados a partir da partida seguinte | `scripts/meta_progress.gd` | suíte `esquiva_e_encerramento` |
+| Jogabilidade | Equilíbrio: vida dos inimigos +35%/min (era 60%), leva +1 a cada 30 s (era 25 s), cada nível cura 12% da vida, Poder arcano vale para todas as armas | Simulações mostraram derrota antes dos 5 min sem cura | Partidas mais longas; o chefe é alcançável | `scripts/enemy_manager.gd`, `main.gd`, `upgrades.gd` | `tests/balance_simulation.gd` |
+| Desempenho | Colisão dos projéteis do Raio pela grade espacial (antes, cada projétil comparava com todos os inimigos) | Mais projéteis e inimigos | Sem efeito visível | `scripts/enemy_manager.gd` | testes de efeito, simulação longa |
+| Testes | 25 testes novos (41 no total) em 4 suítes; testes de navegador com controles reais; falha automática com erro de script no log | Cobrir os sistemas novos | — | `tests/`, `tools/e2e/`, `tools/ci/rodar_godot.sh` | CI |
+
+---
+
 ## Infraestrutura: Wiki, prévias e memória (em revisão)
 
 **Data:** 26/11/2026 · **Versão do jogo:** continua 0.2-alpha · **Pull Request:** ver `docs/versoes/0.2-alpha-infra/RELATORIO.md`

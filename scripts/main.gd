@@ -226,6 +226,7 @@ func start_encounter() -> void:
 	var point := player.global_position + camera_rig.ground_forward() * maxf(half.y - 2.0, 4.0)
 	boss.spawn(point)
 	enemies.spawn_rate_multiplier = encounter_spawn_rate
+	enemies.excluded_kinds = [EnemyTypes.ATIRADOR]
 	stats.boss_spawned_at = _elapsed
 	hud.show_banner("O Sentinela do Eco despertou!\nDerrote-o para vencer.", 4.0)
 

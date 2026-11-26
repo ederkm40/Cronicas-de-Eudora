@@ -16,14 +16,16 @@ Você desenvolve o jogo. Concentre o contexto em código, testes e builds. **Nã
 
 - Prefira criar nós em código (como em `scripts/main.gd`) a escrever cenas `.tscn` complexas à mão.
 - GDScript com tipos estáticos e `class_name` por sistema. Valores de ajuste como `@export` no topo do script.
-- Uma melhoria nova entra em `Upgrades.DEFINITIONS`, `describe_next()` e `refresh()`, e ganha um teste de efeito em `tests/run_tests.gd`.
-- Um sistema novo ganha testes em `tests/run_tests.gd` e uma verificação numa partida real em `tests/smoke_test.gd`. Use os ganchos `spawning_enabled`, `spawn_at`, `invulnerable` e `scripted_input` em vez de esperar o acaso.
+- Uma melhoria nova entra em `Upgrades.DEFINITIONS`, `describe_next()` e `refresh()`, e ganha um teste de efeito numa suíte de `tests/suites/`.
+- Uma arma nova entra em `WeaponCatalog.DEFINITIONS`, ganha um nó próprio e uma linha em `Main._sync_weapons()`, e testes de dano, alcance, intervalo e limite.
+- Um sistema novo ganha testes numa suíte de `tests/suites/` (cada suíte com no máximo 20 testes e 1.000 linhas, limites do `gdlint`; crie outra suíte e registre em `tests/run_tests.gd`) e uma verificação numa partida real em `tests/smoke_test.gd`. Use os ganchos `spawning_enabled`, `spawn_at`, `invulnerable`, `scripted_input`, `start_encounter` e `apply_offer` em vez de esperar o acaso.
+- Mudou números de equilíbrio? Rode `tests/balance_simulation.gd` (modos `dps`, `partida`, `chefe`) e registre os resultados no relatório.
 
 ## Antes de cada commit
 
 Rode os comandos de verificação do `AGENTS.md` e confira as mensagens de sucesso. Rotina:
 
-1. **Lint e formatação:** todo `.gd` novo ou alterado precisa passar no `gdlint` e no `gdformat --check`. Se o `gdformat` não estiver disponível na sessão, o CI é a referência: abra ou atualize o PR e leia o resultado das etapas "gdlint" e "gdformat --check".
+1. **Lint e formatação:** todo `.gd` novo ou alterado precisa passar no `gdlint` e no `gdformat --check`. Se o `gdformat` não estiver disponível na sessão, o CI é a referência: abra ou atualize o PR e leia o resultado das etapas "gdlint" e "gdformat --check". Quando o `gdformat` reprova, o log mostra o diff (`gdformat --diff`): copie e aplique com `patch -p0`.
 2. **Testes do jogo:** `run_tests`, `smoke_test` e `long_simulation`.
 3. **Wiki e site:** `tools/wiki/test_wiki.py` e `tools/site/test_montar_site.py`.
 4. **Navegador:** os testes Playwright (`tools/e2e/`) rodam no CI com o jogo exportado. Para mudanças visuais, confira também no log o resultado dos 3 perfis e a linha `WebGL 2: ...` (deve ser Mesa/llvmpipe).
@@ -47,3 +49,5 @@ Abra o Pull Request com o resumo, os testes executados, as limitações e instru
 - Daqui não dá para abrir `*.github.io`. Para confirmar uma publicação, leia o log e o comentário do workflow.
 - PyPI e o registro do npm podem estar bloqueados na sessão. Não contorne o bloqueio, por exemplo compilando pacotes a partir do código-fonte. Use o GitHub Actions, onde eles funcionam.
 - `git push --force` em branches já publicadas é bloqueado. Corrija com novos commits por cima.
+- Para rodar o Playwright localmente (se houver Chrome e `xvfb-run` na sessão): exporte com `GODOT=<godot> bash tools/ci/construir_parte.sh . /tmp/parte previa 0 local local` e rode `E2E_DIR=/tmp/parte E2E_CHROME=/usr/bin/google-chrome xvfb-run -a npx playwright test` em `tools/e2e`.
+- No jogo exportado (release), um `JavaScriptBridge.eval` que devolvia um booleano do JS interrompeu a função sem nenhuma mensagem (visto na 0.3). Por segurança, termine o código do eval com `void 0` (ou devolva texto) e leia valores por `JavaScriptBridge.get_interface`.

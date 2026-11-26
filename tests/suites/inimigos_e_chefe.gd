@@ -178,6 +178,7 @@ func test_chefe_surge_aos_dez_minutos() -> void:
 	_check(not game.is_over(), "com o chefe vivo, a partida não termina sozinha")
 	var rate: float = game.encounter_spawn_rate
 	_check(rate < 1.0 and _near(game.enemies.spawn_rate_multiplier, rate), "hordas mais lentas")
+	_check(game.enemies.excluded_kinds == [EnemyTypes.ATIRADOR], "sem Lançadores novos no encontro")
 
 
 func test_chefe_ataques_com_aviso() -> void:

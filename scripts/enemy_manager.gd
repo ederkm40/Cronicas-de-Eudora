@@ -61,6 +61,9 @@ var stats: RunStats
 var elapsed := 0.0
 var spawning_enabled := true  ## Desligado pelos testes para controlar os inimigos um a um.
 var spawn_rate_multiplier := 1.0  ## Menor que 1 = hordas mais lentas (usado no encontro final).
+## Tipos que deixam de nascer (o encontro final tira os Lançadores novos: os tiros que contam
+## são os do chefe). Os que já estão em campo continuam.
+var excluded_kinds: Array[int] = []
 var boss_tint := Color(0, 0, 0, 0)  ## Brilho do chefe nos avisos de ataque (a = intensidade).
 var count: int:
 	get:
@@ -197,6 +200,8 @@ func _spawn(delta: float) -> void:
 		if count >= max_enemies:
 			return
 		var kind := EnemyTypes.pick(elapsed, randf())
+		if excluded_kinds.has(kind):
+			kind = EnemyTypes.COMUM
 		var hp := base_hp * float(EnemyTypes.STATS[kind].hp) * time_hp_multiplier()
 		_append(_random_spawn_point(), kind, hp, _speed_for(kind) * randf_range(0.85, 1.15))
 

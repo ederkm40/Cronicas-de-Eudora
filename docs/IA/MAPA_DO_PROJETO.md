@@ -46,33 +46,54 @@
 | Script | Classe | Usa | É usado por |
 |---|---|---|---|
 | `main.gd` | (raiz da cena) | todos abaixo | `scenes/main.tscn` |
-| `player.gd` | `Player` | `FloatingJoystick`, `CameraRig`, `BlobShadow` | `EnemyManager`, `AutoWeapon`, `XpOrbManager`, `Upgrades` |
-| `camera_rig.gd` | `CameraRig` | — | `Player`, `EnemyManager` |
-| `floating_joystick.gd` | `FloatingJoystick` | — | `Player`, `main.gd` |
-| `enemy_manager.gd` | `EnemyManager` | `Player`, `CameraRig` | `AutoWeapon`, `main.gd` (sinal `enemy_killed`) |
-| `auto_weapon.gd` | `AutoWeapon` | `Player`, `EnemyManager` | `Upgrades` |
+| `player.gd` | `Player` | `FloatingJoystick`, `CameraRig`, `GroundEffects`, `BlobShadow` | inimigos, armas, orbes, `Upgrades`, `BossController` |
+| `camera_rig.gd` | `CameraRig` | — | `Player`, `EnemyManager`, `main.gd` |
+| `floating_joystick.gd` | `FloatingJoystick` | — | `Player` (sinal `dodge_requested`), `main.gd` |
+| `enemy_types.gd` | `EnemyTypes` (dados) | — | `EnemyManager`, `BossController`, `RunStats`, testes |
+| `enemy_manager.gd` | `EnemyManager` | `Player`, `CameraRig`, `EnemyProjectiles`, `GroundEffects`, `RunStats` | armas, `BossController`, `main.gd` (sinais `enemy_killed`, `boss_died`) |
+| `enemy_projectiles.gd` | `EnemyProjectiles` | `Player` | `EnemyManager` (Lançador), `BossController` (rajada) |
+| `boss_controller.gd` | `BossController` | `EnemyManager`, `Player`, `GroundEffects`, `EnemyProjectiles` | `main.gd` (`start_encounter`, sinal `phase_changed`) |
+| `ground_effects.gd` | `GroundEffects` | — | inimigos, chefe, lâmina, esquiva |
+| `weapon_catalog.gd` | `WeaponCatalog` (dados) | — | `Arsenal`, armas, `LevelUpOffers`, `main.gd` |
+| `arsenal.gd` | `Arsenal` (RefCounted) | `WeaponCatalog` | `LevelUpOffers`, `main.gd` |
+| `auto_weapon.gd` | `AutoWeapon` (Raio arcano) | `Player`, `EnemyManager` | `Upgrades` |
+| `aura_weapon.gd` | `AuraWeapon` | `Player`, `EnemyManager` | `Upgrades`, `main.gd` |
+| `orbit_blades.gd` | `OrbitBlades` | `Player`, `EnemyManager`, `GroundEffects` | `Upgrades`, `main.gd` |
 | `xp_orbs.gd` | `XpOrbManager` | `Player` | `main.gd` (sinal `collected` → `Progression.add_xp`) |
-| `progression.gd` | `Progression` (RefCounted) | — | `main.gd`, `Hud` |
-| `upgrades.gd` | `Upgrades` (RefCounted) | `Player`, `AutoWeapon` | `main.gd`, `LevelUpPanel` |
-| `level_up_panel.gd` | `LevelUpPanel` | `Upgrades` | `main.gd` (sinal `chosen`) |
-| `hud.gd` | `Hud` | — | `main.gd` (sinal `restart_requested`) |
+| `progression.gd` | `Progression` (RefCounted) | — | `main.gd` (sinal `leveled_up` → cura), `Hud` |
+| `upgrades.gd` | `Upgrades` (RefCounted) | `Player`, armas | `LevelUpOffers`, `main.gd` |
+| `level_up_offers.gd` | `LevelUpOffers` (RefCounted) | `Upgrades`, `Arsenal`, `WeaponCatalog` | `LevelUpPanel`, `main.gd` |
+| `level_up_panel.gd` | `LevelUpPanel` | `LevelUpOffers` | `main.gd` (sinais `chosen`, `reroll_requested`, `banish_requested`) |
+| `hud.gd` | `Hud` | — | `main.gd` |
+| `results_screen.gd` | `ResultsScreen` | `MetaProgress`, `Hud.format_time` | `main.gd` (sinal `restart_requested`) |
+| `run_stats.gd` | `RunStats` (RefCounted) | `EnemyTypes` | `EnemyManager`, `main.gd`, tela de resultados |
+| `meta_progress.gd` | `MetaProgress` (RefCounted) | arquivo `user://progresso.json` | `main.gd`, `ResultsScreen` |
+| `web_bridge.gd` | `WebBridge` | `JavaScriptBridge` (só Web, só com `?teste=1`) | testes de navegador |
 | `blob_shadow.gd` | `BlobShadow` | — | `Player` |
 
-Fluxo de uma partida: `EnemyManager.damage()` → `enemy_killed` → `XpOrbManager.spawn()` → `collected` → `Progression.add_xp()` → `pending_level_ups` → `main._open_level_up()` (pausa) → `LevelUpPanel.chosen` → `Upgrades.apply()` → retoma.
+Fluxo de uma partida: `EnemyManager.damage(índice, dano, arma)` → `RunStats` → `enemy_killed(posição, tipo, xp)` → `XpOrbManager.spawn()` → `collected` → `Progression.add_xp()` (cura 12% por nível) → `main._open_level_up()` (pausa) → `LevelUpOffers.roll_for_level_up()` → `LevelUpPanel` (`chosen` / `reroll_requested` / `banish_requested`) → `main.apply_offer()` → `_sync_weapons()` → retoma. Aos 600 s: `main.start_encounter()` → `BossController.spawn()`. Chefe derrotado (`boss_died`) ou jogador morto (`died`) → `main._finish()` → `MetaProgress.record_run()` + `save()` → `ResultsScreen`.
 
 ## Testes
 
 | Arquivo | Roda com | Cobre |
 |---|---|---|
-| `tests/run_tests.gd` | Godot `--script` | 16 testes da progressão, efeitos, pausa, derrota, reinício |
-| `tests/smoke_test.gd` | Godot `--script` | partida de 60 s de ponta a ponta |
-| `tests/long_simulation.gd` | Godot `--script -- --segundos=N [--invulneravel]` | estabilidade, desempenho, memória, reinícios |
-| `tools/wiki/test_wiki.py` | Python 3 (+ Node, se houver) | geração, links, busca, determinismo, erros esperados |
+| `tests/run_tests.gd` | Godot `--script` | executor das suítes de `tests/suites/` (41 testes) |
+| `tests/suites/base.gd` | — | base das suítes: ajudantes (partida nova, toques, teclas, inimigos parados) |
+| `tests/suites/progressao.gd` | (pelo executor) | 16 testes da 0.2: XP, level-up, efeitos, pausa, derrota, reinício |
+| `tests/suites/armas_e_ofertas.gd` | (pelo executor) | 9 testes: arsenal, aura, horda, lâmina, níveis, ofertas, troca, bloqueio |
+| `tests/suites/inimigos_e_chefe.gd` | (pelo executor) | 7 testes: mistura por tempo, velocidades e resistência, Lançador, Volátil, chefe |
+| `tests/suites/esquiva_e_encerramento.gd` | (pelo executor) | 9 testes: esquiva, duplo toque, derrota, reinício após vitória, progresso salvo |
+| `tests/smoke_test.gd` | Godot `--script` | partida de 60 s de ponta a ponta (joystick, D, Espaço, ofertas) |
+| `tests/long_simulation.gd` | Godot `--script -- --segundos=N [--invulneravel] [--armas-maximas]` | estabilidade, desempenho, memória, reinícios |
+| `tests/balance_simulation.gd` | Godot `--script -- --modo=dps\|partida\|chefe` | **fora do CI**: telemetria de equilíbrio |
+| `tools/ci/rodar_godot.sh` | bash | roda um script do Godot e falha se o log tiver erro de script |
+| `tools/wiki/test_wiki.py` | Python 3 (+ Node) | geração, links, busca, determinismo, erros esperados |
 | `tools/site/test_montar_site.py` | Python 3 | montagem: oficial × prévia, remoção, limpeza |
-| `tools/ci/verificar_gdscript.sh lint` / `formato <base>` | gdtoolkit 4.5.0 (CI) | `gdlint` em `scripts/` e `tests/`; `gdformat --check` nos `.gd` alterados |
-| `tools/e2e/testes/jogo.spec.js` | Playwright 1.65.1 + Chromium (CI, `xvfb-run`) | jogo exportado no navegador: computador, Pixel 7 em pé e deitado |
+| `tools/ci/verificar_gdscript.sh lint` / `formato <base>` | gdtoolkit 4.5.0 (CI) | `gdlint`; `gdformat --check` nos `.gd` alterados (mostra o diff se falhar) |
+| `tools/e2e/testes/jogo.spec.js` | Playwright 1.65.1 + Chromium (CI, `xvfb-run`) | jogo exportado abre e roda nos 3 perfis |
+| `tools/e2e/testes/jogabilidade.spec.js` | idem | controles reais: joystick, duplo toque, Espaço, level-up, vitória, derrota |
 
-Ganchos de teste no código: `EnemyManager.spawning_enabled`, `spawn_at()`, `hp_of()`; `Player.invulnerable`, `scripted_input`; `AutoWeapon.shots_fired`.
+Ganchos de teste no código: `EnemyManager.spawning_enabled`, `spawn_at()`; `Player.invulnerable`, `scripted_input`; `AutoWeapon.shots_fired`; `Main.start_encounter()`, `apply_offer()`, `encounter_time`; `MetaProgress.path`; `WebBridge` (`?teste=1`).
 
 ## Configuração e publicação
 

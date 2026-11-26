@@ -10,31 +10,20 @@ Jogo de hordas isométrico para celular: partidas curtas no estilo *survivors*, 
 
 A versão oficial é a do branch `main` e se atualiza sozinha alguns minutos depois de cada merge. Cada Pull Request ganha uma **prévia jogável** em `/previews/pr-<número>/`, com a própria Wiki, para ser testada antes da aprovação. O endereço aparece num comentário automático no PR.
 
-## Estado atual: 0.2-alpha "Ecos da Evolução"
+## Estado atual
 
-O que já dá para jogar:
+A versão oficial é a **0.2-alpha "Ecos da Evolução"**. A **0.3-alpha** (grande expansão do combate) está em revisão no PR #5, com prévia jogável em `/previews/pr-5/`. O que a 0.3 traz:
 
-- **Controles:** joystick flutuante (toque em qualquer ponto da tela e arraste). No PC, WASD ou as setas.
-- **Câmera:** isométrica ortográfica fixa, tela em retrato (720 x 1280).
-- **Combate:** arma automática que atira no inimigo mais próximo.
-- **Hordas:** crescem com o tempo, até 300 inimigos, cada vez mais resistentes.
-- **Experiência:** cada inimigo derrotado deixa um orbe azul-claro. Chegando perto, ele voa até o personagem e é coletado. A barra azul abaixo da vida mostra quanto falta para o próximo nível (Nv.).
-- **Level-up:** ao completar a barra, a partida pausa por completo e aparecem 3 melhorias diferentes. Toque em uma (no PC, teclas 1, 2 ou 3) e a partida continua. Dá para subir vários níveis na mesma partida.
-- **Fim de partida:** tela de derrota com tempo, nível e abates, e o botão "Jogar de novo", que começa tudo do zero.
+- **Controles:** joystick flutuante (toque em qualquer ponto e arraste); no PC, WASD ou setas. **Esquiva:** duplo toque no joystick (ou Espaço no PC).
+- **Armas:** Raio arcano (inicial), **Aura de brasas** e **Lâmina orbital**, cada uma com espaço próprio e 5 níveis.
+- **Level-up:** pausa e mostra até 3 ofertas (arma nova, evolução de arma ou melhoria), com **Trocar opções** e **Bloquear** (2 de cada por partida). No PC: 1, 2, 3 e R.
+- **Inimigos:** Errante, Espreitador (rápido), Couraçado (resistente), Lançador (atira com aviso) e Volátil (explode com aviso), entrando aos poucos. Até 300 na tela.
+- **Encontro final:** aos 10 minutos surge o **Sentinela do Eco**. Derrotá-lo vence a partida.
+- **Resultados:** vitória ou derrota com estatísticas reais da partida e "Jogar de novo".
+- **Progressão permanente:** Ecos ganhos em cada partida compram 4 melhorias permanentes, salvas no navegador.
 - **Desempenho:** contador de FPS e de inimigos no rodapé.
 
-### As 6 melhorias
-
-| Melhoria | Efeito por nível | Limite |
-| --- | --- | --- |
-| Poder arcano | +20% de dano | 10 níveis (+200%) |
-| Cadência | +15% de velocidade de disparo | 8 níveis (+120%) |
-| Núcleo vital | +25% de vida máxima e recupera 25 de vida | 8 níveis (+200%) |
-| Passos ligeiros | +15% de velocidade de movimento | 5 níveis (+75%) |
-| Projétil adicional | +1 projétil por disparo, em leque | 4 níveis (5 por disparo) |
-| Campo de ruptura | +20% de alcance da arma | 5 níveis (+100%) |
-
-Os efeitos se somam sobre o valor base (dois níveis de Poder arcano = +40%, não +44%). Uma melhoria que chegou ao limite para de aparecer nos sorteios.
+Detalhes, números e testes: `docs/TECNICO.md` e `docs/versoes/0.3-alpha/RELATORIO.md`.
 
 A arte ainda é provisória (cápsulas e cristais): o objetivo agora é testar se o ciclo de jogo é divertido no celular.
 
