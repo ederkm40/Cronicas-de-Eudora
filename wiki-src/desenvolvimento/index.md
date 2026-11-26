@@ -10,8 +10,10 @@ Esta área acompanha o desenvolvimento. A enciclopédia descreve o que existe no
 |---|---|
 | **Versão oficial** | 0.3-alpha — Grande expansão do combate {PUBLICADO} |
 | **Branch principal** | `main` |
+| **Última integração** | PR #7, manutenção pós-0.3 e Documento Mestre, em 26/11/2026 |
 | **Fase** | 1, protótipo |
 | **PR #5** | Integrado em 26/11/2026 |
+| **PR #7** | Integrado em 26/11/2026; sem nova versão de gameplay |
 | **Próxima prioridade** | Testes com pessoas em celulares físicos e ajustes a partir dos relatos |
 
 ## O que significa cada estado
