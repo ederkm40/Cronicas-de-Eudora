@@ -3,5 +3,12 @@
     "commit": "7aba8667d2d4bd39b5927fefeb2d7a2eb38a7155",
     "publicado_em": "2026-11-26T20:18:59Z"
   },
-  "previas": {}
+  "previas": {
+    "10": {
+      "branch": "feat/despertar-de-eudora-04",
+      "commit": "341328c8781ab3f429bb0b2b887e5e2269db3f0e",
+      "publicado_em": "2026-11-26T21:33:12Z",
+      "titulo": "0.4-alpha — O Despertar de Eudora (núcleo de gameplay)"
+    }
+  }
 }

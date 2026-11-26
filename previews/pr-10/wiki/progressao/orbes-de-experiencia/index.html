@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orbes de experiência · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Cristais de experiência deixados pelos inimigos derrotados e coletados por proximidade.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #10, branch <code>feat/despertar-de-eudora-04</code>, commit <code>341328c</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../" aria-current=page>Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../" aria-current=page>Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Progressão</a></nav>
+<article>
+<h1>Orbes de experiência</h1>
+<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.2-alpha</span></p>
+
+<p>Cada inimigo derrotado deixa um <strong>orbe de experiência</strong> no lugar onde morreu. O visual atual é um pequeno cristal azul-claro flutuando.</p>
+<h2 id="coleta-por-proximidade">Coleta por proximidade</h2>
+<div class="tabela"><table><thead><tr><th>Etapa</th><th style="text-align:right">Distância</th><th>O que acontece</th></tr></thead><tbody><tr><td>Parado</td><td style="text-align:right">Mais de 3 m</td><td>O orbe fica no chão.</td></tr><tr><td>Ímã</td><td style="text-align:right">Até 3 m</td><td>O orbe voa em direção ao personagem.</td></tr><tr><td>Coleta</td><td style="text-align:right">Até 0,6 m</td><td>O orbe desaparece e a XP entra na barra.</td></tr></tbody></table></div>
+<p>Não é preciso tocar no orbe: basta passar perto. A melhoria permanente <a href="../melhorias-permanentes/">Atração do eco</a> aumenta o raio do ímã em 20% por nível (a coleta final continua a 0,6 m).</p>
+<h2 id="limites">Limites</h2>
+<ul><li>Orbes não somem com o tempo.</li><li>O limite é de 400 orbes no chão.</li><li>Acima do limite, o valor do novo orbe é somado ao orbe mais antigo, sem perda de experiência.</li><li>Os orbes param durante o <a href="../level-up/">level-up</a> e depois do encerramento da partida.</li></ul>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 341328c</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/feat/despertar-de-eudora-04/wiki-src/progressao/orbes-de-experiencia.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>
