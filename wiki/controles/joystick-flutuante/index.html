@@ -36,20 +36,20 @@
 <article>
 <h1>Joystick flutuante</h1>
 <p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.1-alpha</span></p>
-<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#como-funciona">Como funciona</a></li><li><a href="#esquiva">Esquiva</a></li><li><a href="#pausa">Pausa</a></li></ol></details>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#como-funciona">Como funciona</a></li><li><a href="#esquiva">Esquiva</a></li><li><a href="#pausa-e-retomada">Pausa e retomada</a></li></ol></details>
 <p>Não existe um joystick fixo na tela. <strong>Toque em um ponto livre e arraste</strong>: o joystick aparece onde o dedo tocou e some quando você solta.</p>
 <h2 id="como-funciona">Como funciona</h2>
 <div class="tabela"><table><thead><tr><th>Característica</th><th>Valor</th></tr></thead><tbody><tr><td>Onde aparece</td><td>Em qualquer ponto livre da tela</td></tr><tr><td>Raio</td><td>90 unidades de tela (base de 720 px de largura)</td></tr><tr><td>Zona morta</td><td>12% do raio</td></tr><tr><td>Velocidade</td><td>Fixa fora da zona morta</td></tr><tr><td>Centro que acompanha</td><td>Sim, quando o dedo passa do raio</td></tr></tbody></table></div>
 <p>A direção é relativa à tela: arrastar para cima move o personagem para o alto da tela, mesmo com a câmera isométrica.</p>
 <h2 id="esquiva">Esquiva</h2>
 <p>Dois toques curtos e próximos podem ativar a <a href="../esquiva/">esquiva</a>. Um arrasto rápido no segundo toque também pode definir a direção.</p>
-<h2 id="pausa">Pausa</h2>
-<p>Durante o <a href="../../progressao/level-up/">level-up</a>, o joystick fica desabilitado. Há uma limitação conhecida: se o dedo continuar pressionando a tela durante a pausa, o controle pode só voltar depois que o dedo for levantado e um novo toque começar. Essa limitação ainda não foi corrigida na versão 0.3-alpha.</p>
+<h2 id="pausa-e-retomada">Pausa e retomada</h2>
+<p>Durante o <a href="../../progressao/level-up/">level-up</a>, o movimento fica pausado. Se o dedo que controlava o joystick continuar pressionando a tela, o controle retoma a partir da posição atual quando a escolha termina. Se o dedo for solto durante a pausa, o joystick volta neutro. Toques iniciados durante a pausa não assumem o controle nem geram esquiva. Esse comportamento foi implementado na manutenção pós-0.3-alpha e testado no Godot e no Chromium emulado; ainda não foi confirmado em celular físico.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 202965a</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 1e99c9d</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/controles/joystick-flutuante.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>

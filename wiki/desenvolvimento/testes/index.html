@@ -36,7 +36,7 @@
 <article>
 <h1>Testes</h1>
 
-<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#testes-do-godot">Testes do Godot</a></li><li><a href="#ci-e-navegador">CI e navegador</a></li><li><a href="#limite-importante">Limite importante</a></li></ol></details>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#testes-do-godot">Testes do Godot</a></li><li><a href="#ci-e-navegador">CI e navegador</a></li><li><a href="#limite-importante">Limite importante</a></li><li><a href="#manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</a></li></ol></details>
 <p>O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados durante a entrega da 0.3-alpha, não uma nova execução desta atualização editorial.</p>
 <h2 id="testes-do-godot">Testes do Godot</h2>
 <p>A 0.3-alpha registrou <strong>41 testes em quatro suítes e 4.370 verificações</strong>:</p>
@@ -50,11 +50,16 @@
 <h2 id="limite-importante">Limite importante</h2>
 <p>Os perfis de Pixel 7 são emulação de tela e toque em Chromium de computador. <strong>Não equivalem a teste em celular físico.</strong> O desempenho de CPU medido sem renderização também não representa FPS real em um aparelho.</p>
 <p>Consulte <a href="../relatorios/">os relatórios por versão</a> para os detalhes e as condições de cada medição.</p>
+<h2 id="manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</h2>
+<p>A etapa de manutenção ampliou a cobertura para <strong>51 testes em cinco suítes, com 4.482 verificações e zero falhas</strong>. Esses números são os registrados no CI e no relatório do PR #7, não uma execução feita durante esta atualização editorial.</p>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado registrado</th></tr></thead><tbody><tr><td>Testes do Godot</td><td>51 testes, 4.482 verificações, 0 falhas</td></tr><tr><td>Conferência ao contrário (save e joystick)</td><td>5 testes falham quando as correções são removidas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação prolongada de 300 s</td><td>Aprovada</td></tr><tr><td>Wiki / montagem do site</td><td>14 / 7 testes aprovados</td></tr><tr><td>Verificação das builds</td><td>Produção: 0 referências à ponte de QA; QA: 3</td></tr><tr><td>Playwright na build Web QA, 3 perfis</td><td>21 aprovados, 3 pulados por desenho</td></tr><tr><td>Playwright na build de produção, 3 perfis</td><td>11 aprovados, 1 pulado por desenho</td></tr></tbody></table></div>
+<p>A build de produção é a única publicada. A build Web QA, que contém a ponte usada pelos testes de jogabilidade, é restrita ao CI. Os três perfis de navegador incluem desktop e emulações de Pixel 7 em retrato e paisagem. <strong>A emulação não substitui testes em aparelhos físicos</strong>, que continuam pendentes.</p>
+<p>Relatório técnico: <code>docs/versoes/manutencao-pos-0.3/RELATORIO.md</code>. Pull Request: <a href="https://github.com/ederkm40/Cronicas-de-Eudora/pull/7" rel="noopener">#7</a>.</p>
 </article>
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 202965a</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 1e99c9d</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/testes.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>
