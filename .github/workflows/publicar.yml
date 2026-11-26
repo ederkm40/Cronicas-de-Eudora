@@ -1,0 +1,270 @@
+name: Testes, prévias e publicação
+
+# Fluxo completo (decisão docs/decisoes/0006):
+# - Todo envio (main ou Pull Request) roda os testes e exporta o jogo + a Wiki.
+# - main: publica o jogo oficial na raiz do site e a Wiki oficial em /wiki/.
+# - Pull Request do próprio repositório: publica a prévia em /previews/pr-N/ (jogo + Wiki candidata),
+#   sem tocar na versão oficial, e comenta o endereço no PR.
+# - Pull Request fechado ou integrado: apaga a prévia.
+# - Pull Request vindo de fork: só testa, com permissão de leitura. Nunca publica.
+# O site fica no branch gh-pages. O GitHub Pages precisa usar "Deploy from a branch: gh-pages / (root)".
+# Tudo gratuito: runners padrão do GitHub e GitHub Pages de repositório público.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.2"
+  SITE_URL: "https://ederkm40.github.io/Cronicas-de-Eudora/"
+
+jobs:
+  testar:
+    name: Testar e exportar
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: testar-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Baixar o código (o mesmo commit que será publicado)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Reaproveitar o Godot já baixado
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web
+
+      - name: Instalar o Godot (se não estiver no cache)
+        run: bash tools/ci/instalar_godot.sh
+
+      - name: Importar o projeto
+        run: ~/godot/godot --headless --path . --import
+
+      - name: Testes automáticos (progressão, melhorias, pausa, reinício)
+        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd
+
+      - name: Teste rápido de ponta a ponta (smoke test)
+        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
+
+      - name: Simulação prolongada (5 minutos de partida)
+        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=300
+
+      - name: Testes da Wiki e da montagem do site
+        run: |
+          python3 tools/wiki/test_wiki.py
+          python3 tools/site/test_montar_site.py
+
+      - name: Exportar o jogo, gerar a Wiki e verificar os arquivos
+        env:
+          CANAL: ${{ github.event_name == 'pull_request' && 'previa' || 'oficial' }}
+          PR: ${{ github.event.pull_request.number }}
+          COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: bash tools/ci/construir_parte.sh . "$RUNNER_TEMP/parte" "$CANAL" "$PR" "$COMMIT" "$BRANCH"
+
+      - name: Guardar a montagem para a publicação
+        uses: actions/upload-artifact@v4
+        with:
+          name: parte-do-site
+          path: ${{ runner.temp }}/parte
+          retention-days: 7
+
+  publicar:
+    name: Publicar
+    needs: testar
+    # Só publica a partir do main ou de Pull Requests do próprio repositório (nunca de forks).
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      pages: write
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      EVENTO: ${{ github.event_name }}
+      PR: ${{ github.event.pull_request.number }}
+      COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      TITULO: ${{ github.event.pull_request.title }}
+    steps:
+      - name: Baixar as ferramentas (mesmo commit testado)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Receber a montagem testada
+        uses: actions/download-artifact@v4
+        with:
+          name: parte-do-site
+          path: ${{ runner.temp }}/parte
+
+      - name: Abrir o branch gh-pages
+        run: bash tools/ci/abrir_gh_pages.sh "$RUNNER_TEMP/site"
+
+      - name: Conferir se o jogo oficial publicado é o main atual
+        id: oficial
+        run: |
+          MAIN_SHA=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)
+          PUBLICADO=$(python3 tools/site/montar_site.py oficial-atual --site "$RUNNER_TEMP/site")
+          echo "main=$MAIN_SHA" >> "$GITHUB_OUTPUT"
+          if [ "$EVENTO" != "pull_request" ]; then
+            echo "reconstruir=nao" >> "$GITHUB_OUTPUT"   # esta própria execução publica o main
+          elif [ "$MAIN_SHA" = "$PUBLICADO" ]; then
+            echo "reconstruir=nao" >> "$GITHUB_OUTPUT"
+          else
+            echo "O oficial publicado (${PUBLICADO:-nenhum}) não é o main ($MAIN_SHA): vou reconstruí-lo."
+            echo "reconstruir=sim" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Reaproveitar o Godot já baixado
+        if: steps.oficial.outputs.reconstruir == 'sim'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-web
+
+      - name: Reconstruir o jogo oficial a partir do main
+        if: steps.oficial.outputs.reconstruir == 'sim'
+        env:
+          MAIN_SHA: ${{ steps.oficial.outputs.main }}
+        run: |
+          bash tools/ci/instalar_godot.sh
+          git clone --quiet "https://github.com/${GITHUB_REPOSITORY}.git" "$RUNNER_TEMP/main-src"
+          git -C "$RUNNER_TEMP/main-src" checkout --quiet "$MAIN_SHA"
+          bash tools/ci/construir_parte.sh "$RUNNER_TEMP/main-src" "$RUNNER_TEMP/parte-main" oficial "" "$MAIN_SHA" main
+          python3 tools/site/montar_site.py oficial --site "$RUNNER_TEMP/site" --parte "$RUNNER_TEMP/parte-main" --commit "$MAIN_SHA"
+
+      - name: Montar o site
+        id: montar
+        run: |
+          if [ "$EVENTO" = "pull_request" ]; then
+            python3 tools/site/montar_site.py previa --site "$RUNNER_TEMP/site" --parte "$RUNNER_TEMP/parte" \
+              --pr "$PR" --commit "$COMMIT" --branch "$BRANCH" --titulo "$TITULO"
+            echo "url=${SITE_URL}previews/pr-${PR}/" >> "$GITHUB_OUTPUT"
+          else
+            python3 tools/site/montar_site.py oficial --site "$RUNNER_TEMP/site" --parte "$RUNNER_TEMP/parte" --commit "$COMMIT"
+            echo "url=${SITE_URL}" >> "$GITHUB_OUTPUT"
+          fi
+          ABERTOS=$(gh api "repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" --jq '[.[].number] | join(" ")')
+          python3 tools/site/montar_site.py limpar --site "$RUNNER_TEMP/site" --abertos "$ABERTOS"
+
+      - name: Enviar para o gh-pages
+        run: |
+          bash tools/ci/enviar_gh_pages.sh "$RUNNER_TEMP/site" "Publicação: ${EVENTO} ${PR:+PR #$PR }commit ${COMMIT:0:7}"
+
+      - name: Verificar se abriu de verdade
+        id: verificar
+        continue-on-error: true
+        run: |
+          echo "Configuração do GitHub Pages:"
+          gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '{build_type, source, html_url}' || true
+          bash tools/ci/verificar_publicacao.sh "${{ steps.montar.outputs.url }}" "$COMMIT" 10
+
+      - name: Resumo
+        if: always()
+        env:
+          URL: ${{ steps.montar.outputs.url }}
+          RESULTADO: ${{ steps.verificar.outputs.detalhe }}
+        run: |
+          {
+            echo "## Publicação"
+            echo "- Endereço: ${URL}"
+            echo "- Wiki: ${URL}wiki/"
+            echo "- Commit: \`${COMMIT:0:7}\`"
+            echo "- Verificação: ${RESULTADO:-não executada}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comentar o endereço da prévia no Pull Request
+        if: always() && github.event_name == 'pull_request'
+        env:
+          URL: ${{ steps.montar.outputs.url }}
+          VERIFICADO: ${{ steps.verificar.outputs.verificado }}
+          RESULTADO: ${{ steps.verificar.outputs.detalhe }}
+        run: |
+          if [ "$VERIFICADO" = "sim" ]; then SITUACAO="✅ ${RESULTADO}"; else SITUACAO="⚠️ ${RESULTADO:-A verificação não chegou a rodar.}"; fi
+          CORPO=$(cat <<EOF
+          <!-- previa-cronicas -->
+          ## Prévia jogável deste Pull Request
+
+          | | |
+          |---|---|
+          | **Jogo** | ${URL} |
+          | **Wiki** | ${URL}wiki/ |
+          | **Commit** | \`${COMMIT:0:7}\` (branch \`${BRANCH}\`) |
+          | **Situação** | ${SITUACAO} |
+
+          **Como testar:** abra o link do jogo no celular (em pé e deitado) e no computador. A Wiki da prévia tem uma faixa amarela de aviso.
+          A versão oficial continua em ${SITE_URL}. Esta prévia é atualizada a cada novo envio e apagada quando o PR for fechado ou integrado.
+          EOF
+          )
+          ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments?per_page=100" \
+            --jq '[.[] | select(.body | contains("<!-- previa-cronicas -->"))][0].id // empty')
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${ID}" -f body="$CORPO" > /dev/null
+          else
+            gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments" -f body="$CORPO" > /dev/null
+          fi
+
+  remover-previa:
+    name: Remover prévia
+    if: >-
+      github.event_name == 'pull_request' && github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number }}
+    steps:
+      - name: Baixar as ferramentas
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Abrir o branch gh-pages
+        run: bash tools/ci/abrir_gh_pages.sh "$RUNNER_TEMP/site"
+
+      - name: Apagar a prévia
+        run: |
+          python3 tools/site/montar_site.py remover --site "$RUNNER_TEMP/site" --pr "$PR"
+          bash tools/ci/enviar_gh_pages.sh "$RUNNER_TEMP/site" "Remove a prévia do PR #${PR}"
+
+      - name: Avisar no Pull Request
+        run: |
+          ID=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR}/comments?per_page=100" \
+            --jq '[.[] | select(.body | contains("<!-- previa-cronicas -->"))][0].id // empty')
+          CORPO="<!-- previa-cronicas -->
+          ## Prévia removida
+
+          Este Pull Request foi fechado, então a prévia em \`previews/pr-${PR}/\` foi apagada. A versão oficial está em ${{ env.SITE_URL }}."
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${ID}" -f body="$CORPO" > /dev/null
+          fi
