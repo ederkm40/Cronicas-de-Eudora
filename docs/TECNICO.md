@@ -121,7 +121,7 @@ Garantias:
 
 - **Uma publicação por vez:** grupo de concorrência `gh-pages`, sem cancelar a que está rodando.
 - **Convergência:** antes de publicar uma prévia, o workflow confere em `publicacao.json` se a raiz corresponde ao `main` atual. Se não corresponder (por exemplo, porque uma publicação do `main` foi cancelada na fila), reconstrói a raiz a partir do `main`.
-- **Verificação real:** `tools/ci/verificar_publicacao.sh` espera o `versao.json` do endereço mostrar o commit publicado e testa `index.html`, `.js`, `.pck`, `.wasm` e a Wiki. O resultado vai para o resumo da execução e para o comentário do PR.
+- **Verificação real:** `tools/ci/verificar_publicacao.sh` espera o `versao.json` do endereço mostrar o commit publicado e testa `index.html`, `.js`, `.pck`, `.wasm` e a Wiki. Se o endereço não abrir, **o job `Publicar` termina como falha**: o PR fica com o check vermelho. O resumo da execução e o comentário do PR são publicados mesmo assim, com o motivo e o endereço.
 - **Segurança:** permissões mínimas por job, sem `pull_request_target`, sem segredos. Forks não publicam.
 
 Ferramentas (Python 3 e shell, sem dependências externas):

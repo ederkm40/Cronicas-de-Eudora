@@ -176,7 +176,6 @@ jobs:
 
       - name: Verificar se abriu de verdade
         id: verificar
-        continue-on-error: true
         env:
           URL: ${{ steps.montar.outputs.url }}
         run: |

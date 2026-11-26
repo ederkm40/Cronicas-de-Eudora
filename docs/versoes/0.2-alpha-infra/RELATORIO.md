@@ -33,7 +33,7 @@ Preparar o repositório para um desenvolvimento contínuo: prévia jogável de c
 
 ## Correções
 
-- Encontradas e corrigidas durante a etapa: `|` dentro de links em tabelas; lista com marcadores seguida de lista numerada que virava uma lista só; menu lateral vazio no computador; texto sem bloco no YAML com `: `; verificação que esperava 10 minutos mesmo com o Pages mal configurado.
+- Encontradas e corrigidas durante a etapa: `|` dentro de links em tabelas; lista com marcadores seguida de lista numerada que virava uma lista só; menu lateral vazio no computador; texto sem bloco no YAML com `: `; verificação que esperava 10 minutos mesmo com o Pages mal configurado. A pedido do proprietário, a verificação deixou de ser tolerada (`continue-on-error` removido): se a prévia não abrir no endereço público, o job `Publicar` falha, para o PR não ser aprovado sem prévia no ar.
 
 ## Valores e parâmetros modificados
 

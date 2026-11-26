@@ -19,7 +19,7 @@
 - A publicação deixou de usar `actions/deploy-pages` (workflow `web.yml`, removido) e passou a usar o **branch `gh-pages`** (workflow `publicar.yml`).
 - Estrutura do site: `/` jogo oficial · `/wiki/` Wiki oficial · `/previews/` lista · `/previews/pr-N/` jogo do PR · `/previews/pr-N/wiki/` Wiki do PR.
 - Cada PR do próprio repositório ganha prévia, atualizada a cada envio e apagada ao fechar ou integrar. PRs de forks só são testados.
-- O workflow comenta no PR o endereço da prévia e o resultado da verificação real (busca `versao.json` com o commit e testa jogo e Wiki).
+- O workflow comenta no PR o endereço da prévia e o resultado da verificação real (busca `versao.json` com o commit e testa jogo e Wiki). Se a prévia não abrir, o job `Publicar` falha (check vermelho), mas o comentário com o motivo é publicado mesmo assim.
 - A Wiki é gerada de `wiki-src/` por `tools/wiki/build_wiki.py` (Python, só biblioteca padrão). Changelog, relatórios e decisões vêm de `docs/` e aparecem no painel de desenvolvimento.
 
 ## Arquivos
