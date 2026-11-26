@@ -2,8 +2,9 @@
 
 ## Último estado validado
 
-- **`main`:** `e516f2187f4726b6d63ad674955c15397a0f548d`, versão 0.2-alpha, publicada e com o workflow aprovado (execução 45802232546).
-- **Em revisão:** etapa de infraestrutura no PR #2 (branch `infra/wiki-previews-memoria`). Veja o relatório em `docs/versoes/0.2-alpha-infra/RELATORIO.md`.
+- **`main`:** `1b6c65c14c8a647c12568f780c6dc25f053d1d0d`, com a versão 0.2-alpha e a infraestrutura de Wiki, prévias e memória (PR #2, integrado por squash). Jogo e Wiki oficiais publicados a partir desse commit.
+- **Em revisão:** PR #4 (branch `infra/ferramentas-qa-web`): GDScript Toolkit, testes de navegador com Playwright e formulários do GitHub. Todos os checks passaram. Relatório em `docs/versoes/infra-ferramentas-qa/RELATORIO.md`.
+- **Proteção da `main`:** exige os checks `Testar e exportar` e `Publicar`. Mantenha esses nomes de job.
 
 ## Decisões importantes (resumo; detalhes em `docs/decisoes/`)
 
@@ -15,30 +16,35 @@
 6. Site no branch `gh-pages` com prévias por PR (0006).
 7. Wiki com gerador próprio em Python, só biblioteca padrão (0007).
 8. Claude Code desenvolve; ChatGPT documenta; GitHub é a fonte de verdade (0008).
+9. Ferramentas de QA só no CI: gdtoolkit 4.5.0 e Playwright 1.65.1 com Chromium e Mesa via Xvfb (0009).
 
 ## Trabalho concluído
 
-0.1-alpha (base jogável), 0.2-alpha (progressão e melhorias) e a infraestrutura desta etapa (Wiki, prévias e memória), esta última pendente de aprovação.
+- 0.1-alpha: base jogável.
+- 0.2-alpha: progressão e melhorias.
+- Infraestrutura de Wiki, prévias e memória (PR #2).
+- Ferramentas de QA (PR #4, aguardando aprovação).
 
 ## Pendências
 
-- ~~Ajuste do GitHub Pages para o branch `gh-pages`~~: **feito** pelo proprietário em 26/11/2026. Se um dia voltar ao método antigo, a verificação do workflow acusa e o job `Publicar` falha.
-- Testar o jogo num celular físico e anotar o FPS com a horda cheia.
+- Aprovação do PR #4 pelo proprietário.
+- Testar num celular físico e anotar o FPS com a horda cheia.
 - Ajustar o equilíbrio (dano base, ritmo das hordas, curva de XP).
+- Wiki (responsabilidade do ChatGPT): marcar a infraestrutura do PR #2 como publicada e registrar as ferramentas de QA (dados em `ENTREGA_PARA_CHATGPT.md`).
+- Branches antigas que podem ser apagadas pelo proprietário: `etapa-0.2-alpha-ecos-da-evolucao`, `infra/wiki-previews-memoria`, `teste/remocao-de-previa`.
 
 ## Restrições
 
-- Custo zero (ver `AGENTS.md`).
+- Custo zero. Dependências de desenvolvimento só no CI e com versão fixada; nenhuma dependência externa no jogo publicado (ver `AGENTS.md`).
 - Nunca trabalhar no `main` nem fazer merge; o proprietário aprova.
 - Não mudar as mecânicas da 0.2 sem uma etapa de gameplay aprovada.
-- Na sessão do Claude Code na nuvem: a API do Pages e o GraphQL do GitHub ficam bloqueados, e `*.github.io` não abre. Use a REST API e os logs do workflow.
+- Na sessão do Claude Code na nuvem: a API do Pages, o GraphQL do GitHub, o PyPI e o npm podem estar bloqueados; `*.github.io` não abre; `push --force` é bloqueado. Use a REST API, o GitHub Actions e os logs do workflow.
 
 ## Comandos de teste
 
-Ver `AGENTS.md`, seção "Comandos de verificação". Todos precisam terminar com a mensagem de sucesso.
+Ver `AGENTS.md`, seção "Comandos de verificação". No CI, todos rodam no job "Testar e exportar". O log mostra `Success: no problems found` (gdlint), `TESTES: OK`, `SMOKE TEST: OK`, `SIMULAÇÃO LONGA: OK`, `OK` (Python) e `5 passed` (Playwright).
 
 ## Próximas ações
 
-1. O proprietário testa a prévia e a Wiki e aprova o PR de infraestrutura.
-2. O ChatGPT revisa a Wiki e o changelog na branch do PR (opcional antes do merge).
-3. Etapa **0.3-alpha (variedade de combate)**: 2 armas novas (aura de dano e lâmina giratória), com espaços de arma próprios e melhorias que podem trazer uma arma nova. Seguir o fluxo do `AGENTS.md`.
+1. O proprietário testa a prévia do PR #4 e aprova.
+2. Etapa **0.3-alpha (variedade de combate)**: 2 armas novas (aura de dano e lâmina giratória). Todo `.gd` novo ou alterado precisa passar no `gdlint` e no `gdformat`. Seguir o fluxo do `AGENTS.md`.
