@@ -105,7 +105,7 @@ func test_save_campos_ausentes_e_desconhecidos() -> void:
 	meta = MetaProgress.load_from(TEST_SAVE)
 	meta.save()
 	var data: Dictionary = JSON.parse_string(_read_file(TEST_SAVE))
-	var extra := data.has("campo_novo") and data.campo_novo.a == 1
+	var extra: bool = data.has("campo_novo") and data.campo_novo.a == 1
 	_check(extra, "campo desconhecido mantido ao salvar")
 	_check(int(data.melhorias.outra) == 3, "melhoria desconhecida mantida ao salvar")
 	_check(int(data.ecos) == 12, "Ecos mantidos")

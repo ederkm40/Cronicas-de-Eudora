@@ -103,7 +103,7 @@ static func load_from(file_path: String = "") -> MetaProgress:
 		return meta
 	for container in ["estatisticas", "melhorias"]:
 		if data.has(container) and not (data[container] is Dictionary):
-			return meta._start_over("\"%s\" não é um objeto" % container)
+			return meta._start_over('"%s" não é um objeto' % container)
 	data = migrate(data)
 	meta._read(data, true)
 	if version < VERSION:
