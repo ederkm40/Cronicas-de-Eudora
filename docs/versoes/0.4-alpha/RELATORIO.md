@@ -207,7 +207,21 @@ Cada item traz: problema, justificativa, compatibilidade, impacto, riscos, estra
 
 ### CI (GitHub Actions, `ubuntu-latest`)
 
-Os resultados do CI (gdlint, gdformat, testes, exportações, Playwright e prévia) estão no PR #10. Duas falhas de estilo apareceram no caminho e foram corrigidas com novos commits: a ordem das definições exigida pelo `gdlint` e a formatação do `gdformat`.
+Execução 45898338858 (commit `341328c`): **"Testar e exportar" e "Publicar" com sucesso.**
+
+| Etapa | Resultado |
+|---|---|
+| `gdlint` | sem problemas |
+| `gdformat --check` | 34 arquivos sem mudança |
+| `run_tests` | 71 testes, 4.613 verificações, 0 falhas |
+| `smoke_test` | OK |
+| `long_simulation` (300 s) | OK; média 1,27 ms, p95 3,43 ms, p99 3,64 ms, pior 57,9 ms (o primeiro quadro, geração dos sons) |
+| Builds de produção e QA | ponte no `.pck`: produção 0 · QA 3 |
+| Playwright na QA | 24 aprovados, 3 pulados (3 perfis; WebGL 2 em Mesa/llvmpipe) |
+| Playwright na produção | 11 aprovados, 1 pulado |
+| Prévia | comentário do workflow: "✅ Verificado: jogo (index.html, .js, .pck, .wasm) e Wiki respondem com o commit 341328c" |
+
+No caminho, o CI reprovou duas vezes por estilo: a ordem das definições exigida pelo `gdlint` e a formatação do `gdformat`. O teste da Wiki também reprovou, localmente, porque o título da decisão 0012 começava por "Núcleo" e passava à frente da melhoria Núcleo vital na busca. Os três foram corrigidos com novos commits.
 
 ## Simulações e balanceamento
 
