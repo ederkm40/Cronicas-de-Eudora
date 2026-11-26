@@ -22,6 +22,7 @@ signal enemy_killed(position: Vector3)
 var player: Player
 var camera_rig: CameraRig
 var elapsed := 0.0
+var spawning_enabled := true ## Desligado pelos testes para controlar os inimigos um a um.
 var count: int:
 	get:
 		return _positions.size()
@@ -75,7 +76,8 @@ func _process(delta: float) -> void:
 	if player == null or not player.alive:
 		return
 	elapsed += delta
-	_spawn(delta)
+	if spawning_enabled:
+		_spawn(delta)
 	_move(delta)
 	_draw_instances()
 
@@ -218,6 +220,22 @@ func hit_at(point: Vector3, radius: float) -> int:
 
 func position_of(index: int) -> Vector3:
 	return _positions[index]
+
+
+func hp_of(index: int) -> float:
+	return _hp[index]
+
+
+## Cria um inimigo num ponto exato. Usado pelos testes e, no futuro, por eventos e chefes.
+func spawn_at(point: Vector3, hp: float = -1.0) -> int:
+	if count >= max_enemies:
+		return -1
+	_positions.append(Vector3(point.x, 0.0, point.z))
+	_hp.append(hp if hp > 0.0 else base_hp)
+	_speed.append(base_speed)
+	_push.append(Vector3.ZERO)
+	return count - 1
+
 
 
 ## Aplica dano. Retorna true se o inimigo morreu.

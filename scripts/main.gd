@@ -1,6 +1,10 @@
 extends Node3D
-## Monta a partida em código: ambiente, chão, jogador, câmera, inimigos, arma e interface.
+## Monta a partida em código: ambiente, chão, jogador, câmera, inimigos, arma, orbes e interface.
 ## Tudo é criado aqui para o projeto ser 100% texto e fácil de editar por IA.
+##
+## Ciclo da experiência: inimigo morre -> deixa orbe -> jogador coleta -> Progression soma XP
+## -> ao subir de nível, a partida pausa e o LevelUpPanel mostra 3 melhorias -> a escolhida
+## é aplicada por Upgrades -> a partida continua (ou abre outra escolha, se subiu mais de um nível).
 
 const GROUND_SIZE := 120.0
 const GRID_CELL := 2.0
@@ -11,6 +15,11 @@ var enemies: EnemyManager
 var weapon: AutoWeapon
 var hud: Hud
 var joystick: FloatingJoystick
+var orbs: XpOrbManager
+var progression: Progression
+var upgrades: Upgrades
+var level_up_panel: LevelUpPanel
+var xp_per_enemy := 1
 
 var _ground: MeshInstance3D
 var _elapsed := 0.0
@@ -42,6 +51,14 @@ func _ready() -> void:
 	weapon.enemies = enemies
 	add_child(weapon)
 
+	orbs = XpOrbManager.new()
+	orbs.player = player
+	add_child(orbs)
+
+	progression = Progression.new()
+	upgrades = Upgrades.new()
+	orbs.collected.connect(progression.add_xp)
+
 	var ui := CanvasLayer.new()
 	add_child(ui)
 	joystick = FloatingJoystick.new()
@@ -49,29 +66,81 @@ func _ready() -> void:
 	hud = Hud.new()
 	ui.add_child(hud)
 	hud.restart_requested.connect(_on_restart)
+	level_up_panel = LevelUpPanel.new()
+	ui.add_child(level_up_panel)
+	level_up_panel.chosen.connect(_on_upgrade_chosen)
 	player.joystick = joystick
 	player.died.connect(_on_player_died)
+	_update_hud()
 
 
 func _process(delta: float) -> void:
 	if not _over:
 		_elapsed += delta
+		# Abre a escolha no começo do quadro, antes de inimigos e projéteis se moverem.
+		if progression.pending_level_ups > 0 and player.alive and not level_up_panel.is_open():
+			_open_level_up()
 	var p := player.global_position
 	_ground.global_position = Vector3(snappedf(p.x, GRID_CELL), 0.0, snappedf(p.z, GRID_CELL))
-	hud.update_stats(_elapsed, _kills, player.hp, player.max_hp, enemies.count)
+	_update_hud()
 
 
-func _on_enemy_killed(_where: Vector3) -> void:
+func is_over() -> bool:
+	return _over
+
+
+func elapsed() -> float:
+	return _elapsed
+
+
+func kills() -> int:
+	return _kills
+
+
+func _update_hud() -> void:
+	hud.update_stats(_elapsed, _kills, player.hp, player.max_hp, enemies.count,
+		progression.level, progression.xp, progression.xp_to_next())
+
+
+func _on_enemy_killed(where: Vector3) -> void:
 	_kills += 1
+	orbs.spawn(where, xp_per_enemy)
+
+
+## Pausa toda a simulação (inimigos, projéteis, orbes, hordas, tempo) e mostra as escolhas.
+func _open_level_up() -> void:
+	var choices := upgrades.roll_choices(3)
+	if choices.is_empty():
+		# Todas as melhorias no limite: o nível conta, mas não há o que escolher.
+		progression.consume_pending_level_up()
+		player.heal(Upgrades.VITALITY_HEAL)
+		return
+	get_tree().paused = true
+	joystick.set_enabled(false)
+	level_up_panel.open(progression.level - progression.pending_level_ups + 1, choices, upgrades)
+	_update_hud()
+
+
+func _on_upgrade_chosen(id: StringName) -> void:
+	upgrades.apply(id, player, weapon)
+	progression.consume_pending_level_up()
+	if progression.pending_level_ups > 0 and player.alive:
+		_open_level_up()
+		return
+	get_tree().paused = false
+	joystick.set_enabled(true)
+	_update_hud()
 
 
 func _on_player_died() -> void:
 	_over = true
 	joystick.set_enabled(false)
-	hud.show_game_over(_elapsed, _kills)
+	level_up_panel.close()
+	hud.show_game_over(_elapsed, _kills, progression.level)
 
 
 func _on_restart() -> void:
+	get_tree().paused = false
 	get_tree().reload_current_scene()
 
 

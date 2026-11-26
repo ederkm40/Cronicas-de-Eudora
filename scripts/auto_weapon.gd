@@ -2,17 +2,27 @@ class_name AutoWeapon
 extends Node3D
 ## Arma automática: atira sozinha no inimigo mais próximo dentro do alcance.
 ## Os projéteis também usam arrays + MultiMesh, como os inimigos.
+## Os valores base ficam nos @export. As melhorias mexem só nos modificadores abaixo,
+## e os valores usados na partida (efetivos) são calculados a partir dos dois.
 
-@export var fire_interval := 0.45
-@export var attack_range := 11.0
+@export var fire_interval := 0.45 ## Segundos entre disparos, sem melhorias.
+@export var attack_range := 11.0 ## Metros, sem melhorias.
 @export var projectile_speed := 14.0
-@export var projectile_damage := 10.0
-@export var projectile_lifetime := 1.2
+@export var projectile_damage := 10.0 ## Dano por projétil, sem melhorias.
+@export var projectile_lifetime := 1.2 ## Segundos, sem melhorias (cresce junto com o alcance).
 @export var hit_radius := 0.55
-@export var max_projectiles := 128
+@export var spread_degrees := 10.0 ## Abertura entre projéteis quando há mais de um por disparo.
+@export var max_projectiles := 256
+
+# Modificadores das melhorias (1.0 e 0 = sem melhoria).
+var damage_multiplier := 1.0
+var fire_rate_multiplier := 1.0
+var range_multiplier := 1.0
+var extra_projectiles := 0
 
 var player: Player
 var enemies: EnemyManager
+var shots_fired := 0 ## Total de projéteis disparados na partida (usado pelos testes).
 
 var _positions := PackedVector3Array()
 var _velocities := PackedVector3Array()
@@ -46,6 +56,26 @@ func _ready() -> void:
 	add_child(instance)
 
 
+func effective_damage() -> float:
+	return projectile_damage * damage_multiplier
+
+
+func effective_fire_interval() -> float:
+	return fire_interval / fire_rate_multiplier
+
+
+func effective_range() -> float:
+	return attack_range * range_multiplier
+
+
+func projectiles_per_shot() -> int:
+	return 1 + extra_projectiles
+
+
+func active_projectiles() -> int:
+	return _positions.size()
+
+
 func _process(delta: float) -> void:
 	if player == null or not player.alive:
 		return
@@ -59,16 +89,25 @@ func _try_fire(delta: float) -> void:
 	if _cooldown > 0.0 or _positions.size() >= max_projectiles:
 		return
 	var origin := player.global_position
-	var target := enemies.nearest(origin, attack_range)
+	var target := enemies.nearest(origin, effective_range())
 	if target == -1:
 		_cooldown = 0.0
 		return
 	var to_target := enemies.position_of(target) - origin
 	to_target.y = 0.0
-	_positions.append(Vector3(origin.x, SHOT_HEIGHT, origin.z))
-	_velocities.append(to_target.normalized() * projectile_speed)
-	_life.append(projectile_lifetime)
-	_cooldown = fire_interval
+	var aim := to_target.normalized()
+	# Vários projéteis saem em leque, centrados no alvo.
+	var shots := projectiles_per_shot()
+	var lifetime := projectile_lifetime * range_multiplier
+	for k in shots:
+		if _positions.size() >= max_projectiles:
+			break
+		var offset := deg_to_rad(spread_degrees) * (k - (shots - 1) * 0.5)
+		_positions.append(Vector3(origin.x, SHOT_HEIGHT, origin.z))
+		_velocities.append(aim.rotated(Vector3.UP, offset) * projectile_speed)
+		_life.append(lifetime)
+		shots_fired += 1
+	_cooldown = effective_fire_interval()
 
 
 func _move_projectiles(delta: float) -> void:
@@ -78,7 +117,7 @@ func _move_projectiles(delta: float) -> void:
 		_life[i] -= delta
 		var hit := enemies.hit_at(_positions[i], hit_radius)
 		if hit != -1:
-			enemies.damage(hit, projectile_damage)
+			enemies.damage(hit, effective_damage())
 			_remove(i)
 		elif _life[i] <= 0.0:
 			_remove(i)
