@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desempenho · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Medições registradas e como acompanhar o FPS no celular.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #2, branch <code>infra/wiki-previews-memoria</code>, commit <code>dd6ba05</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Painel de desenvolvimento</a></nav>
+<article>
+<h1>Desempenho</h1>
+
+
+<p>O jogo foi feito para rodar no navegador do celular com <strong>até 300 inimigos</strong> na tela.</p>
+<h2 id="medicoes-registradas-0-2-alpha">Medições registradas (0.2-alpha)</h2>
+<p>Feitas na simulação automática de 10 minutos, com a horda cheia de 300 inimigos, <strong>no processador de um servidor e sem desenhar a tela</strong>:</p>
+<div class="tabela"><table><thead><tr><th>Medida</th><th>Resultado</th></tr></thead><tbody><tr><td>Tempo de processamento por quadro: média</td><td>1,3 ms</td></tr><tr><td>99% dos quadros abaixo de</td><td>2,2 ms</td></tr><tr><td>Objetos na cena</td><td>constantes, inclusive depois de reiniciar</td></tr><tr><td>Memória</td><td>estável, sem crescimento contínuo</td></tr></tbody></table></div>
+<p>Esses números <strong>não representam um celular</strong>. No navegador do celular, o jogo roda mais devagar e a placa de vídeo é mais fraca.</p>
+<h2 id="no-seu-celular">No seu celular</h2>
+<p>O rodapé do jogo mostra <strong>FPS</strong> (quadros por segundo) e o número de <strong>inimigos</strong>. A meta é ficar estável em 30 FPS ou mais com a horda cheia. Para ajudar no desenvolvimento, anote o FPS quando a tela estiver lotada.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Prévia · commit dd6ba05</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/infra/wiki-previews-memoria/wiki-src/desenvolvimento/desempenho.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>
