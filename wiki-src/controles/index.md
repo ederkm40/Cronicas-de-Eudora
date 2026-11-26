@@ -2,7 +2,7 @@
 titulo: Controles
 resumo: Como jogar no celular e no computador, incluindo pausa e personalização.
 ---
-O jogo foi pensado para o **celular na vertical**, com movimento por joystick e ataques automáticos. Na 0.4-alpha, o jogador pode personalizar o controle para destros ou canhotos e escolher joystick fixo ou flutuante. No computador, o movimento também funciona pelo teclado.
+O jogo foi pensado para o **celular na vertical**, com movimento por joystick e ataques automáticos. Na 0.4-alpha, o jogador pode personalizar o controle para destros ou canhotos e escolher joystick fixo ou flutuante. No computador, o movimento também funciona pelo teclado. Consulte [[controles/pausa-e-configuracoes|Pausa e configurações]] para conhecer as opções.
 
 | Ação | Celular | Computador |
 |---|---|---|
