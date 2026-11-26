@@ -3,12 +3,5 @@
     "commit": "1e99c9d9b77e5c0aa8a7ddefff60b636b2991dcf",
     "publicado_em": "2026-11-26T20:00:26Z"
   },
-  "previas": {
-    "9": {
-      "branch": "docs/painel-etapas-e-arquivo-de-prompts",
-      "commit": "197a3ec40dab0975e21ed55e81ed8790f6bedb42",
-      "publicado_em": "2026-11-26T20:13:29Z",
-      "titulo": "Wiki: painel de etapas integradas e arquivo histórico de prompts"
-    }
-  }
+  "previas": {}
 }
