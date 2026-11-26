@@ -38,6 +38,10 @@ ordem: 30
 | Prévia de jogo e Wiki por Pull Request | {PUBLICADO} |
 | Testes Playwright em computador e dois perfis de Pixel 7 emulado | {PUBLICADO} |
 | Documentação permanente para desenvolvimento assistido por IA | {PUBLICADO} |
+| Build de produção sem ponte de QA; build Web QA restrita ao CI | {PUBLICADO} |
+| Validação de estrutura e tipos do save, com recuperação de dados inválidos | {PUBLICADO} |
+| Retomada do joystick após pausa do level-up | {IMPLEMENTADO}, testado em Godot e Chromium emulado; falta teste físico |
+| Documento Mestre de Sistemas (38 áreas e 30 catálogos) | {PUBLICADO} como documentação; propostas não aprovam implementação |
 
 ## Planejado ou pendente
 
