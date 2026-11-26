@@ -1,0 +1,32 @@
+name: Diagnóstico temporário (será removido antes do PR)
+on:
+  push:
+    branches: [infra/ferramentas-qa-web]
+permissions:
+  contents: read
+jobs:
+  diagnostico:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: gdtoolkit
+        run: |
+          python -m venv /tmp/gd && /tmp/gd/bin/pip install -q gdtoolkit==4.5.0
+          echo "== pip freeze"; /tmp/gd/bin/pip freeze
+          echo "== gdlint"; /tmp/gd/bin/gdlint scripts tests || true
+          echo "== gdformat check"; /tmp/gd/bin/gdformat --check scripts tests || true
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: playwright
+        run: |
+          node --version; npm --version
+          npm view @playwright/test dist-tags --json
+          mkdir -p /tmp/e2e && cd /tmp/e2e
+          V=$(npm view @playwright/test dist-tags.latest)
+          printf '{"name":"x","private":true,"devDependencies":{"@playwright/test":"%s"}}' "$V" > package.json
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          echo "== LOCK"; cat package-lock.json; echo "== FIM LOCK"
+          dpkg -l | grep -E "libgl1-mesa|mesa-vulkan|libegl-mesa|xvfb" | awk '{print $2, $3}'
