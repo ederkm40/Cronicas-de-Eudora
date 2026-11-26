@@ -110,8 +110,11 @@ class TestWiki(unittest.TestCase):
             alvo = self.saida / item["u"] / "index.html" if item["u"] else self.saida / "index.html"
             self.assertTrue(alvo.is_file(), item["u"])
 
-    @unittest.skipUnless(shutil.which("node"), "Node.js não disponível")
+    # No CI, EXIGIR_NODE=1 transforma a falta do Node em falha (em vez de pular em silêncio).
+    @unittest.skipUnless(shutil.which("node") or os.environ.get("EXIGIR_NODE") == "1", "Node.js não disponível")
     def test_busca_no_javascript(self):
+        if not shutil.which("node"):
+            self.fail("EXIGIR_NODE=1, mas o Node.js não foi encontrado")
         script = f"""
         const b = require({json.dumps(str(RAIZ / 'wiki-src/assets/busca.js'))});
         const indice = require({json.dumps(str(self.saida / 'search-index.json'))});
