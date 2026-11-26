@@ -1,6 +1,6 @@
 ---
 titulo: Funcionalidades
-resumo: Lista das funcionalidades implementadas na 0.3-alpha e do conteúdo ainda planejado.
+resumo: Funcionalidades presentes na versão oficial 0.4-alpha e conteúdo ainda planejado.
 ordem: 30
 ---
 ## No jogo oficial
@@ -27,6 +27,17 @@ ordem: 30
 | Vitória, derrota, resultados e reinício limpo | 0.3-alpha | {PUBLICADO} | [[progressao/resultados]] |
 | Ecos e quatro melhorias permanentes | 0.3-alpha | {PUBLICADO} | [[progressao/melhorias-permanentes]] |
 | Estatísticas reais por arma e origem do dano | 0.3-alpha | {PUBLICADO} | [[progressao/resultados]] |
+| Pausa manual e configurações mobile persistentes | 0.4-alpha | {PUBLICADO} | [[controles/pausa-e-configuracoes]] |
+| Layout espelhado para canhotos; joystick fixo/flutuante, três tamanhos e três alturas | 0.4-alpha | {PUBLICADO} | [[controles/pausa-e-configuracoes]] |
+| Três evoluções de armas: Raio em cadeia, Coroa de cinzas e Vendaval de lâminas | 0.4-alpha | {PUBLICADO} | [[armas]] |
+| Pacto do Eco, melhoria de risco/recompensa | 0.4-alpha | {PUBLICADO} | [[progressao]] |
+| Tecelão, Semeador e elites Veloz, Blindado e Gerador | 0.4-alpha | {PUBLICADO} | [[inimigos]] |
+| Fenda do Eco, Maré e Calmaria | 0.4-alpha | {PUBLICADO} | [[desenvolvimento/eventos-da-partida]] |
+| Atordoamento após investida e ataque Prisão de ecos | 0.4-alpha | {PUBLICADO} | [[chefes]] |
+| Som procedural, estouros nos abates, números de dano seletivos e tremor de câmera | 0.4-alpha | {PUBLICADO} | [[desenvolvimento/eventos-da-partida]] |
+| Estatísticas de elites, Fendas fechadas e armas evoluídas nos resultados | 0.4-alpha | {PUBLICADO} | [[progressao/resultados]] |
+
+As mecânicas novas de gameplay da 0.4 estão publicadas como **experimentos** e permanecem PROPOSTO_NAO_APROVADO no eixo de design até decisão do proprietário. A personalização mobile já estava aprovada.
 
 ## Infraestrutura
 
@@ -34,21 +45,22 @@ ordem: 30
 |---|---|
 | Publicação automática no GitHub Pages | {PUBLICADO} |
 | Testes automáticos e verificação estática no CI | {PUBLICADO} |
-| Wiki pública gerada a partir de `wiki-src/` | {PUBLICADO} |
+| Wiki pública gerada a partir de wiki-src/ | {PUBLICADO} |
 | Prévia de jogo e Wiki por Pull Request | {PUBLICADO} |
 | Testes Playwright em computador e dois perfis de Pixel 7 emulado | {PUBLICADO} |
 | Documentação permanente para desenvolvimento assistido por IA | {PUBLICADO} |
 | Build de produção sem ponte de QA; build Web QA restrita ao CI | {PUBLICADO} |
 | Validação de estrutura e tipos do save, com recuperação de dados inválidos | {PUBLICADO} |
-| Retomada do joystick após pausa do level-up | {IMPLEMENTADO}, testado em Godot e Chromium emulado; falta teste físico |
+| Retomada do joystick após pausa do level-up | {PUBLICADO}, testado em Godot e Chromium emulado; falta teste físico |
 | Documento Mestre de Sistemas (38 áreas e 30 catálogos) | {PUBLICADO} como documentação; propostas não aprovam implementação |
 
 ## Planejado ou pendente
 
 | Funcionalidade | Situação |
 |---|---|
-| Destro/canhoto e personalização do joystick | {PLANEJADO} |
-| Equilíbrio validado com 5 a 10 pessoas em celulares físicos | {PLANEJADO} |
+| Teste com 5 a 10 pessoas em celulares físicos e validação da vontade de jogar novamente | {PLANEJADO}; adiado pelo proprietário até uma fase posterior de evolução |
+| Medir FPS em aparelhos reais com a horda cheia | {PLANEJADO} |
+| Aprovar ou rejeitar individualmente as mecânicas experimentais da 0.4 | {PLANEJADO}; decisão do proprietário |
 | Loot que muda regras (itens com efeitos especiais) | {PLANEJADO}, fase 2 |
 | Cidade simples | {PLANEJADO}, fase 2 |
 | Uma classe completa | {PLANEJADO}, fase 2 |
