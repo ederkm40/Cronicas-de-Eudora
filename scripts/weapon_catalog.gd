@@ -30,10 +30,10 @@ const DEFINITIONS := [
 		"levels":
 		[
 			{"damage": 6.0, "radius": 2.2, "interval": 0.6},
-			{"damage": 8.0, "radius": 2.5, "interval": 0.6},
-			{"damage": 10.0, "radius": 2.8, "interval": 0.5},
-			{"damage": 13.0, "radius": 3.1, "interval": 0.5},
-			{"damage": 16.0, "radius": 3.5, "interval": 0.42},
+			{"damage": 7.0, "radius": 2.4, "interval": 0.6},
+			{"damage": 9.0, "radius": 2.6, "interval": 0.55},
+			{"damage": 11.0, "radius": 2.9, "interval": 0.5},
+			{"damage": 14.0, "radius": 3.2, "interval": 0.45},
 		],
 	},
 	{
@@ -45,10 +45,10 @@ const DEFINITIONS := [
 		"levels":
 		[
 			{"damage": 14.0, "count": 1, "radius": 1.9, "speed": 3.2},
-			{"damage": 14.0, "count": 2, "radius": 1.9, "speed": 3.2},
-			{"damage": 18.0, "count": 2, "radius": 2.2, "speed": 3.4},
-			{"damage": 20.0, "count": 3, "radius": 2.2, "speed": 3.8},
-			{"damage": 24.0, "count": 4, "radius": 2.5, "speed": 4.0},
+			{"damage": 15.0, "count": 2, "radius": 1.9, "speed": 3.2},
+			{"damage": 20.0, "count": 2, "radius": 2.2, "speed": 3.6},
+			{"damage": 22.0, "count": 3, "radius": 2.2, "speed": 3.8},
+			{"damage": 26.0, "count": 4, "radius": 2.5, "speed": 4.0},
 		],
 	},
 ]
@@ -105,7 +105,8 @@ static func describe_change(id: StringName, from_level: int) -> String:
 	var parts: Array[String] = []
 	for key in next:
 		if next[key] != current[key]:
-			parts.append("%s %s » %s" % [LABELS[key], _fmt(key, current[key]), _fmt(key, next[key])])
+			var change := [LABELS[key], _fmt(key, current[key]), _fmt(key, next[key])]
+			parts.append("%s %s » %s" % change)
 	return " · ".join(parts)
 
 

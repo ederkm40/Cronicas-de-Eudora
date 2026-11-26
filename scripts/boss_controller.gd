@@ -26,7 +26,7 @@ enum State {
 const ATTACKS := [State.PREPARAR_INVESTIDA, State.PREPARAR_ERUPCAO, State.PREPARAR_RAJADA]
 const DANGER := Color(1.0, 0.2, 0.25, 0.45)
 
-@export var max_hp := 7000.0
+@export var max_hp := 4500.0
 @export var chase_speed := 2.4
 @export var chase_time := 2.2  ## Segundos perseguindo entre um ataque e outro.
 @export var charge_windup := 1.0
@@ -174,7 +174,9 @@ func _enter(next: State) -> void:
 		State.PREPARAR_INVESTIDA:
 			var to_player := player.global_position - pos
 			to_player.y = 0.0
-			_charge_direction = to_player.normalized() if to_player.length() > 0.1 else Vector3.FORWARD
+			_charge_direction = Vector3.FORWARD
+			if to_player.length() > 0.1:
+				_charge_direction = to_player.normalized()
 			if effects:
 				_telegraphs.append(
 					effects.warn_strip(

@@ -116,13 +116,12 @@ func _cut(blades: PackedVector3Array) -> void:
 	var center := player.global_position
 	# Candidatos: só quem está perto do anel (uma passada pela lista por quadro).
 	for index in enemies.indices_in_radius(center, orbit_radius() + HIT_REACH):
-		if not enemies.blade_ready(index):
-			continue
 		var p := enemies.position_of(index)
 		var reach := HIT_REACH + enemies.body_radius(index)
 		for b in blades:
 			if Vector2(p.x - b.x, p.z - b.z).length_squared() < reach * reach:
-				enemies.set_blade_cooldown(index, HIT_COOLDOWN)
+				if not enemies.try_blade_hit(index, HIT_COOLDOWN):
+					break
 				hits += 1
 				if effects:
 					effects.burst(p, 0.15, 0.6, 0.15, Color(0.7, 0.95, 1.0, 0.8))

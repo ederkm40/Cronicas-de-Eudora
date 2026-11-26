@@ -90,7 +90,7 @@ func _try_fire(delta: float) -> void:
 	if _cooldown > 0.0 or _positions.size() >= max_projectiles:
 		return
 	var origin := player.global_position
-	var target := enemies.nearest(origin, effective_range())
+	var target := _pick_target(origin)
 	if target == -1:
 		_cooldown = 0.0
 		return
@@ -109,6 +109,18 @@ func _try_fire(delta: float) -> void:
 		_life.append(lifetime)
 		shots_fired += 1
 	_cooldown = effective_fire_interval()
+
+
+## Mira o chefe quando ele está ao alcance; senão, o inimigo mais próximo.
+## Assim o encontro final é decidido pelo chefe, e não por quem estiver mais perto na horda.
+func _pick_target(origin: Vector3) -> int:
+	var boss := enemies.boss_index()
+	if boss != -1:
+		var p := enemies.position_of(boss)
+		var reach := effective_range()
+		if Vector2(p.x - origin.x, p.z - origin.z).length_squared() <= reach * reach:
+			return boss
+	return enemies.nearest(origin, effective_range())
 
 
 func _move_projectiles(delta: float) -> void:

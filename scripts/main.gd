@@ -14,7 +14,7 @@ const GROUND_SIZE := 120.0
 const GRID_CELL := 2.0
 
 @export var encounter_time := 600.0  ## Segundos de partida até o chefe aparecer.
-@export var encounter_spawn_rate := 0.5  ## Ritmo das hordas durante o encontro final.
+@export var encounter_spawn_rate := 0.3  ## Ritmo das hordas durante o encontro final.
 @export var encounter_warning := 10.0  ## Segundos de aviso antes do encontro.
 
 var player: Player
@@ -242,7 +242,7 @@ func _on_boss_died(where: Vector3) -> void:
 # ---------------------------------------------------------------- abates e level-up
 
 
-func _on_enemy_killed(where: Vector3, kind: int, xp: int) -> void:
+func _on_enemy_killed(where: Vector3, _kind: int, xp: int) -> void:
 	_kills += 1
 	if xp > 0:
 		orbs.spawn(where, xp * xp_per_enemy)

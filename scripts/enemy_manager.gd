@@ -23,14 +23,15 @@ const CELL_OFFSET := 1 << 20  ## Deixa as coordenadas de célula sempre positiva
 const FLOATS := 16  ## 12 da matriz + 4 da cor, por instância.
 const FLASH_TIME := 0.1
 const BOSS_CAPACITY := 2
-const BASE_BODY_RADIUS := 0.32  ## Raio do inimigo comum: o alcance dos acertos é medido a partir dele.
+## Raio do inimigo comum: o alcance dos acertos é medido a partir dele.
+const BASE_BODY_RADIUS := 0.32
 const NORMAL := 0
 const ACTIVE := 1  ## Lançador preparando o disparo ou Volátil com o pavio aceso.
 
 @export var max_enemies := 300
 @export var base_speed := 2.2  ## Velocidade do comum. Os outros tipos escalam a partir dela.
 @export var base_hp := 20.0
-@export var hp_growth_per_minute := 0.6  ## +60% de vida por minuto de partida.
+@export var hp_growth_per_minute := 0.35  ## +35% de vida por minuto de partida.
 @export var contact_radius := 0.8  ## Para o inimigo comum; tipos maiores alcançam um pouco mais.
 @export var max_contact_hitters := 5  ## No máximo 5 inimigos causam dano ao mesmo tempo.
 @export var separation_radius := 0.75
@@ -38,13 +39,14 @@ const ACTIVE := 1  ## Lançador preparando o disparo ou Volátil com o pavio ace
 @export var spawn_interval_start := 1.0
 @export var spawn_interval_min := 0.12
 @export var spawn_margin := 2.5  ## Distância extra fora da tela onde os inimigos nascem.
+@export var batch_growth_seconds := 30.0  ## A cada N segundos, +1 inimigo por leva.
 @export_group("Lançador")
 @export var shooter_min_distance := 6.0
 @export var shooter_max_distance := 8.5
-@export var shooter_interval := 2.8
+@export var shooter_interval := 3.2
 @export var shooter_windup := 0.55  ## Tempo parado e brilhando antes de disparar (aviso).
 @export var shooter_projectile_speed := 7.5
-@export var shooter_projectile_damage := 10.0
+@export var shooter_projectile_damage := 8.0
 @export_group("Volátil")
 @export var exploder_trigger_distance := 1.9
 @export var exploder_fuse := 0.85  ## Tempo entre o aviso e a explosão.
@@ -180,7 +182,7 @@ func time_hp_multiplier() -> float:
 	return 1.0 + hp_growth_per_minute * elapsed / 60.0
 
 
-func speed_for(kind: int) -> float:
+func _speed_for(kind: int) -> float:
 	return float(EnemyTypes.STATS[kind].speed) * base_speed / 2.2
 
 
@@ -190,13 +192,13 @@ func _spawn(delta: float) -> void:
 		return
 	var interval := maxf(spawn_interval_min, spawn_interval_start - elapsed * 0.012)
 	_spawn_timer = interval / maxf(spawn_rate_multiplier, 0.05)
-	var batch := 1 + int(elapsed / 25.0)
+	var batch := 1 + int(elapsed / batch_growth_seconds)
 	for i in batch:
 		if count >= max_enemies:
 			return
 		var kind := EnemyTypes.pick(elapsed, randf())
 		var hp := base_hp * float(EnemyTypes.STATS[kind].hp) * time_hp_multiplier()
-		_append(_random_spawn_point(), kind, hp, speed_for(kind) * randf_range(0.85, 1.15))
+		_append(_random_spawn_point(), kind, hp, _speed_for(kind) * randf_range(0.85, 1.15))
 
 
 ## Cria um inimigo num ponto exato. Usado pelos testes e pelos eventos (chefe, reforços).
@@ -206,7 +208,7 @@ func spawn_at(point: Vector3, hp: float = -1.0, kind: int = EnemyTypes.COMUM) ->
 		return -1
 	if hp <= 0.0:
 		hp = base_hp * float(EnemyTypes.STATS[kind].hp)
-	return _append(point, kind, hp, speed_for(kind))
+	return _append(point, kind, hp, _speed_for(kind))
 
 
 func _append(point: Vector3, kind: int, hp: float, speed: float) -> int:
@@ -271,7 +273,7 @@ func _move(delta: float) -> void:
 		var pos := _positions[i]
 		var to_player := Vector3(target.x - pos.x, 0.0, target.z - pos.z)
 		var dist := to_player.length()
-		if dist < contact_reach(i) and hitters < max_contact_hitters:
+		if dist < _contact_reach(i) and hitters < max_contact_hitters:
 			hitters += 1
 			contact_dps += float(EnemyTypes.STATS[kind].contact_dps)
 		if kind == EnemyTypes.CHEFE:
@@ -551,7 +553,7 @@ func body_radius(index: int) -> float:
 
 
 ## Distância em que o inimigo encosta no jogador e causa dano de contato.
-func contact_reach(index: int) -> float:
+func _contact_reach(index: int) -> float:
 	return contact_radius + body_radius(index) - BASE_BODY_RADIUS
 
 
@@ -565,10 +567,6 @@ func set_position_of(index: int, point: Vector3) -> void:
 
 func hp_of(index: int) -> float:
 	return _hp[index]
-
-
-func set_hp_of(index: int, value: float) -> void:
-	_hp[index] = value
 
 
 func max_hp_of(index: int) -> float:
@@ -600,12 +598,12 @@ func count_of_kind(kind: int) -> int:
 
 
 ## A lâmina orbital acerta cada inimigo no máximo uma vez a cada `cooldown` segundos.
-func blade_ready(index: int) -> bool:
-	return _blade_cd[index] <= 0.0
-
-
-func set_blade_cooldown(index: int, cooldown: float) -> void:
+## Retorna true (e começa a recarga) se o inimigo pode ser cortado agora.
+func try_blade_hit(index: int, cooldown: float) -> bool:
+	if _blade_cd[index] > 0.0:
+		return false
 	_blade_cd[index] = cooldown
+	return true
 
 
 ## Aplica dano (já descontada a resistência do tipo). Retorna true se o inimigo morreu.

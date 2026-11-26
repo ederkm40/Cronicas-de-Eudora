@@ -72,7 +72,7 @@ func execute(command: String) -> void:
 			_game.start_encounter()
 		"chefe_vida":
 			if enemies.boss_index() != -1:
-				enemies.set_hp_of(enemies.boss_index(), float(value))
+				enemies._hp[enemies.boss_index()] = float(value)
 		"morrer":
 			_game.player.invulnerable = false
 			_game.player.take_damage(1.0e9, "teste")

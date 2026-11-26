@@ -22,7 +22,8 @@ var count: int:
 
 var _shape := PackedByteArray()
 var _pos := PackedVector3Array()
-var _size := PackedVector2Array()  ## DISCO/ANEL: (raio inicial, raio final). FAIXA: (comprimento, largura).
+## DISCO/ANEL: (raio inicial, raio final). FAIXA: (comprimento, largura).
+var _size := PackedVector2Array()
 var _angle := PackedFloat32Array()
 var _color := PackedColorArray()
 var _time := PackedFloat32Array()
@@ -88,7 +89,9 @@ func warn_strip(
 
 
 ## Anel que cresce de `from_radius` até `to_radius` e some.
-func burst(center: Vector3, from_radius: float, to_radius: float, duration: float, color: Color) -> int:
+func burst(
+	center: Vector3, from_radius: float, to_radius: float, duration: float, color: Color
+) -> int:
 	return _add(ANEL, center, Vector2(from_radius, to_radius), 0.0, color, duration)
 
 
