@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0012: Gameplay da 0.4: estados em arrays, diretor de eventos, configurações próprias e som gerado no código · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Decisões técnicas</a></nav>
+<article>
+<h1>0012: Gameplay da 0.4: estados em arrays, diretor de eventos, configurações próprias e som gerado no código</h1>
+
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#contexto">Contexto</a></li><li><a href="#decisao">Decisão</a></li><li><a href="#alternativas-consideradas">Alternativas consideradas</a></li><li><a href="#consequencias">Consequências</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Situação</strong></td><td>Aceita (técnica). As mecânicas que ela sustenta continuam propostas experimentais até o proprietário aprovar o PR #10</td></tr><tr><td><strong>Data</strong></td><td>26/11/2026</td></tr></tbody></table></div>
+<h2 id="contexto">Contexto</h2>
+<p>A etapa 3 ("O Despertar de Eudora") pediu evoluções de armas, estados de combate, elites, inimigos novos, mecânicas de chefe, eventos, configurações mobile (destro/canhoto, joystick) e som. Era preciso fazer isso sem custo, sem arquivos ou serviços externos no jogo publicado e mantendo 300 inimigos rodando no navegador sem threads.</p>
+<h2 id="decisao">Decisão</h2>
+<ol><li><strong>Estados de combate em arrays paralelos do <code>EnemyManager</code>:</strong> <code>_burn</code>, <code>_burn_dps</code>, <code>_slow</code>, <code>_knock</code>, <code>_shielded</code>, <code>_elite</code>. Eles são trocados com o último na remoção, como as outras colunas. Nenhum nó por inimigo e nenhum dicionário por inimigo. O escudo do Tecelão é recalculado uma vez por quadro, contra a lista de Tecelões (que costuma ter 0 a 3 entradas).</li><li><strong>Um ponto de entrada para o dano</strong> (<code>_hurt</code>), com uma ordem fixa: armadura → escudo → chefe exposto → estatísticas → morte. Sinais <code>important_hit</code> e <code>elite_killed</code> para quem precisa reagir (números, som, recompensa).</li><li><strong>Evoluções como dados</strong> (<code>WeaponCatalog.EVOLUTIONS</code>) e estado no <code>Arsenal</code> (<code>_evolved</code>). Elas entram no sorteio do <code>LevelUpOffers</code> como mais um tipo de oferta, com o mesmo caminho de troca e bloqueio.</li><li><strong>Diretor de eventos separado</strong> (<code>EventDirector</code>). Ele só controla o <em>ritmo</em> das hordas (<code>spawn_rate_multiplier</code>) e cria elites e fendas. Não começa eventos quando <code>spawning_enabled</code> está desligado (testes controlados) nem depois de <code>stop()</code> (encontro final).</li><li><strong>Configurações em arquivo próprio</strong> (<code>user://configuracoes.json</code>, <code>GameSettings</code>), separado do progresso. Se o arquivo de configurações quebrar, o progresso não é afetado, e vice-versa. O arquivo tem versão, é gravado num temporário e depois renomeado, e um arquivo quebrado vira cópia <code>.corrompido</code>, como o save.</li><li><strong>Som sintetizado no código</strong> (<code>SoundBank</code>): <code>AudioStreamWAV</code> gerados no <code>_ready()</code> a partir de funções simples. São 12 sons e 10 vozes, com intervalo mínimo por som. Não há arquivos de áudio, plugins nem serviços. É possível trocar por arquivos <code>.wav</code>/<code>.ogg</code> mais tarde sem mudar quem chama <code>play()</code>.</li><li><strong>"Game feel" num só lugar</strong> (<code>GameFeel</code>): conecta sinais a som, tremor, números e estouros. As regras de jogo não dependem dele.</li></ol>
+<h2 id="alternativas-consideradas">Alternativas consideradas</h2>
+<ul><li><strong>Estados como nós ou <code>Dictionary</code> por inimigo:</strong> custo de memória e de processamento com 300 inimigos. Descartado.</li><li><strong>Arquivos de som gravados ou baixados:</strong> exigiriam licenças e cuidado com a origem. Um gerador procedural atende o protótipo sem custo e sem risco de direitos autorais. Fica para a fase 2, com arte e som finais.</li><li><strong>Configurações dentro do <code>progresso.json</code>:</strong> misturaria dados de jogo com preferências e aumentaria o risco de perder o progresso numa mudança de formato. Descartado.</li><li><strong>Eventos dentro do <code>EnemyManager</code>:</strong> o arquivo já está perto dos limites do <code>gdlint</code> (1.000 linhas, 20 métodos públicos). Descartado.</li></ul>
+<h2 id="consequencias">Consequências</h2>
+<ul><li><code>EnemyManager</code> tem 890 linhas e 20 métodos públicos (o limite). Um próximo sistema de inimigos precisa de uma classe auxiliar.</li><li>O piloto automático derrota o chefe com mais facilidade (janela de vulnerabilidade). O equilíbrio do chefe é o primeiro número a revisar com pessoas.</li><li>Elites, maré e fenda mudam o ritmo da partida: as simulações da 0.3 não são mais comparáveis uma a uma. O relatório da 0.4 traz medições novas.</li></ul>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit f51db23</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/decisoes/0012-nucleo-de-gameplay-04.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>
