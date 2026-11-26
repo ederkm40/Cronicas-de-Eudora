@@ -167,7 +167,8 @@ func test_ofertas_validas_e_distintas() -> void:
 			seen[id] = true
 			_check(offers.is_valid(id), "opção inválida: %s" % id)
 		_check(unique.size() == 3, "opções repetidas: %s" % [choices])
-	_check(seen.size() == 8, "6 melhorias e 2 armas novas deveriam aparecer (%d)" % seen.size())
+	var expected := Upgrades.all_ids().size() + 2
+	_check(seen.size() == expected, "melhorias e 2 armas deveriam aparecer (%d)" % seen.size())
 	_check(not seen.has(WeaponCatalog.BOLT), "a arma inicial nunca é oferecida")
 	_check(offers.kind_of(WeaponCatalog.AURA) == LevelUpOffers.KIND_NEW_WEAPON, "aura = arma nova")
 	offers.arsenal.acquire(WeaponCatalog.AURA)
@@ -184,10 +185,17 @@ func test_ofertas_validas_e_distintas() -> void:
 	for id in Upgrades.all_ids():
 		if id != Upgrades.DAMAGE and id != Upgrades.SPEED:
 			offers.upgrades._stacks[id] = int(Upgrades.definition(id).max)
+	# A Coroa de cinzas fica disponível (Aura 5 + Cadência): evolui para tirar das ofertas.
+	_check(offers.is_valid(WeaponCatalog.EVO_AURA), "Aura 5 + Cadência 2 libera a evolução")
+	offers.apply(WeaponCatalog.EVO_AURA, null, null)
+	_check(not offers.is_valid(WeaponCatalog.EVO_AURA), "uma arma só evolui uma vez")
 	var two := offers.roll(3, rng)
 	_check(two.size() == 2 and two[0] != two[1], "só 2 válidas: 2 opções distintas (%s)" % [two])
 	offers.upgrades._stacks[Upgrades.DAMAGE] = 10
 	offers.upgrades._stacks[Upgrades.SPEED] = 5
+	for evolution in [WeaponCatalog.EVO_BOLT, WeaponCatalog.EVO_BLADE]:
+		_check(offers.is_valid(evolution), "requisitos cumpridos: %s disponível" % evolution)
+		offers.apply(evolution, null, null)
 	_check(offers.roll(3, rng).is_empty(), "nada válido: nenhuma opção")
 
 
@@ -262,6 +270,7 @@ func test_bloqueio_de_opcoes() -> void:
 	for id in Upgrades.all_ids():
 		if id != Upgrades.RANGE:
 			lone.upgrades._stacks[id] = int(Upgrades.definition(id).max)
+	lone.apply(WeaponCatalog.EVO_BOLT, null, null)  # tira a evolução do Raio das ofertas
 	_check(lone.valid_ids() == [Upgrades.RANGE], "só 1 opção válida")
 	_check(not lone.can_banish(Upgrades.RANGE), "a última opção válida não pode ser bloqueada")
 	# Na tela: o botão do cartão troca só aquele cartão.

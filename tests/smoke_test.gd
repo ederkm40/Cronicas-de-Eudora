@@ -5,6 +5,7 @@ extends SceneTree
 ##
 ## Roteiro: joystick (toque e arraste) -> teclado (D) -> esquiva (Espaço) -> anda em círculos
 ## coletando orbes -> escolhe a primeira oferta sempre que sobe de nível (pode ser arma nova)
+## -> aos 20 s força um elite e uma Fenda do Eco -> aos 40 s pausa com Esc e retoma
 ## -> confere o ciclo inteiro no final.
 
 const SIMULATED_SECONDS := 60.0
@@ -19,11 +20,14 @@ var _key_phase := 0
 var _choices_made := 0
 var _paused_frames := 0
 var _dodge_phase := 0
+var _event_phase := 0  ## 0.4: elite e fenda forçados, depois pausa pelo teclado.
+var _pause_seen := false
 var _failures: Array[String] = []
 
 
 func _initialize() -> void:
 	MetaProgress.path = "user://teste_smoke_progresso.json"
+	GameSettings.path = "user://teste_config_simulacao.json"
 	if FileAccess.file_exists(MetaProgress.path):
 		DirAccess.remove_absolute(MetaProgress.path)
 	var scene: PackedScene = load("res://scenes/main.tscn")
@@ -76,6 +80,20 @@ func _process(delta: float) -> bool:
 	if _key_phase == 2:
 		player.scripted_input = Vector2.from_angle(_time * 0.6)
 
+	# 0.4: eventos e pausa numa partida real.
+	if _event_phase == 0 and _time > 20.0 and not paused:
+		_event_phase = 1
+		_check(_main.director.spawn_elite() != -1, "o elite deveria aparecer")
+		_main.director.start_rift()
+	elif _event_phase == 1 and _time > 40.0 and not paused:
+		_event_phase = 2
+		_send_key(KEY_ESCAPE, true)
+		_send_key(KEY_ESCAPE, false)
+	elif _event_phase == 2 and _time > 40.3:
+		_event_phase = 3
+		_pause_seen = paused and _main.pause_menu.is_open()
+		_main.pause_menu.close()
+
 	# Sobe de nível -> escolhe a primeira melhoria assim que os cartões destravam.
 	var panel: LevelUpPanel = _main.level_up_panel
 	if paused:
@@ -126,6 +144,19 @@ func _report() -> void:
 		_choices_made == progression.level - 1, "cada nível ganho deveria ter uma opção escolhida"
 	)
 	_check(_paused_frames > 0, "a partida deveria ter pausado nas escolhas")
+	_check(_event_phase == 3, "o roteiro de eventos e pausa não chegou ao fim")
+	_check(_pause_seen, "Esc deveria abrir a pausa com as configurações")
+	var played := 0
+	for sound in _main.sounds.played:
+		played += _main.sounds.played[sound]
+	print(
+		(
+			"Sons tocados: %d · estouros de abate: %d · fenda ativa: %s"
+			% [played, _main.feel.pops, _main.director.rift_active]
+		)
+	)
+	_check(played > 0, "os sons deveriam tocar")
+	_check(_main.feel.pops > 0, "os abates deveriam ter estouro no chão")
 	_check(not paused or not player.alive, "a partida não deveria terminar presa na pausa")
 	if _failures.is_empty():
 		print("SMOKE TEST: OK")
