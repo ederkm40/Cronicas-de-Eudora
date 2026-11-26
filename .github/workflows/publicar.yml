@@ -119,24 +119,44 @@ jobs:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: bash tools/ci/construir_parte.sh . "$RUNNER_TEMP/parte" "$CANAL" "$PR" "$COMMIT" "$BRANCH"
 
+      # 7b. Build de QA (com a ponte de testes), só para o Playwright. Fica fora da "parte"
+      # e nunca é enviada ao job Publicar.
+      - name: Exportar a build de QA (só para os testes) e conferir a produção
+        run: |
+          bash tools/ci/construir_qa.sh . "$RUNNER_TEMP/qa"
+          bash tools/ci/verificar_producao.sh "$RUNNER_TEMP/parte" "$RUNNER_TEMP/qa"
+
       # 8. Testes no navegador com o jogo exportado de verdade
-      - name: Iniciar o servidor HTTP temporário (127.0.0.1:8060)
+      - name: Iniciar os servidores HTTP temporários (produção 8060, QA 8061)
         run: |
           nohup python3 -m http.server 8060 --bind 127.0.0.1 --directory "$RUNNER_TEMP/parte" > "$RUNNER_TEMP/servidor.log" 2>&1 &
-          for i in $(seq 1 30); do
-            curl -fsS -o /dev/null http://127.0.0.1:8060/index.html && { echo "Servidor pronto."; exit 0; }
-            sleep 1
+          nohup python3 -m http.server 8061 --bind 127.0.0.1 --directory "$RUNNER_TEMP/qa" > "$RUNNER_TEMP/servidor-qa.log" 2>&1 &
+          for porta in 8060 8061; do
+            for i in $(seq 1 30); do
+              curl -fsS -o /dev/null "http://127.0.0.1:$porta/index.html" && { echo "Servidor $porta pronto."; break; }
+              sleep 1
+              if [ "$i" = 30 ]; then echo "O servidor $porta não respondeu."; cat "$RUNNER_TEMP"/servidor*.log; exit 1; fi
+            done
           done
-          echo "O servidor não respondeu."; cat "$RUNNER_TEMP/servidor.log"; exit 1
 
-      - name: Testes Playwright (Chromium; computador, celular em pé e deitado)
+      - name: Testes Playwright na build de QA (computador, celular em pé e deitado)
+        working-directory: tools/e2e
+        env:
+          E2E_DIR: ${{ runner.temp }}/qa
+          E2E_PORTA: "8061"
+          E2E_MODO: qa
+          E2E_RENDERIZADOR: mesa
+        # Tela virtual (Xvfb, já instalada no runner): sem ela o Chromium cai no SwiftShader.
+        # O renderizador realmente usado aparece no log ("WebGL 2: ...").
+        run: xvfb-run -a npx playwright test
+
+      - name: Testes Playwright na build de produção (sem ponte de testes)
         working-directory: tools/e2e
         env:
           E2E_DIR: ${{ runner.temp }}/parte
           E2E_PORTA: "8060"
+          E2E_MODO: producao
           E2E_RENDERIZADOR: mesa
-        # Tela virtual (Xvfb, já instalada no runner): sem ela o Chromium cai no SwiftShader.
-        # O renderizador realmente usado aparece no log ("WebGL 2: ...").
         run: xvfb-run -a npx playwright test
 
       - name: Guardar relatório e evidências da falha (7 dias)

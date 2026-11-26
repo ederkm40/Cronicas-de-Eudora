@@ -12,6 +12,7 @@ extends Node3D
 
 const GROUND_SIZE := 120.0
 const GRID_CELL := 2.0
+const QA_BRIDGE_PATH := "res://scripts/web_bridge.gd"
 
 @export var encounter_time := 600.0  ## Segundos de partida até o chefe aparecer.
 @export var encounter_spawn_rate := 0.3  ## Ritmo das hordas durante o encontro final.
@@ -146,8 +147,18 @@ func _ready() -> void:
 	_sync_weapons()
 	player.hp = player.max_hp  # começa com a vida cheia, já com o bônus permanente
 	_update_hud()
-	if OS.has_feature("web"):
-		add_child(WebBridge.new())
+	_attach_qa_bridge()
+
+
+## Ponte de testes do navegador: só existe na build "Web QA" (funcionalidade de exportação
+## `qa`). A build de produção ("Web") nem inclui o arquivo da ponte no .pck.
+func _attach_qa_bridge() -> void:
+	if not (OS.has_feature("web") and OS.has_feature("qa")):
+		return
+	if not ResourceLoader.exists(QA_BRIDGE_PATH):
+		return
+	var bridge: Node = (load(QA_BRIDGE_PATH) as GDScript).new()
+	add_child(bridge)
 
 
 func _process(delta: float) -> void:
