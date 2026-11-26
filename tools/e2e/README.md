@@ -21,6 +21,19 @@ Testes da **versão Web realmente exportada** pelo Godot, abertos no Chromium. R
 - Nenhum erro de JavaScript (exceções ou `console.error`).
 - Nos perfis de celular, o toque está ativo e a orientação está certa.
 
+`testes/jogabilidade.spec.js`, nos mesmos 3 perfis, joga com **controles de verdade** (eventos de toque do Chromium nos perfis de celular, mouse no computador):
+
+- arrastar o joystick move o personagem; arrastar não esquiva;
+- dois toques separados por 0,7 s não esquivam; o duplo toque rápido esquiva uma vez só;
+- no computador, a tecla Espaço esquiva;
+- level-up: tocar em "Trocar opções", em "Bloquear" e num cartão; confere contadores, pausa e a arma adquirida;
+- encontro final: o chefe surge, a vitória abre os resultados e "Jogar de novo" (tocado) começa uma partida limpa;
+- derrota: os resultados abrem e "Jogar de novo" recomeça.
+
+Esses testes abrem o jogo com `?teste=1`, que liga a ponte `scripts/web_bridge.gd`. Ela escreve o estado da partida em `window.__eudora` (posição, vida, esquivas, tela de level-up, resultados e a posição dos botões em frações da tela) e aceita comandos em `window.__eudoraComandos` só para **preparar** situações (dar XP, chamar o chefe, desligar as hordas). Sem `?teste=1`, o jogo publicado não expõe nada. Os toques e gestos testados são reais.
+
+Os eventos são enviados pelo protocolo do Chromium (`Input.dispatchTouchEvent` e `Input.dispatchMouseEvent`). Cada evento só volta depois que a página o processa, o que leva um quadro ou mais com renderização por software (~25 quadros por segundo). Por isso um toque curto envia "encostar" e "soltar" juntos (`ajudantes.js`).
+
 > A emulação de Pixel 7 é só tamanho de tela, toque e user agent num Chromium de computador. **Não equivale a testar num celular de verdade** (GPU, desempenho, navegador do aparelho).
 
 ## Versões

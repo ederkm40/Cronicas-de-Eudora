@@ -1,50 +1,58 @@
 # Entrega para o ChatGPT
 
-*Pacote de fatos técnicos da última entrega do Claude Code. Use para atualizar a Wiki (`wiki-src/`), o `docs/CHANGELOG.md` e revisar o relatório. Não é um artigo: são dados.*
+*Pacote de fatos técnicos da última entrega do Claude Code. Use para atualizar a Wiki (`wiki-src/`), revisar o `docs/CHANGELOG.md` e o relatório. Não é um artigo: são dados. Números completos em `docs/TECNICO.md` e `docs/versoes/0.3-alpha/RELATORIO.md`.*
 
 ## Identificação
 
 | | |
 |---|---|
-| **Etapa** | Infraestrutura: ferramentas auxiliares, QA de navegador e formulários |
-| **Versão do jogo** | continua **0.2-alpha** (sem mudança de gameplay) |
-| **Branch** | `infra/ferramentas-qa-web` (a partir do `main` `1b6c65c`) |
-| **Commit** | último commit da branch (ver PR #4) |
-| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/4 |
-| **Prévia do jogo** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-4/ |
-| **Prévia da Wiki** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-4/wiki/ |
+| **Etapa** | 0.3-alpha: grande expansão do combate |
+| **Branch** | `feat/grande-expansao-combate-03` (a partir do `main` `70cf85f`) |
+| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/5 |
+| **Prévia do jogo** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-5/ |
+| **Prévia da Wiki** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-5/wiki/ |
 
-## Contexto: o que já foi integrado antes
+## Contexto
 
-O PR #2 (infraestrutura de Wiki, prévias e memória) foi integrado em `1b6c65c`. A Wiki oficial já está no ar em `/wiki/`. Nas páginas do painel de desenvolvimento (`wiki-src/desenvolvimento/`), a linha "Infraestrutura: Wiki, prévias e memória" ainda aparece como `{EM_DESENVOLVIMENTO}`: ela pode passar para `{PUBLICADO}`.
+O PR #4 (ferramentas de QA) foi integrado em `70cf85f`. Na Wiki, ele pode passar a `{PUBLICADO}` e ganhar a linha no changelog (ainda não existe).
 
-## Resumo técnico desta etapa
+## Conteúdo novo (estado: `{TESTADO}` até o merge do PR #5)
 
-- **GDScript Toolkit 4.5.0** no CI: `gdlint` em `scripts/` e `tests/` (regras padrão, sem exceções) e `gdformat --check` nos `.gd` alterados no PR. Versões fixadas em `requirements-ci.txt`.
-- **Playwright Test 1.65.1** (`tools/e2e/`, só Chromium): abre o jogo exportado de verdade e confere motor iniciado, WebGL 2, arquivos essenciais, canvas, imagem em movimento e ausência de erros, em 3 perfis (computador 1366 × 768; Pixel 7 em pé 412 × 915; Pixel 7 deitado 915 × 412). Renderizador Mesa/llvmpipe via Xvfb.
-- **Node.js 22** configurado explicitamente; o teste de busca da Wiki em JavaScript virou obrigatório no CI.
-- **Formulários do GitHub:** 5 formulários de Issue (erro, sugestão, jogabilidade, desempenho no celular, Wiki) e modelo de Pull Request.
-- **Estilo do GDScript:** 9 arquivos ajustados ao `gdlint` e formatados pelo `gdformat`, **sem mudança de lógica** (constantes reordenadas, linhas quebradas, `describe_next` com um único `return`, com texto idêntico conferido).
+**Armas** (cada uma num espaço próprio, 5 níveis; o Raio arcano continua como inicial):
+- *Aura de brasas*: círculo de brasas que dá dano em todos dentro dele a cada pulso. Nível 1: 6 de dano, 2,2 m, pulso 0,6 s. Nível 5: 14, 3,2 m, 0,45 s.
+- *Lâmina orbital*: lâminas que giram e cortam. Nível 1: 1 lâmina, 14 de dano, 1,9 m. Nível 5: 4 lâminas, 26, 2,5 m. Cada inimigo só é cortado de novo depois de 0,35 s.
+- O Raio arcano mira o chefe quando ele está ao alcance.
 
-## Arquivos
+**Level-up:** cartões de "NOVA ARMA", "ARMA · Nv. n » n+1" (com o que muda) e "MELHORIA · n/limite". Botão **Trocar opções** (2 por partida; tecla R) e **Bloquear** em cada cartão (2 por partida; a opção some da partida). Poder arcano agora vale para todas as armas; Cadência acelera também a Aura; Campo de ruptura dá +10% de área à Aura. Cada nível ganho cura 12% da vida.
 
-| Novo | Alterado |
-|---|---|
-| `requirements-ci.txt`, `tools/ci/verificar_gdscript.sh`, `tools/e2e/` (`package.json`, `package-lock.json`, `playwright.config.js`, `testes/jogo.spec.js`, `README.md`, `.gitignore`), `.github/ISSUE_TEMPLATE/*.yml` (5), `.github/PULL_REQUEST_TEMPLATE.md`, `docs/decisoes/0009-ferramentas-qa-web.md`, `docs/versoes/infra-ferramentas-qa/RELATORIO.md` | `.github/workflows/publicar.yml` (job `testar`), `tools/wiki/test_wiki.py` (Node obrigatório com `EXIGIR_NODE=1`), `scripts/` (auto_weapon, camera_rig, enemy_manager, level_up_panel, player, upgrades: só estilo), `tests/` (run_tests, smoke_test, long_simulation: só estilo), `AGENTS.md`, `CLAUDE.md`, `README.md`, `docs/TECNICO.md`, `docs/IA/*`, `docs/decisoes/README.md` |
+**Inimigos** (todos com aparência e comportamento próprios):
+- *Espreitador* (a partir de 45 s): rápido, frágil, mira à frente do jogador.
+- *Couraçado* (100 s): cubo cinza-azulado, 5× vida, ignora 35% do dano, lento.
+- *Lançador* (150 s): prisma roxo; fica a 6–8,5 m, para e brilha antes de atirar (8 de dano); só atira de dentro da tela.
+- *Volátil* (210 s): esfera laranja; perto do jogador, para, pisca e mostra um círculo; explode 0,85 s depois (26 de dano, 2,4 m). Pode ser eliminado antes.
+- O comum se chama *Errante* no código.
 
-Não alterados: `scenes/`, `project.godot`, `export_presets.cfg`, `publicar` e `remover-previa` (jobs), `wiki-src/` e `docs/CHANGELOG.md`.
+**Chefe — Sentinela do Eco:** aparece aos 10:00 (aviso aos 9:50) na borda de cima da tela, com coroa giratória e barra de vida (3.800). Ataques com aviso: *investida* (faixa vermelha no chão), *erupção* (círculos no chão onde o jogador está e vai estar) e *rajada* (anel de 14 projéteis; o chefe brilha lilás antes). Abaixo de 50%, fase de fúria: avisos mais curtos, mais erupções, rajada dupla e reforços. Durante o encontro, as hordas diminuem e não nascem Lançadores novos. **A vitória é derrotar o chefe**: a partida não termina sozinha aos 10 minutos.
 
-## Comportamentos novos no jogo
+**Esquiva:** duplo toque no joystick (sem botão). Toque + toque arrastando = esquiva para onde arrastou; dois toques curtos = para onde o personagem está indo. No computador, Espaço. 4 m, invulnerável por 0,32 s, recarga de 1,4 s, indicador "Esquiva pronta" no rodapé.
 
-Nenhum. Valores do jogo inalterados.
+**Fim de partida:** tela de Vitória ou "Você caiu!" com tempo, nível, abates, dano causado e recebido, esquivas, chefes derrotados, tempo contra o chefe, cada arma (nível, dano, abates) e as melhorias. "Jogar de novo" começa do zero.
 
-## Testes realizados e resultados
+**Progressão permanente:** *Ecos* (1 a cada 20 s, 1 a cada 15 abates, 40 pelo chefe), salvos no navegador. Loja na tela de resultados: Vigor ancestral (+8% de vida), Fúria latente (+5% de dano), Atração do eco (+20% de coleta), Renovação (+1 troca). Valem a partir da próxima partida. Se o jogador limpar os dados do site, o progresso some.
 
-Ver `docs/versoes/infra-ferramentas-qa/RELATORIO.md`. Resumo: gdlint sem problemas; gdformat 9/9; jogo, Wiki e site aprovados; Playwright com 5 aprovados e 1 pulado de propósito (toque no computador), usando Mesa/llvmpipe; prévia verificada no ar.
+## Pendente (estado `{PLANEJADO}` ou fora da Wiki)
+
+- Destro/canhoto e ajuste do joystick.
+- Equilíbrio com pessoas; teste em celular físico.
+- Som e arte final.
+
+## Testes realizados (resumo)
+
+41 testes do Godot em 4 suítes; smoke; simulação de 5 min; Playwright com controles reais em 3 perfis (18 aprovados, 3 pulados de propósito); simulações de balanceamento (fora do CI). **Nenhum teste em celular físico.**
 
 ## Para a Wiki e o changelog
 
-- **Changelog:** registrar a etapa "Ferramentas de QA" (categorias Testes e Infraestrutura), sem efeito no gameplay.
-- **Painel de desenvolvimento** (`wiki-src/desenvolvimento/testes.md`): acrescentar as suítes novas: `gdlint`/`gdformat` (GDScript Toolkit 4.5.0) e os testes de navegador (Playwright 1.65.1; computador, celular em pé e deitado). Deixar claro que a emulação de Pixel 7 **não** é teste em celular físico.
-- **Funcionalidades** (`funcionalidades.md`): a infraestrutura do PR #2 passa a `{PUBLICADO}`; as ferramentas de QA ficam `{TESTADO}` até o merge do PR #4.
-- Uma possível página nova "Como relatar um problema", apontando para **Issues → New issue** e para os 5 formulários.
+- Revisar a entrada "0.3-alpha" do `docs/CHANGELOG.md` (escrita pelo Claude Code a pedido do proprietário).
+- Páginas de armas, inimigos, chefe, controles (esquiva) e progressão: criar ou atualizar com os dados acima.
+- Painel de desenvolvimento: suítes novas de testes, testes de jogabilidade no navegador, simulação de balanceamento.
+- Roadmap: 0.4 implementada na 0.3; 0.5 e 0.6 em parte (ver `docs/ROADMAP.md`). Não marcar 0.5 e 0.6 como concluídas.

@@ -3,8 +3,9 @@ extends SceneTree
 ## Uso: godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
 ## Sai com código 0 se tudo passou e 1 se algo falhou.
 ##
-## Roteiro: joystick (toque e arraste) -> teclado (D) -> anda em círculos coletando orbes
-## -> escolhe melhorias sempre que sobe de nível -> confere o ciclo inteiro no final.
+## Roteiro: joystick (toque e arraste) -> teclado (D) -> esquiva (Espaço) -> anda em círculos
+## coletando orbes -> escolhe a primeira oferta sempre que sobe de nível (pode ser arma nova)
+## -> confere o ciclo inteiro no final.
 
 const SIMULATED_SECONDS := 60.0
 
@@ -17,10 +18,14 @@ var _key_start := Vector3.ZERO
 var _key_phase := 0
 var _choices_made := 0
 var _paused_frames := 0
+var _dodge_phase := 0
 var _failures: Array[String] = []
 
 
 func _initialize() -> void:
+	MetaProgress.path = "user://teste_smoke_progresso.json"
+	if FileAccess.file_exists(MetaProgress.path):
+		DirAccess.remove_absolute(MetaProgress.path)
 	var scene: PackedScene = load("res://scenes/main.tscn")
 	_main = scene.instantiate()
 	root.add_child(_main)
@@ -59,6 +64,14 @@ func _process(delta: float) -> bool:
 		var moved := player.global_position.distance_to(_key_start)
 		_check(moved > 1.5, "a tecla D deveria mover o jogador (moveu %.2f m)" % moved)
 
+	# Esquiva pelo teclado.
+	if _dodge_phase == 0 and _key_phase == 2 and _time > 2.5 and not paused:
+		_dodge_phase = 1
+		_send_key(KEY_SPACE, true)
+	elif _dodge_phase == 1 and _time > 2.6:
+		_dodge_phase = 2
+		_send_key(KEY_SPACE, false)
+
 	# Depois dos controles, anda em círculos para coletar orbes.
 	if _key_phase == 2:
 		player.scripted_input = Vector2.from_angle(_time * 0.6)
@@ -95,6 +108,14 @@ func _report() -> void:
 	for id in Upgrades.all_ids():
 		stacks.append("%s=%d" % [id, _main.upgrades.stacks(id)])
 	print("Melhorias: " + ", ".join(stacks))
+	var weapons := []
+	for id in _main.arsenal.owned_ids():
+		weapons.append("%s=%d" % [id, _main.arsenal.level(id)])
+	print("Armas: " + ", ".join(weapons))
+	var stats: RunStats = _main.stats
+	print("Dano por arma: %s · esquivas: %d" % [stats.damage_by_weapon, stats.dodges])
+	_check(player.dodges_used == 1, "a tecla Espaço deveria esquivar uma vez")
+	_check(stats.total_damage() > 0.0, "o dano causado deveria ser contado")
 	_check(_moved_with_joystick, "o teste do joystick não chegou a rodar")
 	_check(_key_phase == 2, "o teste do teclado não chegou a rodar")
 	_check(_main._kills > 0, "a arma automática deveria matar inimigos")
@@ -102,8 +123,7 @@ func _report() -> void:
 	_check(progression.total_xp > 0, "deveria coletar experiência")
 	_check(progression.level >= 2, "deveria subir pelo menos 1 nível em 60 s")
 	_check(
-		_choices_made == progression.level - 1,
-		"cada nível ganho deveria ter uma melhoria escolhida"
+		_choices_made == progression.level - 1, "cada nível ganho deveria ter uma opção escolhida"
 	)
 	_check(_paused_frames > 0, "a partida deveria ter pausado nas escolhas")
 	_check(not paused or not player.alive, "a partida não deveria terminar presa na pausa")

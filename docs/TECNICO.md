@@ -1,6 +1,6 @@
 # Documentação técnica
 
-Estado de referência: versão 0.2-alpha "Ecos da Evolução", com a infraestrutura de Wiki e prévias. Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
+Estado de referência: versão 0.3-alpha "grande expansão do combate" (em revisão no PR #5). Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
 
 ## Visão geral
 
@@ -9,102 +9,154 @@ A cena `scenes/main.tscn` tem um único nó com `scripts/main.gd`, que monta tod
 ```
 Main (main.gd)
 ├── WorldEnvironment, DirectionalLight3D, chão com grade (shader)
-├── Player (player.gd)                 personagem, vida, movimento
-├── CameraRig (camera_rig.gd)          câmera isométrica que segue o jogador
-├── EnemyManager (enemy_manager.gd)    todos os inimigos: arrays + 1 MultiMesh
-├── AutoWeapon (auto_weapon.gd)        disparos automáticos: arrays + 1 MultiMesh
-├── XpOrbManager (xp_orbs.gd)          orbes de experiência: arrays + 1 MultiMesh
+├── GroundEffects (ground_effects.gd)      avisos e anéis no chão: arrays + 3 MultiMesh
+├── Player (player.gd)                     personagem, vida, movimento, esquiva
+├── CameraRig (camera_rig.gd)              câmera isométrica que segue o jogador
+├── EnemyManager (enemy_manager.gd)        todos os inimigos e o corpo do chefe: arrays + 1 MultiMesh por tipo
+├── EnemyProjectiles (enemy_projectiles.gd) projéteis do Lançador e do chefe: arrays + 1 MultiMesh
+├── BossController (boss_controller.gd)    máquina de estados do Sentinela do Eco
+├── AutoWeapon (auto_weapon.gd)            Raio arcano (arma inicial): arrays + 1 MultiMesh
+├── AuraWeapon (aura_weapon.gd)            Aura de brasas: 1 malha com shader
+├── OrbitBlades (orbit_blades.gd)          Lâmina orbital: 1 MultiMesh (lâminas + rastro) e o anel da órbita
+├── XpOrbManager (xp_orbs.gd)              orbes de experiência: arrays + 1 MultiMesh
+├── WebBridge (web_bridge.gd)              só no navegador e só com ?teste=1 (testes de navegador)
 └── CanvasLayer
-    ├── FloatingJoystick               joystick flutuante
-    ├── Hud                            tempo, abates, vida, XP, nível, FPS, derrota
-    └── LevelUpPanel                   escolha de melhorias (funciona com o jogo pausado)
+    ├── FloatingJoystick                   joystick flutuante e duplo toque (esquiva)
+    ├── Hud                                tempo, abates, vida, XP, armas, chefe, avisos, esquiva
+    ├── LevelUpPanel                       ofertas do level-up, troca e bloqueio (funciona pausado)
+    └── ResultsScreen                      vitória/derrota, resumo e loja permanente (funciona pausado)
 
 Objetos sem nó (RefCounted):
-  Progression (progression.gd)   XP, nível, níveis pendentes
-  Upgrades (upgrades.gd)         definições, níveis, sorteio e efeitos das melhorias
+  Progression (progression.gd)        XP, nível, níveis pendentes
+  Upgrades (upgrades.gd)              melhorias passivas: definições, níveis e efeitos
+  WeaponCatalog (weapon_catalog.gd)   definição das armas e atributos por nível (só dados)
+  Arsenal (arsenal.gd)                armas do jogador na partida e seus níveis (estado)
+  LevelUpOffers (level_up_offers.gd)  sorteio das ofertas, troca e bloqueio
+  EnemyTypes (enemy_types.gd)         atributos dos tipos de inimigo e a mistura por tempo
+  RunStats (run_stats.gd)             estatísticas reais da partida
+  MetaProgress (meta_progress.gd)     Ecos e melhorias permanentes, salvos em user://
 ```
 
-## Ciclo da experiência
+## Ciclo da partida
 
-1. `EnemyManager.damage()` zera a vida de um inimigo → emite `enemy_killed(posição)`.
-2. `Main` conta o abate e chama `XpOrbManager.spawn(posição, 1)`.
-3. A cada quadro, `XpOrbManager` puxa os orbes a menos de `magnet_radius` (3 m) em direção ao jogador, acelerando, e coleta os que chegam a menos de `collect_radius` (0,6 m). Emite `collected(quantidade)`.
-4. `Progression.add_xp()` soma a experiência. Se passar do necessário, sobe de nível (pode subir vários de uma vez) e acumula `pending_level_ups`.
-5. No início do quadro seguinte, `Main._process()` vê o nível pendente e chama `_open_level_up()`:
-   - sorteia 3 melhorias diferentes com `Upgrades.roll_choices(3)`;
-   - liga `get_tree().paused = true` e desliga o joystick;
-   - abre o `LevelUpPanel`.
-6. O jogador toca num cartão → `LevelUpPanel.chosen(id)` → `Upgrades.apply()` aplica o efeito → `Progression.consume_pending_level_up()`.
-7. Se ainda houver níveis pendentes, abre outra escolha. Se não, despausa e religa o joystick.
+1. `EnemyManager.damage(índice, dano, arma)` desconta a resistência do tipo, registra o dano em `RunStats` e, se a vida zerar, emite `enemy_killed(posição, tipo, xp)`.
+2. `Main` conta o abate e cria um orbe com a XP do tipo (Errante 1, Espreitador 1, Couraçado 4, Lançador 2, Volátil 2). Um Volátil que explode sozinho não conta abate nem deixa orbe.
+3. `XpOrbManager` puxa os orbes a menos de `magnet_radius` (3 m) e coleta a menos de `collect_radius` (0,6 m). `Progression.add_xp()` sobe de nível e acumula `pending_level_ups`. **Cada nível ganho recupera 12% da vida máxima** (`Main.level_up_heal`).
+4. No início do quadro seguinte, `Main._open_level_up()` pede até 3 ofertas a `LevelUpOffers`, pausa (`SceneTree.paused`), desliga o joystick e abre o `LevelUpPanel`.
+5. O jogador escolhe um cartão, troca as opções ou bloqueia um cartão. A escolha passa por `Main.apply_offer()`, que aplica e sincroniza as armas.
+6. Aos 9 min 50 s aparece um aviso; aos 10 min (`Main.encounter_time` = 600 s) começa o **encontro final**: o Sentinela do Eco surge na borda de cima da tela, a barra dele aparece e as hordas caem para 30% do ritmo e novos Lançadores deixam de nascer. A partida **não termina** aos 10 minutos.
+7. Derrotar o chefe → vitória: a partida congela (pausa) e abre a `ResultsScreen`. Morrer → derrota: a mesma tela, sem pausa (a horda para porque o jogador morreu).
+8. No fim, `MetaProgress.record_run()` soma os Ecos e salva. "Jogar de novo" despausa e recarrega a cena: todo o estado da partida (inimigos, projéteis, efeitos, armas, ofertas, estatísticas) é recriado do zero. Só o arquivo de progresso permanece.
 
 ### Curva de experiência
 
-`Progression.requirement(nível) = round(4 × nível^1,35)`
-
-| Nível | XP para o próximo | XP total acumulada |
-| --- | --- | --- |
-| 1 | 4 | 4 |
-| 2 | 10 | 14 |
-| 3 | 18 | 32 |
-| 5 | 35 | 85 |
-| 10 | 90 | 433 |
-
-Cada inimigo vale 1 de XP (`Main.xp_per_enemy`).
+`Progression.requirement(nível) = round(4 × nível^1,35)`: 4, 10, 18, 26, 35… (nível 10 → 90). Sem mudança nesta versão.
 
 ### Pausa
 
-A pausa usa o mecanismo nativo do Godot (`SceneTree.paused`). Todos os nós do jogo usam o modo padrão (`PROCESS_MODE_INHERIT` → pausável), então param juntos: inimigos, projéteis, orbes, geração de hordas, temporizadores, tempo da partida e o próprio `Main`. Só o `LevelUpPanel` usa `PROCESS_MODE_ALWAYS`.
+Pausa nativa (`SceneTree.paused`). Só `LevelUpPanel`, `ResultsScreen` e `WebBridge` usam `PROCESS_MODE_ALWAYS`. Com a pausa, o jogador não recebe teclas (a esquiva pelo Espaço não funciona no menu) e o joystick fica desligado (sem duplo toque). A tela de escolha fica travada por 0,35 s depois de abrir.
 
-A tela de escolha fica travada por 0,35 s depois de abrir (`input_delay`). Isso evita que o dedo, ainda no joystick, escolha um cartão sem querer.
+## Armas
 
-A escolha não abre depois da derrota: `_process` só abre se `player.alive`, e `_on_player_died` fecha a tela se estiver aberta. "Jogar de novo" despausa e recarrega a cena, e com isso todo o estado (níveis, XP, melhorias, orbes) volta ao início.
+Separação: **definição** (`WeaponCatalog`, só dados) → **estado** (`Arsenal`: quais armas e em que nível, um espaço por arma, 4 espaços) → **execução e visual** (um nó por arma) → **colisão** (consultas do `EnemyManager`) → **dano** (`EnemyManager.damage`, com a arma como origem). Para criar uma arma nova: definição no catálogo, um nó que usa as consultas do `EnemyManager`, e a ligação em `Main._sync_weapons()`.
 
-## Melhorias
+| Arma | Tipo | Como acerta | Nível 1 → 5 |
+|---|---|---|---|
+| Raio arcano (inicial) | projétil | atira no inimigo mais próximo a até 11 m; **mira o chefe quando ele está ao alcance**; colisão pela grade espacial | só melhora pelas passivas |
+| Aura de brasas | aura | um pulso a cada intervalo acerta todos os inimigos cujo corpo toca o círculo (nunca por quadro) | dano 6 → 14 · raio 2,2 → 3,2 m · pulso 0,6 → 0,45 s |
+| Lâmina orbital | orbital | lâminas giram em volta do jogador; cada inimigo só pode ser cortado de novo depois de 0,35 s, mesmo com várias lâminas passando | dano 14 → 26 · lâminas 1 → 4 · raio 1,9 → 2,5 m · giro 3,2 → 4,0 rad/s |
 
-Definidas em `Upgrades.DEFINITIONS`. Cada uma guarda um número de níveis (pilhas). Os efeitos são **recalculados a partir dos valores base** a cada aplicação, em `Upgrades.refresh()`. Assim não há erro acumulado e os bônus somam sobre o base:
+Tabela completa em `WeaponCatalog.DEFINITIONS`. Visual: a aura é um disco com shader (borda de brasas e uma onda que sai do centro a cada pulso); a lâmina é um prisma claro com rastro e um anel fino mostrando a órbita; os inimigos piscam em branco ao levar dano.
 
-| Melhoria | Campo alterado | Fórmula | Limite |
-| --- | --- | --- | --- |
-| Poder arcano | `AutoWeapon.damage_multiplier` | 1 + 0,20 × n | 10 |
-| Cadência | `AutoWeapon.fire_rate_multiplier` (intervalo = base ÷ multiplicador) | 1 + 0,15 × n | 8 |
-| Núcleo vital | `Player.max_hp` = base × (1 + 0,25 × n) e cura 25 | — | 8 |
-| Passos ligeiros | `Player.speed_multiplier` | 1 + 0,15 × n | 5 |
-| Projétil adicional | `AutoWeapon.extra_projectiles` (leque de 10° entre projéteis) | n | 4 |
-| Campo de ruptura | `AutoWeapon.range_multiplier` (alcance e duração do projétil) | 1 + 0,20 × n | 5 |
+### Melhorias passivas e sinergias
 
-Sorteio: `roll_choices()` tira opções sem reposição entre as que não chegaram ao limite. Nunca repete numa mesma escolha. Se restarem menos de 3 disponíveis, mostra as que restam. Se nenhuma restar, o nível conta e o jogador recupera 25 de vida, sem abrir a tela.
+Recalculadas a partir dos valores base em `Upgrades.refresh()`, que também aplica os bônus permanentes.
+
+| Melhoria | Efeito | Limite |
+|---|---|---|
+| Poder arcano | +20% de dano de **todas** as armas | 10 |
+| Cadência | +15% de velocidade do Raio **e dos pulsos da Aura** | 8 |
+| Núcleo vital | +25% de vida máxima e cura 25 | 8 |
+| Passos ligeiros | +15% de velocidade de movimento | 5 |
+| Projétil adicional | +1 projétil do Raio por disparo (leque de 10°) | 4 |
+| Campo de ruptura | +20% de alcance do Raio e **+10% de raio da Aura** | 5 |
+
+## Ofertas do level-up (`LevelUpOffers`)
+
+- **Válidas:** arma não adquirida com espaço livre (aparece como "NOVA ARMA"), arma adquirida abaixo do nível 5 ("ARMA · Nv. n » n+1", com a mudança de cada atributo), melhoria abaixo do limite ("MELHORIA · n/limite"). Nada bloqueado.
+- **Sorteio ponderado, sem repetição:** arma nova peso 2,2 nas 6 primeiras telas e 1,4 depois; evolução de arma 1,4; Núcleo vital 2,0 quando a vida está abaixo de 50%; o resto 1,0.
+- **Menos de 3 válidas:** a tela mostra só as que existem. **Nenhuma válida:** o nível conta e o jogador recupera 25 de vida, sem abrir a tela.
+- **Trocar opções:** 2 por partida (+1 por nível da melhoria permanente Renovação). Gasta uma troca, não consome o nível, e evita repetir as opções da tela quando há alternativas. Tecla R.
+- **Bloquear:** 2 por partida. Tira a opção da partida inteira e põe outra no lugar do cartão. Recusado se for a última opção válida. Troca e bloqueio são independentes.
+
+## Inimigos (`EnemyTypes` + `EnemyManager`)
+
+Todos vivem nos mesmos arrays paralelos do `EnemyManager` (posição, vida, vida máxima, velocidade, empurrão, tipo, estado, temporizador, recarga da lâmina, piscada, aviso ligado e id estável). Um `MultiMesh` por tipo, com cor por instância (piscada de dano e brilho dos avisos).
+
+| Tipo | Vida | Velocidade | Contato | Comportamento |
+|---|---|---|---|---|
+| Errante (comum) | 1× | 2,2 m/s | 9/s | persegue |
+| Espreitador (rápido) | 0,45× | 4,3 m/s | 7/s | mira à frente do jogador e acelera (×1,3) a menos de 4 m |
+| Couraçado (resistente) | 5× | 1,35 m/s | 15/s | ignora 35% do dano; quase não é empurrado pelos outros |
+| Lançador (atirador) | 1,2× | 2,4 m/s | 6/s | fica entre 6 e 8,5 m, anda de lado, para e brilha 0,55 s antes de atirar (8 de dano, 6,5 m/s, a cada ~3,2 s); só atira de dentro da tela |
+| Volátil (explosivo) | 0,9× | 3,0 m/s | 6/s | a menos de 1,9 m acende o pavio: para, pisca e mostra o círculo no chão; 0,85 s depois explode (26 de dano, raio 2,4 m). Pode ser eliminado antes |
+
+"Vida" multiplica a vida base de 20, que cresce **35% por minuto** de partida. Mistura por tempo (`EnemyTypes.SCHEDULE`): o Espreitador entra aos 45 s, o Couraçado aos 100 s, o Lançador aos 150 s e o Volátil aos 210 s, cada um com peso crescente até um máximo (0,45, 0,22, 0,15 e 0,2, contra 1 do Errante). A leva cresce +1 inimigo a cada 30 s. Limite: 300 inimigos (o chefe não conta).
+
+## Encontro final: Sentinela do Eco (`BossController`)
+
+O corpo do chefe é um inimigo do tipo `CHEFE` dentro do `EnemyManager` (assim todas as armas o acertam do mesmo jeito; o índice dele é mantido ao remover outros). O `BossController` só decide o comportamento, com uma máquina de estados:
+
+`PERSEGUIR (2,2 s) → ataque (rodízio) → RECUPERAR (1,4 s, parado e vulnerável) → PERSEGUIR`
+
+| Ataque | Aviso | Golpe |
+|---|---|---|
+| Investida | faixa vermelha no chão na direção do jogador, 1 s | atravessa 9 m a 16 m/s; 28 de dano se encostar |
+| Erupção | círculos no chão (onde o jogador está, onde vai estar e 2 ao redor), 1,1 s | 30 de dano se o jogador estiver em algum círculo |
+| Rajada | o chefe brilha em lilás, 0,7 s | anel de 14 projéteis (12 de dano cada) |
+
+Vida 3.800. Abaixo de 50%: fase 2 (aviso no HUD, avisos e pausas 25% mais curtos, 4 erupções ao redor do jogador em vez de 2, rajada dupla e 6 reforços: Voláteis e Espreitadores). Contato: 24/s. Recompensa: a vitória e 40 Ecos.
+
+## Esquiva
+
+- **Celular:** duplo toque no joystick (`FloatingJoystick`). Um toque curto (até 0,22 s e 28 unidades de arrasto) seguido, em até 0,32 s e a até 140 unidades, de um segundo toque. Se o segundo toque arrasta 40 unidades em até 0,3 s (peteleco), a esquiva vai na direção do arrasto; se é curto, vai para onde o personagem está indo (ou para a frente dele, parado). Um gesto arma uma esquiva só.
+- **Computador:** tecla **Espaço** (não conflita com WASD, setas, 1-3 e R).
+- **Efeito:** 4 m em 0,18 s, 0,32 s sem levar dano (contato, projéteis, explosões e ataques do chefe), recarga de 1,4 s. Feedback: o personagem fica ciano translúcido, um anel sai do chão e o indicador "Esquiva pronta" no rodapé.
+- Os tempos usam o relógio do jogo (soma dos `delta`), então valem igual nos testes.
+
+## Resultados e estatísticas (`RunStats`, `ResultsScreen`)
+
+`RunStats` conta no momento em que acontece: dano por arma e por tipo de inimigo (só a vida realmente tirada), abates por arma e por tipo, dano recebido por origem, esquivas, explosões, momento em que o chefe surgiu e caiu, dano dado e recebido no encontro. A tela mostra tempo, nível, abates, dano causado e recebido, esquivas, chefes derrotados, tempo contra o chefe, armas com nível/dano/abates e melhorias com níveis.
+
+## Progressão permanente (`MetaProgress`)
+
+- Arquivo `user://progresso.json`, com campo `versao` (atual: 1). No navegador, `user://` fica no armazenamento do site (IndexedDB).
+- Salvamento: grava num `.tmp` e renomeia. Arquivo corrompido → cópia `.corrompido` e começo do zero. Arquivo de versão mais nova → só leitura (não salva por cima). Versão 0 (sem o campo `versao`) é migrada. **Não havia save antes desta versão**: a migração está pronta e testada para o futuro.
+- Recompensa: 1 Eco a cada 20 s, 1 a cada 15 abates, 40 por chefe derrotado.
+- Loja (na tela de resultados): Vigor ancestral (+8% de vida por nível, 5 níveis), Fúria latente (+5% de dano, 5), Atração do eco (+20% de raio de coleta, 3), Renovação (+1 troca de opções, 2). Os preços estão em `MetaProgress.UPGRADES`.
 
 ## Desempenho
 
-Objetos repetidos não viram nós. Inimigos, projéteis e orbes ficam em `Packed*Array` e são desenhados por um `MultiMesh` cada (uma chamada de desenho por tipo). Inimigos e orbes enviam as posições de uma vez via `MultiMesh.buffer`.
+Nada repetido vira nó: inimigos, projéteis (do jogador e dos inimigos), orbes, lâminas e efeitos no chão ficam em `Packed*Array` e são desenhados por `MultiMesh`. A remoção troca com o último elemento (sem criar nem destruir objetos). Efeitos no chão têm limite de 160 (o mais antigo é substituído); projéteis inimigos, de 240.
 
-- **Separação entre inimigos:** grade espacial montada com uma ordenação nativa (`PackedInt64Array.sort()`). A separação é recalculada para metade dos inimigos por quadro, alternando.
-- **Orbes:** limite de 400. Acima disso, o valor do orbe novo é somado ao mais antigo, então a XP nunca se perde e a memória fica limitada.
-- **Remoção:** troca com o último elemento e reduz o array (`swap-remove`). Não cria nem destrói objetos.
+- **Grade espacial:** montada uma vez por quadro com ordenação nativa (células de 1,5 m). Usada na separação entre inimigos e na colisão dos projéteis do Raio (antes era uma busca em todos os inimigos para cada projétil).
+- **Aura:** uma passada pelos inimigos por pulso, não por quadro. **Lâmina:** uma passada por quadro para achar quem está perto do anel, e só esses são comparados com as lâminas.
+- **Ciclo de vida:** tudo é filho de `Main`; "Jogar de novo" recarrega a cena e libera tudo. Os testes conferem que a partida anterior é liberada e que a nova começa sem inimigos, projéteis, efeitos, chefe, armas extras ou estatísticas antigas.
 
-Medições da simulação prolongada (10 min de partida, horda cheia de 300 inimigos, CPU do servidor de testes, sem renderização):
-
-| Medida | Resultado |
-| --- | --- |
-| Tempo de CPU por quadro: média | 1,3 ms |
-| p95 | 2,1 ms |
-| p99 | 2,2 ms |
-| Nós na árvore | 66, constante, inclusive entre reinícios |
-| Memória | estável depois do primeiro minuto (+7 a +8,5 MB no total, sem crescimento contínuo) |
-
-Esses números **não** representam um celular. No navegador do celular, o GDScript roda mais devagar (WebAssembly) e a GPU é mais fraca. O contador de FPS no rodapé é a referência real.
+Medições: ver `docs/versoes/0.3-alpha/RELATORIO.md`. São tempos de CPU do servidor de testes, sem renderização: **não** representam um celular.
 
 ## Testes
 
-| Arquivo | O que cobre | Tempo |
-| --- | --- | --- |
-| `tests/run_tests.gd` | 16 testes específicos: XP ao derrotar, coleta por proximidade, acúmulo de XP e barra, subida de nível, vários níveis de uma vez, 3 opções distintas (300 sorteios + tela), cada um dos 6 efeitos medido na partida, acúmulo e limites, pausa e retomada (12 grandezas congeladas + toque ignorado), bloqueio após derrota, reinício limpo | ~2 s |
-| `tests/smoke_test.gd` | 60 s de partida de ponta a ponta: joystick, tecla D, coleta, level-ups com escolha, pausa | ~1 s |
-| `tests/long_simulation.gd` | Partida longa (`--segundos=N`). O piloto foge em círculos por 2 min e depois fica parado até morrer; reinicia e continua. Mede tempo por quadro, máximos, nós e memória. `--invulneravel` mantém a horda cheia | 10 min de jogo ≈ 25 s |
+| Arquivo | O que cobre |
+|---|---|
+| `tests/run_tests.gd` + `tests/suites/` | 41 testes em 4 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (7); esquiva, encerramento e progressão permanente (9) |
+| `tests/smoke_test.gd` | 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa |
+| `tests/long_simulation.gd` | partida longa (`--segundos=N`, `--invulneravel`): tempo por quadro, máximos, nós e memória, com reinícios |
+| `tests/balance_simulation.gd` | **não roda no CI**: comparação de armas (`--modo=dps`), partida com piloto (`--modo=partida`) e encontro final (`--modo=chefe`) |
 
-Os testes usam ganchos que só existem para isso: `EnemyManager.spawning_enabled`, `spawn_at()`, `hp_of()`, `Player.invulnerable`, `scripted_input` e `AutoWeapon.shots_fired`.
+No CI, os scripts do Godot rodam por `tools/ci/rodar_godot.sh`, que **falha se aparecer erro de script no log** (o Godot nem sempre muda o código de saída quando um script quebra no meio).
 
-Os testes também foram conferidos ao contrário: quebrando o jogo de propósito (sem pausa, sem orbes, sorteio com repetição, sem a cura do Núcleo vital), os testes correspondentes falham.
+Ganchos de teste: `EnemyManager.spawning_enabled`, `spawn_at()`, `Player.invulnerable`, `scripted_input`, `Main.start_encounter()`, `Main.apply_offer()`, `Main.encounter_time` e `MetaProgress.path` (os testes usam arquivos próprios).
 
 ### Verificação estática do GDScript (gdtoolkit 4.5.0)
 
@@ -131,6 +183,7 @@ Em `tools/e2e/`, com guia de manutenção em `tools/e2e/README.md`. Abrem o **jo
 | Jogo rodando | a imagem do canvas muda com o tempo |
 | Sem erros | nenhuma exceção nem `console.error` |
 | Toque e orientação | nos perfis de celular |
+| Jogabilidade (`jogabilidade.spec.js`) | joystick arrastado, duplo toque (e toques espaçados que não esquivam), Espaço, level-up tocando em Trocar/Bloquear/cartão, vitória contra o chefe e derrota com "Jogar de novo" tocado. Usa a ponte `?teste=1` só para ler o estado e preparar situações |
 
 **Renderizador:** dentro do `xvfb-run`, com `--use-angle=gl`, o Chromium usa Mesa/llvmpipe (OpenGL 4.5). Sem tela virtual, cai no SwiftShader, que não mostra as atualizações de MultiMesh. **A emulação de Pixel 7 não equivale a um celular físico.**
 
@@ -175,9 +228,10 @@ Ferramentas de publicação (Python 3 e shell, sem dependências externas):
 
 ## Limitações conhecidas
 
-- **Sem teste em celular físico.** Até aqui o jogo foi conferido em Chrome com tela e toque de celular simulados.
-- **Tela deitada:** o jogo funciona, mas a câmera mantém 14 m de largura e mostra pouco mapa na vertical.
+- **Sem teste em celular físico.** Os testes de navegador emulam toque e tela de Pixel 7 num Chromium de computador.
+- **Equilíbrio medido só com piloto automático:** os números da versão vêm de simulações. Falta testar com pessoas (critério da fase 1).
+- **Tela deitada:** a câmera mantém 14 m de largura e mostra pouco mapa na vertical; as interfaces ficam numa coluna central.
 - **Pausa e dedo no joystick:** se o dedo ainda estiver na tela quando a pausa termina, o joystick só volta a responder depois de levantar e tocar de novo.
-- **Equilíbrio ainda não ajustado:** a arma base mata devagar diante da horda máxima. Na simulação, a horda chega a 300 inimigos por volta dos 2 minutos, e quem fica parado cai rápido. Esse ajuste depende de testes com pessoas.
-- **Orbes distantes:** orbes que caem longe ficam no chão até o jogador passar perto. Não somem nem são puxados de longe.
+- **Destro/canhoto e ajuste do joystick:** ainda não implementados (o joystick flutua em qualquer ponto da tela; os parâmetros já são `@export` em `FloatingJoystick`).
+- **Orbes distantes** ficam no chão até o jogador passar perto.
 - **Sem som e sem arte final.**

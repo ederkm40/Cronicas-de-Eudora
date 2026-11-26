@@ -1,16 +1,24 @@
 class_name Hud
 extends Control
-## Interface da partida: tempo, abates, vida, contador de desempenho e tela de derrota.
+## Interface da partida: tempo, abates, vida, experiência, armas, barra do chefe,
+## avisos no meio da tela e o indicador da esquiva. O fim da partida fica em ResultsScreen.
 
-signal restart_requested
+const MAX_COLUMN_WIDTH := 720
 
 var _status: Label
 var _hp_bar: ProgressBar
 var _xp_bar: ProgressBar
 var _level_label: Label
+var _weapons: Label
+var _boss_box: VBoxContainer
+var _boss_name: Label
+var _boss_bar: ProgressBar
+var _banner: Label
+var _banner_time := 0.0
+var _dodge_label: Label
+var _dodge_bar: ProgressBar
 var _debug: Label
-var _game_over: Control
-var _summary: Label
+var _margin: MarginContainer
 
 
 func _ready() -> void:
@@ -20,11 +28,12 @@ func _ready() -> void:
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 32)
-	margin.add_theme_constant_override("margin_right", 32)
 	margin.add_theme_constant_override("margin_top", 56)
 	margin.add_theme_constant_override("margin_bottom", 32)
 	add_child(margin)
+	_margin = margin
+	_fit_width()
+	get_viewport().size_changed.connect(_fit_width)
 
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -50,16 +59,65 @@ func _ready() -> void:
 	_xp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	xp_row.add_child(_xp_bar)
 
+	_weapons = _make_label(22)
+	_weapons.modulate = Color(1, 0.9, 0.75, 0.9)
+	column.add_child(_weapons)
+
+	# Barra do chefe: só aparece no encontro final.
+	_boss_box = VBoxContainer.new()
+	_boss_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_boss_box.visible = false
+	column.add_child(_boss_box)
+	_boss_name = _make_label(26)
+	_boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_boss_box.add_child(_boss_name)
+	_boss_bar = _make_bar(Color(0.9, 0.3, 0.75), 20)
+	_boss_box.add_child(_boss_bar)
+
+	_banner = _make_label(36)
+	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_banner.add_theme_color_override("font_color", Color(1.0, 0.85, 0.45))
+	column.add_child(_banner)
+
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	column.add_child(spacer)
 
+	# Esquiva: pequena e no rodapé, para não disputar espaço com o polegar.
+	var dodge_row := HBoxContainer.new()
+	dodge_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dodge_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	dodge_row.add_theme_constant_override("separation", 10)
+	column.add_child(dodge_row)
+	_dodge_label = _make_label(22)
+	dodge_row.add_child(_dodge_label)
+	_dodge_bar = _make_bar(Color(0.5, 1.0, 1.0), 10)
+	_dodge_bar.custom_minimum_size = Vector2(120, 10)
+	_dodge_bar.max_value = 1.0
+	_dodge_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	dodge_row.add_child(_dodge_bar)
+
 	_debug = _make_label(20)
 	_debug.modulate = Color(1, 1, 1, 0.6)
 	column.add_child(_debug)
 
-	_build_game_over()
+
+## Na tela deitada, as barras ficam numa coluna central de até 720 de largura,
+## em vez de atravessar a tela inteira.
+func _fit_width() -> void:
+	var width := get_viewport().get_visible_rect().size.x
+	var side := maxi(32, int((width - MAX_COLUMN_WIDTH) * 0.5))
+	_margin.add_theme_constant_override("margin_left", side)
+	_margin.add_theme_constant_override("margin_right", side)
+
+
+func _process(delta: float) -> void:
+	if _banner_time > 0.0:
+		_banner_time -= delta
+		if _banner_time <= 0.0:
+			_banner.text = ""
 
 
 func _make_bar(color: Color, height: int) -> ProgressBar:
@@ -87,41 +145,16 @@ func _make_label(font_size: int) -> Label:
 	return label
 
 
-func _build_game_over() -> void:
-	_game_over = ColorRect.new()
-	(_game_over as ColorRect).color = Color(0, 0, 0, 0.6)
-	_game_over.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_game_over.mouse_filter = Control.MOUSE_FILTER_STOP
-	_game_over.visible = false
-	add_child(_game_over)
-
-	var center := CenterContainer.new()
-	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_game_over.add_child(center)
-
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 24)
-	center.add_child(box)
-
-	var title := _make_label(56)
-	title.text = "Você caiu!"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(title)
-
-	_summary = _make_label(30)
-	_summary.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	box.add_child(_summary)
-
-	var button := Button.new()
-	button.text = "Jogar de novo"
-	button.custom_minimum_size = Vector2(360, 96)
-	button.add_theme_font_size_override("font_size", 34)
-	button.pressed.connect(func() -> void: restart_requested.emit())
-	box.add_child(button)
-
-
-func update_stats(elapsed: float, kills: int, hp: float, max_hp: float, enemy_count: int,
-		level: int = 1, xp: int = 0, xp_needed: int = 1) -> void:
+func update_stats(
+	elapsed: float,
+	kills: int,
+	hp: float,
+	max_hp: float,
+	enemy_count: int,
+	level: int = 1,
+	xp: int = 0,
+	xp_needed: int = 1
+) -> void:
 	_status.text = "%s   ·   Abates: %d" % [format_time(elapsed), kills]
 	_hp_bar.max_value = max_hp
 	_hp_bar.value = hp
@@ -135,9 +168,46 @@ func xp_bar_ratio() -> float:
 	return _xp_bar.value / _xp_bar.max_value
 
 
-func show_game_over(elapsed: float, kills: int, level: int = 1) -> void:
-	_summary.text = "Sobreviveu %s\nNível %d · %d abates" % [format_time(elapsed), level, kills]
-	_game_over.visible = true
+## Linha com as armas e seus níveis.
+func set_weapons(text: String) -> void:
+	_weapons.text = text
+
+
+func weapons_text() -> String:
+	return _weapons.text
+
+
+## Barra de vida do chefe. `ratio` de 0 a 1.
+func set_boss(visible_bar: bool, ratio: float = 1.0, title: String = "") -> void:
+	_boss_box.visible = visible_bar
+	_boss_bar.max_value = 1.0
+	_boss_bar.value = ratio
+	_boss_name.text = title
+
+
+func boss_bar_visible() -> bool:
+	return _boss_box.visible
+
+
+func boss_bar_ratio() -> float:
+	return _boss_bar.value
+
+
+## Aviso no meio da tela por alguns segundos (0 = fica até ser trocado).
+func show_banner(text: String, seconds: float = 3.0) -> void:
+	_banner.text = text
+	_banner_time = seconds
+
+
+func banner_text() -> String:
+	return _banner.text
+
+
+## 1 = esquiva pronta.
+func set_dodge(charge: float) -> void:
+	_dodge_bar.value = charge
+	_dodge_label.text = "Esquiva pronta" if charge >= 1.0 else "Esquiva"
+	_dodge_label.modulate = Color(0.6, 1.0, 1.0) if charge >= 1.0 else Color(1, 1, 1, 0.55)
 
 
 static func format_time(seconds: float) -> String:

@@ -1,6 +1,6 @@
 class_name AutoWeapon
 extends Node3D
-## Arma automática: atira sozinha no inimigo mais próximo dentro do alcance.
+## Raio arcano, a arma inicial: atira sozinha no inimigo mais próximo dentro do alcance.
 ## Os projéteis também usam arrays + MultiMesh, como os inimigos.
 ## Os valores base ficam nos @export. As melhorias mexem só nos modificadores abaixo,
 ## e os valores usados na partida (efetivos) são calculados a partir dos dois.
@@ -90,7 +90,7 @@ func _try_fire(delta: float) -> void:
 	if _cooldown > 0.0 or _positions.size() >= max_projectiles:
 		return
 	var origin := player.global_position
-	var target := enemies.nearest(origin, effective_range())
+	var target := _pick_target(origin)
 	if target == -1:
 		_cooldown = 0.0
 		return
@@ -111,6 +111,18 @@ func _try_fire(delta: float) -> void:
 	_cooldown = effective_fire_interval()
 
 
+## Mira o chefe quando ele está ao alcance; senão, o inimigo mais próximo.
+## Assim o encontro final é decidido pelo chefe, e não por quem estiver mais perto na horda.
+func _pick_target(origin: Vector3) -> int:
+	var boss := enemies.boss_index()
+	if boss != -1:
+		var p := enemies.position_of(boss)
+		var reach := effective_range()
+		if Vector2(p.x - origin.x, p.z - origin.z).length_squared() <= reach * reach:
+			return boss
+	return enemies.nearest(origin, effective_range())
+
+
 func _move_projectiles(delta: float) -> void:
 	var i := _positions.size() - 1
 	while i >= 0:
@@ -118,7 +130,7 @@ func _move_projectiles(delta: float) -> void:
 		_life[i] -= delta
 		var hit := enemies.hit_at(_positions[i], hit_radius)
 		if hit != -1:
-			enemies.damage(hit, effective_damage())
+			enemies.damage(hit, effective_damage(), WeaponCatalog.BOLT)
 			_remove(i)
 		elif _life[i] <= 0.0:
 			_remove(i)

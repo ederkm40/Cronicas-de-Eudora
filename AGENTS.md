@@ -48,8 +48,11 @@ Regras para não haver conflito:
 ## Regras técnicas (não negociáveis)
 
 - Godot **4.7.2** (fixado em `GODOT_VERSION` no workflow), GDScript, Compatibility, Web **sem threads**. Sem C#.
-- Prioridade mobile. Objetos repetidos (inimigos, projéteis, orbes) em **arrays + MultiMesh**, nunca um nó por objeto. Sem sombras em tempo real; use `BlobShadow`.
-- Sistemas de jogo **pausáveis** por padrão. O level-up usa `SceneTree.paused`.
+- Prioridade mobile. Objetos repetidos (inimigos, projéteis, orbes, efeitos no chão) em **arrays + MultiMesh**, nunca um nó por objeto. Sem sombras em tempo real; use `BlobShadow`.
+- Armas: definição em `WeaponCatalog`, estado em `Arsenal`, execução num nó por arma; dano sempre por `EnemyManager.damage(índice, dano, arma)` para as estatísticas ficarem certas. Inimigos e chefe vivem no `EnemyManager` (decisão 0010).
+- Controle com um dedo: joystick flutuante, ataque automático, esquiva por duplo toque no joystick. Sem botões de ataque ou de esquiva.
+- Sistemas de jogo **pausáveis** por padrão. O level-up e a vitória usam `SceneTree.paused`.
+- O save (`user://progresso.json`, `MetaProgress`) tem versão. Mudou o formato: aumente `VERSION`, escreva a migração e o teste.
 - Melhorias recalculadas a partir da base em `Upgrades.refresh()`.
 - GDScript passa no `gdlint` (regras padrão do gdtoolkit 4.5.0, sem exceções). Todo arquivo `.gd` criado ou alterado segue o `gdformat`. O código antigo não é reformatado em massa.
 - Tudo em texto. Commite os `.uid` e `.import` gerados pelo Godot. Não commite `.godot/`, `build/`, arquivos temporários, saves ou credenciais.
@@ -86,13 +89,16 @@ Todos rodam no GitHub Actions, no job "Testar e exportar". Localmente, só se as
 gdlint scripts tests                                 # estilo e sintaxe do GDScript (gdtoolkit 4.5.0)
 gdformat --check <arquivos .gd alterados>            # formatação dos arquivos alterados
 godot --headless --path . --import
-godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd        # "TESTES: OK"
+godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd        # "TESTES: OK" (suítes em tests/suites/)
 godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd       # "SMOKE TEST: OK"
 godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=300   # "SIMULAÇÃO LONGA: OK"
+godot --headless --path . --fixed-fps 60 --script res://tests/balance_simulation.gd -- --modo=partida   # equilíbrio (fora do CI)
 python3 tools/wiki/test_wiki.py                      # Wiki
 python3 tools/site/test_montar_site.py               # montagem do site
 python3 tools/wiki/build_wiki.py --saida build/wiki  # gerar a Wiki localmente
 cd tools/e2e && npm ci && E2E_DIR=<exportação> xvfb-run -a npx playwright test   # navegador
 ```
+
+No CI, os scripts do Godot rodam por `tools/ci/rodar_godot.sh`, que também falha se o log tiver erro de script. Os testes de navegador abrem o jogo com `?teste=1` (ponte `scripts/web_bridge.gd`).
 
 Os checks obrigatórios da `main` são **`Testar e exportar`** e **`Publicar`**. Não renomeie esses jobs nem crie um terceiro job obrigatório sem combinar com o proprietário.

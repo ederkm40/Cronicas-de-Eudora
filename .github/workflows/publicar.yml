@@ -92,14 +92,14 @@ jobs:
       - name: Importar o projeto
         run: ~/godot/godot --headless --path . --import
 
-      - name: Testes automáticos (progressão, melhorias, pausa, reinício)
-        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd
+      - name: Testes automáticos (armas, ofertas, inimigos, chefe, esquiva, resultados, progressão)
+        run: bash tools/ci/rodar_godot.sh ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd
 
       - name: Teste rápido de ponta a ponta (smoke test)
-        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
+        run: bash tools/ci/rodar_godot.sh ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
 
       - name: Simulação prolongada (5 minutos de partida)
-        run: ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=300
+        run: bash tools/ci/rodar_godot.sh ~/godot/godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=300
 
       # 6. Testes Python (Wiki com busca em JavaScript obrigatória, e montagem do site)
       - name: Testes da Wiki e da montagem do site

@@ -1,6 +1,10 @@
 class_name Upgrades
 extends RefCounted
-## As melhorias escolhidas no level-up e seus efeitos.
+## As melhorias (passivas) escolhidas no level-up e seus efeitos.
+## As armas novas e suas evoluções ficam no Arsenal; o sorteio das ofertas, em LevelUpOffers.
+##
+## Sinergias com as armas: Poder arcano vale para todas as armas; Cadência acelera o Raio
+## e os pulsos da Aura; Campo de ruptura aumenta o alcance do Raio e metade disso na Aura.
 ##
 ## Cada melhoria tem um número de níveis (pilhas) e um limite. Os efeitos são sempre
 ## recalculados a partir dos valores base da arma e do jogador, então somar a mesma
@@ -19,6 +23,7 @@ const VITALITY_HP_PER_STACK := 0.25
 const VITALITY_HEAL := 25.0
 const SPEED_PER_STACK := 0.15
 const RANGE_PER_STACK := 0.20
+const AURA_RANGE_SHARE := 0.5  ## A Aura ganha metade do bônus de alcance.
 
 ## Ordem fixa: também é a ordem usada nos testes e na documentação.
 const DEFINITIONS := [
@@ -26,13 +31,13 @@ const DEFINITIONS := [
 		"id": DAMAGE,
 		"name": "Poder arcano",
 		"max": 10,
-		"description": "+20% de dano dos projéteis.",
+		"description": "+20% de dano de todas as armas.",
 	},
 	{
 		"id": FIRE_RATE,
 		"name": "Cadência",
 		"max": 8,
-		"description": "+15% de velocidade de disparo.",
+		"description": "+15% de velocidade do Raio e dos pulsos da Aura.",
 	},
 	{
 		"id": VITALITY,
@@ -56,9 +61,16 @@ const DEFINITIONS := [
 		"id": RANGE,
 		"name": "Campo de ruptura",
 		"max": 5,
-		"description": "+20% de alcance da arma.",
+		"description": "+20% de alcance do Raio (e +10% de área da Aura).",
 	},
 ]
+
+## Armas extras que recebem os bônus (ligadas por main.gd; podem ficar vazias nos testes).
+var aura: AuraWeapon
+var blades: OrbitBlades
+## Bônus permanentes (MetaProgress), multiplicados em cima das melhorias da partida.
+var meta_damage_multiplier := 1.0
+var meta_hp_multiplier := 1.0
 
 var _stacks := {}
 
@@ -152,9 +164,20 @@ func apply(id: StringName, player: Player, weapon: AutoWeapon) -> bool:
 
 ## Recalcula todos os modificadores a partir dos níveis atuais.
 func refresh(player: Player, weapon: AutoWeapon) -> void:
-	weapon.damage_multiplier = 1.0 + DAMAGE_PER_STACK * stacks(DAMAGE)
-	weapon.fire_rate_multiplier = 1.0 + FIRE_RATE_PER_STACK * stacks(FIRE_RATE)
-	weapon.range_multiplier = 1.0 + RANGE_PER_STACK * stacks(RANGE)
+	var damage := (1.0 + DAMAGE_PER_STACK * stacks(DAMAGE)) * meta_damage_multiplier
+	var rate := 1.0 + FIRE_RATE_PER_STACK * stacks(FIRE_RATE)
+	var reach := RANGE_PER_STACK * stacks(RANGE)
+	weapon.damage_multiplier = damage
+	weapon.fire_rate_multiplier = rate
+	weapon.range_multiplier = 1.0 + reach
 	weapon.extra_projectiles = stacks(PROJECTILE)
+	if aura:
+		aura.damage_multiplier = damage
+		aura.rate_multiplier = rate
+		aura.area_multiplier = 1.0 + reach * AURA_RANGE_SHARE
+	if blades:
+		blades.damage_multiplier = damage
 	player.speed_multiplier = 1.0 + SPEED_PER_STACK * stacks(SPEED)
-	player.set_max_hp_multiplier(1.0 + VITALITY_HP_PER_STACK * stacks(VITALITY))
+	player.set_max_hp_multiplier(
+		(1.0 + VITALITY_HP_PER_STACK * stacks(VITALITY)) * meta_hp_multiplier
+	)
