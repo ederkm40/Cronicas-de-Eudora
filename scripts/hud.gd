@@ -3,6 +3,8 @@ extends Control
 ## Interface da partida: tempo, abates, vida, experiência, armas, barra do chefe,
 ## avisos no meio da tela e o indicador da esquiva. O fim da partida fica em ResultsScreen.
 
+const MAX_COLUMN_WIDTH := 720
+
 var _status: Label
 var _hp_bar: ProgressBar
 var _xp_bar: ProgressBar
@@ -16,6 +18,7 @@ var _banner_time := 0.0
 var _dodge_label: Label
 var _dodge_bar: ProgressBar
 var _debug: Label
+var _margin: MarginContainer
 
 
 func _ready() -> void:
@@ -25,11 +28,12 @@ func _ready() -> void:
 	var margin := MarginContainer.new()
 	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	margin.add_theme_constant_override("margin_left", 32)
-	margin.add_theme_constant_override("margin_right", 32)
 	margin.add_theme_constant_override("margin_top", 56)
 	margin.add_theme_constant_override("margin_bottom", 32)
 	add_child(margin)
+	_margin = margin
+	_fit_width()
+	get_viewport().size_changed.connect(_fit_width)
 
 	var column := VBoxContainer.new()
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -98,6 +102,15 @@ func _ready() -> void:
 	_debug = _make_label(20)
 	_debug.modulate = Color(1, 1, 1, 0.6)
 	column.add_child(_debug)
+
+
+## Na tela deitada, as barras ficam numa coluna central de até 720 de largura,
+## em vez de atravessar a tela inteira.
+func _fit_width() -> void:
+	var width := get_viewport().get_visible_rect().size.x
+	var side := maxi(32, int((width - MAX_COLUMN_WIDTH) * 0.5))
+	_margin.add_theme_constant_override("margin_left", side)
+	_margin.add_theme_constant_override("margin_right", side)
 
 
 func _process(delta: float) -> void:

@@ -21,12 +21,13 @@ func _ready() -> void:
 	_game = get_parent()
 	if not OS.has_feature("web"):
 		return
-	var flag: Variant = JavaScriptBridge.eval(
-		"new URLSearchParams(window.location.search).has('teste')", true
-	)
-	_active = flag == true
+	# Lê o endereço pelo objeto `location` (devolve texto; evita converter booleanos do JS).
+	var location: JavaScriptObject = JavaScriptBridge.get_interface("location")
+	_active = location != null and str(location.search).contains("teste=1")
 	if _active:
-		JavaScriptBridge.eval("window.__eudoraComandos = window.__eudoraComandos || [];", true)
+		# Termina com "void 0": o eval não devolve objetos do JS para o Godot converter.
+		var setup := "window.__eudoraComandos = window.__eudoraComandos || []; void 0"
+		JavaScriptBridge.eval(setup, true)
 
 
 func _process(delta: float) -> void:
@@ -37,7 +38,7 @@ func _process(delta: float) -> void:
 		return
 	_timer = INTERVAL
 	_run_commands()
-	JavaScriptBridge.eval("window.__eudora = %s;" % JSON.stringify(snapshot()), true)
+	JavaScriptBridge.eval("window.__eudora = %s; void 0" % JSON.stringify(snapshot()), true)
 
 
 func _run_commands() -> void:
