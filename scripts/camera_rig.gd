@@ -13,12 +13,12 @@ extends Node3D
 ## mostrar só uma faixa fina do mapa. Em pé, mantém a largura (`view_width`).
 @export var landscape_view_height := 11.0
 
-var shake_enabled := true  ## Configuração "Tremor de tela".
-var _shake := 0.0
-var _shake_strength := 0.0
-
 var target: Node3D
 var camera: Camera3D
+var shake_enabled := true  ## Configuração "Tremor de tela".
+
+var _shake := 0.0
+var _shake_strength := 0.0
 
 
 func _ready() -> void:

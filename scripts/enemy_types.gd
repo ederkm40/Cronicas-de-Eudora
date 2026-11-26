@@ -7,6 +7,8 @@ extends RefCounted
 ## "armor" é a fração do dano que o inimigo ignora (0,4 = recebe 60% do dano).
 
 enum { COMUM, RAPIDO, RESISTENTE, ATIRADOR, EXPLOSIVO, CHEFE, TECELAO, SEMEADOR }
+## Modificadores de elite (ver ELITE_NAMES).
+enum { SEM_ELITE, VELOZ, BLINDADO, GERADOR }
 
 const COUNT := 8
 const STATS := [
@@ -101,7 +103,6 @@ const STATS := [
 ]
 
 ## Elites: versões raras e mais fortes de um tipo comum, com um modificador visível.
-enum { SEM_ELITE, VELOZ, BLINDADO, GERADOR }
 const ELITE_NAMES := ["", "veloz", "blindado", "gerador"]
 const ELITE_HP := 5.0  ## Vida multiplicada.
 const ELITE_SCALE := 1.45  ## Tamanho na tela.

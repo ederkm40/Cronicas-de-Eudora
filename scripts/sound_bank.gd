@@ -32,6 +32,22 @@ const VOLUME_DB := {
 	&"vitoria": -6.0,
 }
 
+## Duração de cada som (s). A forma da onda vem da função `_wave_<nome>`.
+const LENGTHS := {
+	&"golpe": 0.05,
+	&"abate": 0.09,
+	&"orbe": 0.05,
+	&"dano": 0.14,
+	&"explosao": 0.4,
+	&"esquiva": 0.16,
+	&"nivel": 0.36,
+	&"alerta": 0.26,
+	&"evolucao": 0.6,
+	&"fenda": 0.45,
+	&"chefe": 0.8,
+	&"vitoria": 0.7,
+}
+
 var enabled := true  ## Configuração "Som".
 var played := {}  ## Som -> vezes tocado (usado pelos testes).
 
@@ -84,21 +100,6 @@ func stream_of(sound: StringName) -> AudioStreamWAV:
 # ---------------------------------------------------------------- síntese
 
 
-## Duração de cada som (s). A forma da onda vem da função `_wave_<nome>`.
-const LENGTHS := {
-	&"golpe": 0.05,
-	&"abate": 0.09,
-	&"orbe": 0.05,
-	&"dano": 0.14,
-	&"explosao": 0.4,
-	&"esquiva": 0.16,
-	&"nivel": 0.36,
-	&"alerta": 0.26,
-	&"evolucao": 0.6,
-	&"fenda": 0.45,
-	&"chefe": 0.8,
-	&"vitoria": 0.7,
-}
 
 
 func _build() -> void:
