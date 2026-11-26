@@ -6,8 +6,8 @@
   "previas": {
     "2": {
       "branch": "infra/wiki-previews-memoria",
-      "commit": "8ba2b229581f3ee02e07738115539841a8f75c7a",
-      "publicado_em": "2026-11-26T12:37:20Z",
+      "commit": "ec1ddba611c6638d7a41cf7c6209780a6f9a0716",
+      "publicado_em": "2026-11-26T12:59:45Z",
       "titulo": "Infraestrutura: Wiki pública, prévias jogáveis por PR e memória permanente"
     }
   }

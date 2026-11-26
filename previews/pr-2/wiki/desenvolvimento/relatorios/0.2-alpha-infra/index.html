@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="../../../assets/wiki.css">
 </head>
 <body data-raiz="../../../">
-<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #2, branch <code>infra/wiki-previews-memoria</code>, commit <code>8ba2b22</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #2, branch <code>infra/wiki-previews-memoria</code>, commit <code>ec1ddba</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
 <header class="topo">
   <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
   <form class="busca" action="../../../busca/" method="get" role="search">
@@ -45,7 +45,7 @@
 <h2 id="funcionalidades-alteradas">Funcionalidades alteradas</h2>
 <ul><li>A publicação deixou de usar <code>actions/deploy-pages</code> e passou a usar o branch <code>gh-pages</code>.</li><li>O workflow passou a rodar também os testes da Wiki e do site.</li><li><code>.gdignore</code> em <code>docs/</code>, <code>tools/</code> e <code>wiki-src/</code>: nada disso entra no <code>.pck</code> (o <code>.pck</code> continua com 73.664 bytes, igual ao do <code>main</code>).</li></ul>
 <h2 id="correcoes">Correções</h2>
-<ul><li>Encontradas e corrigidas durante a etapa: <code>|</code> dentro de links em tabelas; lista com marcadores seguida de lista numerada que virava uma lista só; menu lateral vazio no computador; texto sem bloco no YAML com <code>: </code>; verificação que esperava 10 minutos mesmo com o Pages mal configurado.</li></ul>
+<ul><li>Encontradas e corrigidas durante a etapa: <code>|</code> dentro de links em tabelas; lista com marcadores seguida de lista numerada que virava uma lista só; menu lateral vazio no computador; texto sem bloco no YAML com <code>: </code>; verificação que esperava 10 minutos mesmo com o Pages mal configurado. A pedido do proprietário, a verificação deixou de ser tolerada (<code>continue-on-error</code> removido): se a prévia não abrir no endereço público, o job <code>Publicar</code> falha, para o PR não ser aprovado sem prévia no ar.</li></ul>
 <h2 id="valores-e-parametros-modificados">Valores e parâmetros modificados</h2>
 <p>Nenhum valor do jogo. Parâmetros da infraestrutura: espera máxima da verificação de 10 minutos; artefato guardado por 7 dias; grupo de concorrência <code>gh-pages</code>.</p>
 <h2 id="arquivos-afetados">Arquivos afetados</h2>
@@ -63,7 +63,7 @@
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Prévia · commit 8ba2b22</p>
+  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Prévia · commit ec1ddba</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/infra/wiki-previews-memoria/docs/versoes/0.2-alpha-infra/RELATORIO.md" rel="noopener">Ver o documento de origem</a></p>
 </footer>
 <script src="../../../assets/busca.js" defer></script>
