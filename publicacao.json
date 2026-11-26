@@ -3,5 +3,12 @@
     "commit": "202965a3f1f0f9b18de0d63773da93e2a1ded475",
     "publicado_em": "2026-11-26T19:26:44Z"
   },
-  "previas": {}
+  "previas": {
+    "8": {
+      "branch": "docs/wiki-changelog-pos-pr7",
+      "commit": "726e8a3ea40a57d2ba4d77d773deaf7988b9c8c2",
+      "publicado_em": "2026-11-26T19:49:31Z",
+      "titulo": "Documentação: atualizar Wiki e changelog após PR #7"
+    }
+  }
 }
