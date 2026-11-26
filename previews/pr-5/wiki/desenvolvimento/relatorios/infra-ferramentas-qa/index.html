@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório da infraestrutura: ferramentas de QA e testes de navegador · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, jogo de hordas isométrico para celular.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #5, branch <code>feat/grande-expansao-combate-03</code>, commit <code>41d55ce</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Relatórios</a></nav>
+<article>
+<h1>Relatório da infraestrutura: ferramentas de QA e testes de navegador</h1>
+<p class="selos"><span class="versao-art">Desde a infra-ferramentas-qa</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#objetivo">Objetivo</a></li><li><a href="#funcionalidades-implementadas">Funcionalidades implementadas</a></li><li><a href="#funcionalidades-alteradas">Funcionalidades alteradas</a></li><li><a href="#correcoes-de-estilo-sem-mudanca-de-logica">Correções de estilo (sem mudança de lógica)</a></li><li><a href="#compatibilidade-verificada-antes-de-integrar">Compatibilidade verificada antes de integrar</a></li><li><a href="#testes-executados-e-resultados">Testes executados e resultados</a></li><li><a href="#problemas-encontrados-durante-a-etapa">Problemas encontrados durante a etapa</a></li><li><a href="#limitacoes">Limitações</a></li><li><a href="#custo">Custo</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Data</strong></td><td>26/11/2026</td></tr><tr><td><strong>Versão do jogo</strong></td><td>continua 0.2-alpha (sem mudança de gameplay)</td></tr><tr><td><strong>Branch</strong></td><td><code>infra/ferramentas-qa-web</code> (a partir do <code>main</code> <code>1b6c65c</code>)</td></tr><tr><td><strong>Commits</strong></td><td><code>7abd5fb</code>, <code>005ba4e</code>, <code>72ba09f</code> (diagnóstico temporário no runner, removido depois), <code>5ed07c4</code> (estilo do GDScript), <code>7ad9076</code> (ferramentas e workflow), <code>951c63f</code> (formulários e Xvfb), mais o commit de documentação</td></tr><tr><td><strong>Pull Request</strong></td><td>https://github.com/ederkm40/Cronicas-de-Eudora/pull/4</td></tr><tr><td><strong>Prévia do jogo</strong></td><td>https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-4/</td></tr><tr><td><strong>Prévia da Wiki</strong></td><td>https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-4/wiki/</td></tr></tbody></table></div>
+<h2 id="objetivo">Objetivo</h2>
+<p>Aumentar a qualidade dos testes sem custo e sem mudar o jogo: verificar o GDScript (sintaxe e estilo) e testar a versão Web exportada num navegador real, em computador e em celular emulado. Também facilitar relatos pelo navegador, com formulários do GitHub.</p>
+<h2 id="funcionalidades-implementadas">Funcionalidades implementadas</h2>
+<ul><li><strong>GDScript Toolkit 4.5.0</strong> (<code>requirements-ci.txt</code>, com todas as dependências fixadas) num ambiente virtual temporário do runner:<ul><li><code>gdlint scripts tests</code>, com as regras padrão, sem <code>gdlintrc</code> e sem exceções;</li><li><code>gdformat --check</code> só nos <code>.gd</code> adicionados ou alterados desde o ponto comum com o commit-base (<code>tools/ci/verificar_gdscript.sh</code>).</li></ul></li><li><strong>Playwright Test 1.65.1</strong> em <code>tools/e2e/</code> (<code>package.json</code> e <code>package-lock.json</code> exatos, <code>npm ci</code>), só Chromium. Os testes abrem o jogo exportado servido em <code>127.0.0.1:8060</code>, em 3 perfis (computador 1366 × 768; Pixel 7 em pé 412 × 915; Pixel 7 deitado 915 × 412), e verificam:<ul><li>motor iniciado (<code>#status</code> removido);</li><li>"Godot Engine v4.7.2" no console;</li><li>WebGL 2;</li><li>arquivos essenciais com 200 e nenhuma falha de rede;</li><li>canvas visível, dentro da tela e ocupando a janela;</li><li>imagem em movimento;</li><li>nenhum erro de JavaScript;</li><li>toque e orientação nos perfis de celular.</li></ul></li><li><strong>Renderizador:</strong> o Chromium roda no <code>xvfb-run</code> com <code>--use-angle=gl</code>, o que dá Mesa/llvmpipe.</li><li><strong>Evidências:</strong> screenshot e trace só em falha, guardados por 7 dias.</li><li><strong>Node.js 22</strong> com <code>actions/setup-node</code> (e cache do npm). O teste de busca da Wiki em JavaScript passou a ser obrigatório no CI (<code>EXIGIR_NODE=1</code> faz falhar se faltar o Node).</li><li><strong>Formulários:</strong> 5 formulários de Issue (<code>bug_report</code>, <code>feature_request</code>, <code>gameplay_feedback</code>, <code>mobile_performance</code>, <code>wiki_documentation</code>), usando só rótulos que já existem (<code>bug</code>, <code>enhancement</code>, <code>documentation</code>), e o <code>PULL_REQUEST_TEMPLATE.md</code>.</li></ul>
+<h2 id="funcionalidades-alteradas">Funcionalidades alteradas</h2>
+<ul><li><strong>Job <code>testar</code> ("Testar e exportar"):</strong> novas etapas, na ordem: checkout com histórico completo → Godot → Python + gdtoolkit → Node 22 + Playwright e Chromium → <code>gdlint</code> → <code>gdformat --check</code> → testes do jogo → testes Python → exportação → servidor HTTP temporário → Playwright → evidências (só em falha) → montagem para o <code>Publicar</code>. Os nomes dos jobs e dos checks obrigatórios foram mantidos.</li><li><strong>Sem mudança</strong> nos jobs <code>publicar</code> e <code>remover-previa</code>, no <code>gh-pages</code>, na publicação oficial, nas prévias nem na limpeza.</li></ul>
+<h2 id="correcoes-de-estilo-sem-mudanca-de-logica">Correções de estilo (sem mudança de lógica)</h2>
+<p>O <code>gdlint</code> encontrou 48 problemas no código existente:</p>
+<div class="tabela"><table><thead><tr><th>Regra</th><th>Quantidade</th></tr></thead><tbody><tr><td><code>max-line-length</code></td><td>34</td></tr><tr><td><code>class-definitions-order</code></td><td>13</td></tr><tr><td><code>max-returns</code></td><td>1</td></tr></tbody></table></div>
+<p>Correções feitas:</p>
+<ul><li>Constantes movidas para antes das variáveis.</li><li>Comentários longos passados para a linha de cima.</li><li>Textos longos de <code>print</code> divididos em duas partes.</li><li><code>Upgrades.describe_next</code> reescrita com um único <code>return</code> e uma função auxiliar <code>_percent_change</code>. O texto gerado foi conferido nas 67 combinações (6 melhorias × níveis 0 a 10, mais um id inexistente) e é <strong>idêntico</strong> ao anterior.</li><li>Os 9 arquivos tocados foram formatados pelo <code>gdformat</code> 4.5.0 do próprio runner.</li></ul>
+<p>Os outros 5 arquivos antigos que não seguem o <code>gdformat</code> <strong>não foram reformatados</strong>: hud, floating_joystick, xp_orbs, main e progression.</p>
+<h2 id="compatibilidade-verificada-antes-de-integrar">Compatibilidade verificada antes de integrar</h2>
+<ul><li><strong>gdtoolkit 4.5.0:</strong> o parser leu sem erro os 15 arquivos GDScript do projeto (Godot 4.7.2). Execução de diagnóstico 45830499131.</li><li><strong>Playwright:</strong> a versão estável no npm era a 1.65.1, e o <code>package-lock.json</code> foi gerado no runner.</li><li><strong>Runner <code>ubuntu-latest</code>:</strong> tem <code>xvfb</code> e <code>libgl1-mesa-dri</code>.</li></ul>
+<h2 id="testes-executados-e-resultados">Testes executados e resultados</h2>
+<div class="tabela"><table><thead><tr><th>Teste</th><th>Onde</th><th>Resultado</th></tr></thead><tbody><tr><td><code>gdlint scripts tests</code></td><td>CI (45837168352, 45838061660)</td><td><strong>Success: no problems found</strong></td></tr><tr><td><code>gdformat --check</code> nos 9 arquivos alterados</td><td>CI</td><td><strong>9 files would be left unchanged</strong></td></tr><tr><td><code>tests/run_tests.gd</code></td><td>local e CI</td><td><strong>TESTES: OK</strong> (16 testes, 1.627 verificações)</td></tr><tr><td><code>tests/smoke_test.gd</code></td><td>local e CI</td><td><strong>SMOKE TEST: OK</strong></td></tr><tr><td><code>tests/long_simulation.gd -- --segundos=300</code></td><td>local e CI</td><td><strong>SIMULAÇÃO LONGA: OK</strong></td></tr><tr><td><code>tools/wiki/test_wiki.py -v</code> (14 testes; <code>test_busca_no_javascript</code> executado com Node v22.23.5)</td><td>local e CI</td><td><strong>OK</strong></td></tr><tr><td><code>tools/site/test_montar_site.py -v</code> (7 testes)</td><td>local e CI</td><td><strong>OK</strong></td></tr><tr><td>Exportação Web e verificação de <code>index.html</code>, <code>.js</code>, <code>.pck</code>, <code>.wasm</code></td><td>CI</td><td><strong>OK</strong></td></tr><tr><td>Playwright, execução 45838061660 (com Xvfb)</td><td>CI</td><td><strong>5 aprovados, 1 pulado de propósito</strong> (toque no perfil de computador), em 33 s</td></tr><tr><td>Prévia do PR #4</td><td>CI (Publicar)</td><td><strong>verificada no ar</strong></td></tr></tbody></table></div>
+<h3 id="playwright-por-perfil-execucao-45838061660">Playwright por perfil (execução 45838061660)</h3>
+<div class="tabela"><table><thead><tr><th>Perfil</th><th>Teste "carrega, inicia e desenha"</th><th>Teste de toque e orientação</th><th>Renderizador WebGL 2</th></tr></thead><tbody><tr><td>Computador 1366 × 768</td><td>✓ 10,5 s</td><td>pulado (não se aplica)</td><td>ANGLE (Mesa, llvmpipe, LLVM 21.1.8, OpenGL 4.5)</td></tr><tr><td>Pixel 7 em pé 412 × 915</td><td>✓ 6,8 s</td><td>✓ 3,2 s</td><td>idem</td></tr><tr><td>Pixel 7 deitado 915 × 412</td><td>✓ 6,9 s</td><td>✓ 2,6 s</td><td>idem</td></tr></tbody></table></div>
+<p>A execução anterior, 45837168352, sem Xvfb, também passou (5 aprovados), mas o Chromium usou <strong>SwiftShader</strong>, apesar do <code>--use-angle=gl</code>. Por isso o Playwright passou a rodar dentro do <code>xvfb-run</code>.</p>
+<h3 id="os-testes-falham-de-verdade">Os testes falham de verdade</h3>
+<p>Localmente, com o Playwright 1.63.0 já instalado na sessão, servi uma exportação sem o <code>index.pck</code>. O teste falhou com a mensagem <code>o Godot não iniciou: Failed loading file &#x27;index.pck&#x27;</code>. Também confirmei, com o <code>EXIGIR_NODE=1</code> e sem o Node no PATH, que o teste da Wiki falha em vez de ser pulado.</p>
+<h3 id="evidencias">Evidências</h3>
+<p>Nenhuma falha nas execuções finais, então nenhum screenshot, trace ou relatório foi guardado: o artefato <code>playwright-falha</code> só é criado em caso de falha.</p>
+<h2 id="problemas-encontrados-durante-a-etapa">Problemas encontrados durante a etapa</h2>
+<ul><li><strong>Sessão do Claude Code:</strong> o PyPI e o npm estavam bloqueados, e a compilação local do módulo <code>regex</code> foi recusada pelo sistema de segurança. As ferramentas foram validadas no runner do GitHub, com uma execução de diagnóstico temporária.</li><li><strong>Histórico:</strong> o <code>git push --force</code> foi recusado, então os commits de diagnóstico ficaram no histórico da branch. O último commit remove o workflow temporário. Um merge por squash junta tudo.</li><li><strong>Erros dos meus testes, corrigidos antes da entrega:</strong><ul><li>esperar por <code>#status-notice</code> depois que o <code>#status</code> já tinha sido removido;</li><li>o nome <code>index.html</code> para a página pedida como <code>/</code>.</li></ul></li></ul>
+<h2 id="limitacoes">Limitações</h2>
+<ul><li><strong>Celular:</strong> a emulação de Pixel 7 <strong>não equivale</strong> a um celular físico (GPU, desempenho, navegador do aparelho).</li><li><strong>Navegadores:</strong> só o Chromium; Firefox e WebKit ficaram para uma próxima etapa.</li><li><strong>Formatação:</strong> os 5 arquivos GDScript antigos citados acima serão formatados quando forem alterados.</li><li><strong>Tempo:</strong> o job "Testar e exportar" ficou cerca de 1 minuto mais longo, por causa do Chromium e de 5 testes de navegador.</li></ul>
+<h2 id="custo">Custo</h2>
+<p>Nenhum. GitHub Actions com <code>ubuntu-latest</code> (gratuito para repositório público), ferramentas de código aberto com versões fixadas e instaladas só no runner, sem tokens, sem serviços pagos e sem dependências no jogo publicado.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Prévia · commit 41d55ce</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/feat/grande-expansao-combate-03/docs/versoes/infra-ferramentas-qa/RELATORIO.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>

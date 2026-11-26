@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testes · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Como o jogo é testado e os resultados registrados.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #5, branch <code>feat/grande-expansao-combate-03</code>, commit <code>41d55ce</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Painel de desenvolvimento</a></nav>
+<article>
+<h1>Testes</h1>
+
+
+<p>Todo envio de código passa por testes automáticos no GitHub Actions <strong>antes</strong> de o jogo ser exportado e publicado. Se algum teste falhar, nada é publicado.</p>
+<div class="tabela"><table><thead><tr><th>Teste</th><th>O que verifica</th></tr></thead><tbody><tr><td><code>tests/run_tests.gd</code></td><td>16 testes da progressão: XP ao derrotar, coleta por proximidade, acúmulo, subida de nível, vários níveis de uma vez, 3 opções diferentes, cada uma das 6 melhorias medida dentro da partida, limites, pausa e retomada, bloqueio após a derrota, reinício limpo</td></tr><tr><td><code>tests/smoke_test.gd</code></td><td>60 s de partida de ponta a ponta: toque e arraste no joystick, tecla D, coleta, escolhas de melhoria</td></tr><tr><td><code>tests/long_simulation.gd</code></td><td>Partida longa (5 min no GitHub, 10 min nos testes manuais), com mortes e reinícios, medindo desempenho e memória</td></tr><tr><td><code>tools/wiki/test_wiki.py</code></td><td>A Wiki é gerada sem erros, os links funcionam, a busca encontra artigos, o resultado é sempre o mesmo</td></tr><tr><td><code>tools/site/test_montar_site.py</code></td><td>A montagem do site preserva o jogo oficial ao publicar prévias e remove prévias fechadas</td></tr></tbody></table></div>
+<h2 id="ultimos-resultados-registrados">Últimos resultados registrados</h2>
+<div class="tabela"><table><thead><tr><th>Versão</th><th>Resultado</th><th>Onde está</th></tr></thead><tbody><tr><td>0.2-alpha</td><td>Todos os testes passaram (16 testes e 1.627 verificações; smoke test; simulação de 10 min com 4 reinícios)</td><td><a href="../relatorios/0.2-alpha/">relatório 0.2-alpha</a></td></tr></tbody></table></div>
+<blockquote><p>O jogo <strong>ainda não foi testado num celular físico</strong> pela equipe de desenvolvimento. Até aqui, os testes visuais foram feitos num Chrome com tela e toque de celular simulados.</p></blockquote>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.2-alpha “Ecos da Evolução” · Wiki Prévia · commit 41d55ce</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/feat/grande-expansao-combate-03/wiki-src/desenvolvimento/testes.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>

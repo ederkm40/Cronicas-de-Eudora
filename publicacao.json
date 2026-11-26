@@ -3,5 +3,12 @@
     "commit": "70cf85fc5e459a042f415e4b5e5493a2233465e9",
     "publicado_em": "2026-11-26T15:04:29Z"
   },
-  "previas": {}
+  "previas": {
+    "5": {
+      "branch": "feat/grande-expansao-combate-03",
+      "commit": "41d55ce023ba2595f3538b1131ec58ac3594a905",
+      "publicado_em": "2026-11-26T15:50:01Z",
+      "titulo": "0.3-alpha: grande expansão do combate (em andamento)"
+    }
+  }
 }
