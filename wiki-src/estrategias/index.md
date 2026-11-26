@@ -1,7 +1,7 @@
 ---
 titulo: Estratégias
-resumo: Dicas baseadas no comportamento real do jogo atual.
+resumo: Dicas baseadas no comportamento real das armas, inimigos e chefe da versão 0.3-alpha.
 ---
-Dicas baseadas no que o jogo faz hoje, na versão 0.2-alpha. Elas podem mudar quando o equilíbrio for ajustado.
+Estas dicas descrevem o jogo atual. O equilíbrio ainda precisa ser validado com jogadores em dispositivos físicos e pode mudar com futuras versões.
 
 {{artigos}}

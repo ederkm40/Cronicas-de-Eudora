@@ -1,24 +1,29 @@
 ---
 titulo: Personagem jogável
-resumo: O único personagem atual, com 100 de vida e 5 m/s de velocidade.
+resumo: Personagem sem nome ou classe, com 100 de vida base e 5 m/s de velocidade.
 estado: PUBLICADO
 versao: 0.1-alpha
 ordem: 10
 ---
-O personagem que você controla em todas as partidas. Ainda não tem nome, classe nem visual definitivo: hoje é uma **cápsula azul** com um pequeno bloco à frente, que mostra para onde ele está virado.
+O personagem controlado em todas as partidas ainda não tem nome, classe nem visual definitivo. Atualmente é uma **cápsula azul** com um pequeno bloco à frente, que mostra para onde está virado.
 
 ## Atributos base
 
-| Atributo | Valor | Melhorias que alteram |
-|---|---|---|
-| Vida máxima | 100 | [[melhorias/nucleo-vital]] (+25% por nível) |
-| Velocidade de movimento | 5 m/s | [[melhorias/passos-ligeiros]] (+15% por nível) |
-| Arma | [[armas/arma-automatica]] | várias |
+| Atributo | Valor base | Melhorias que alteram |
+|---|---:|---|
+| Vida máxima | 100 | [[melhorias/nucleo-vital]] e [[progressao/melhorias-permanentes|Vigor ancestral]] |
+| Velocidade de movimento | 5 m/s | [[melhorias/passos-ligeiros]] |
+| Arma inicial | [[armas/arma-automatica|Raio arcano]] | Melhorias passivas |
 
-## Comportamento
+O Vigor ancestral pode aumentar a vida máxima em 8% por nível, até cinco níveis. Os bônus permanentes são aplicados às partidas seguintes.
 
-- Anda na direção do [[controles/joystick-flutuante]] ou do [[controles/teclado]], com velocidade fixa (não há meio-termo entre parado e andando).
-- Vira de frente para a direção em que está andando.
+## Movimento e combate
+
+- Anda na direção do [[controles/joystick-flutuante|joystick]] ou do [[controles/teclado|teclado]].
+- Vira na direção em que está andando.
+- Os ataques são automáticos; o jogador se concentra em movimentação, posicionamento e escolhas de build.
+- Pode usar a [[controles/esquiva|esquiva]] para se deslocar rapidamente e evitar dano por um curto período.
 - Ao receber dano, pisca em branco por um instante.
-- Quando a vida chega a zero, a partida termina com a tela de derrota. Veja [[combate/dano-e-derrota]].
-- Tem uma sombra simples no chão (um disco escuro), mais leve que sombra em tempo real.
+- Quando a vida chega a zero, a partida termina em derrota e abre a tela de [[progressao/resultados|resultados]].
+
+O visual e a arte ainda são provisórios.

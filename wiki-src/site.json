@@ -1,8 +1,8 @@
 {
   "nome": "Crônicas de Eudora",
-  "descricao": "Wiki oficial de Crônicas de Eudora, jogo de hordas isométrico para celular.",
-  "versao_oficial": "0.2-alpha",
-  "nome_versao": "Ecos da Evolução",
+  "descricao": "Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.",
+  "versao_oficial": "0.3-alpha",
+  "nome_versao": "Grande expansão do combate",
   "categorias": [
     {
       "id": "personagens",
@@ -14,31 +14,31 @@
       "id": "armas",
       "titulo": "Armas",
       "icone": "A",
-      "descricao": "O que ataca os inimigos por você."
+      "descricao": "Armas automáticas e suas evoluções."
     },
     {
       "id": "melhorias",
       "titulo": "Melhorias",
       "icone": "M",
-      "descricao": "Escolhas feitas a cada nível."
+      "descricao": "Melhorias durante a partida."
     },
     {
       "id": "inimigos",
       "titulo": "Inimigos",
       "icone": "I",
-      "descricao": "O que vem nas hordas."
+      "descricao": "Os cinco tipos que formam as hordas."
     },
     {
       "id": "chefes",
       "titulo": "Chefes",
       "icone": "C",
-      "descricao": "Adversários especiais."
+      "descricao": "Chefes com padrões e fases próprias."
     },
     {
       "id": "itens",
       "titulo": "Itens e equipamentos",
       "icone": "E",
-      "descricao": "Loot e equipamento."
+      "descricao": "Equipamentos e sistemas de loot."
     },
     {
       "id": "mapas",
@@ -50,19 +50,19 @@
       "id": "combate",
       "titulo": "Sistemas de combate",
       "icone": "S",
-      "descricao": "Como o dano e as hordas funcionam."
+      "descricao": "Armas, hordas, dano, esquiva e chefes."
     },
     {
       "id": "progressao",
       "titulo": "Progressão",
       "icone": "N",
-      "descricao": "Experiência, orbes e níveis."
+      "descricao": "Experiência, level-up e progressão entre partidas."
     },
     {
       "id": "controles",
       "titulo": "Controles",
       "icone": "J",
-      "descricao": "Joystick, teclado e toques."
+      "descricao": "Joystick, esquiva, teclado e toques."
     },
     {
       "id": "estrategias",

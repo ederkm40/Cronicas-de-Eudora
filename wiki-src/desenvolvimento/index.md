@@ -2,34 +2,35 @@
 titulo: Painel de desenvolvimento
 resumo: Versões, roadmap, testes, problemas conhecidos e relatórios do projeto.
 ---
-Esta área acompanha o **desenvolvimento** do jogo. A enciclopédia descreve o que existe; este painel mostra em que pé está cada coisa.
+Esta área acompanha o desenvolvimento. A enciclopédia descreve o que existe no jogo; este painel mostra o estado do projeto e as próximas validações.
 
 ## Agora
 
 | | |
 |---|---|
-| **Versão oficial** | 0.2-alpha "Ecos da Evolução" {PUBLICADO} |
-| **Em desenvolvimento** | Infraestrutura: Wiki, prévias jogáveis e memória permanente {EM_DESENVOLVIMENTO} |
-| **Próxima etapa de gameplay** | 0.3-alpha, variedade de combate {PLANEJADO} |
+| **Versão oficial** | 0.3-alpha — Grande expansão do combate {PUBLICADO} |
+| **Branch principal** | `main` |
 | **Fase** | 1, protótipo |
+| **PR #5** | Integrado em 26/11/2026 |
+| **Próxima prioridade** | Testes com pessoas em celulares físicos e ajustes a partir dos relatos |
 
 ## O que significa cada estado
 
 | Estado | Significado |
 |---|---|
 | {PLANEJADO} | Está no plano, mas ainda não existe no jogo. |
-| {EM_DESENVOLVIMENTO} | Está sendo construído numa branch, ainda não está pronto. |
-| {IMPLEMENTADO} | O código existe, mas ainda não passou por todos os testes. |
-| {TESTADO} | Passou nos testes automáticos e está em revisão (prévia). |
-| {PUBLICADO} | Está na versão oficial, que qualquer pessoa pode jogar. |
+| {EM_DESENVOLVIMENTO} | Está sendo construído numa branch e ainda não foi integrado. |
+| {IMPLEMENTADO} | O código existe, mas não passou por toda a validação. |
+| {TESTADO} | Passou pelos testes registrados, mas pode depender de teste com pessoas. |
+| {PUBLICADO} | Está na versão oficial disponível para jogar. |
 
 ## Seções
 
-- [[desenvolvimento/versoes]]: histórico de versões
-- [[desenvolvimento/roadmap]]: próximas etapas
-- [[desenvolvimento/funcionalidades]]: tudo o que existe e tudo o que está planejado
-- [[desenvolvimento/testes]]: como o jogo é testado e os últimos resultados
-- [[desenvolvimento/problemas-conhecidos]]
-- [[desenvolvimento/arquitetura]] e [[desenvolvimento/desempenho]]
-- [[desenvolvimento/previas]]: como testar uma versão antes de ela ser oficial
-- [[desenvolvimento/relatorios]] · [[desenvolvimento/changelog]] · [[desenvolvimento/decisoes]]
+- [[desenvolvimento/versoes]]: histórico de versões.
+- [[desenvolvimento/roadmap]]: próximas etapas e pendências.
+- [[desenvolvimento/funcionalidades]]: o que existe e o que está planejado.
+- [[desenvolvimento/testes]]: como o jogo é testado e resultados registrados.
+- [[desenvolvimento/problemas-conhecidos]]: limitações atuais.
+- [[desenvolvimento/arquitetura]] e [[desenvolvimento/desempenho]]: visão técnica.
+- [[desenvolvimento/previas]]: como testar versões candidatas.
+- [[desenvolvimento/relatorios]] · [[desenvolvimento/changelog]] · [[desenvolvimento/decisoes]].

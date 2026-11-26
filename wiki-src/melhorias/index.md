@@ -1,24 +1,22 @@
 ---
 titulo: Melhorias
-resumo: As 6 melhorias que podem ser escolhidas a cada nível.
+resumo: Seis melhorias passivas escolhidas durante o level-up.
 ---
-A cada nível, a partida pausa e você escolhe **uma entre três melhorias diferentes**, sorteadas entre as que ainda não chegaram ao limite. Veja como funciona em [[progressao/level-up]].
+Durante o [[progressao/level-up|level-up]], você escolhe uma melhoria passiva entre as opções válidas. As seis melhorias da versão 0.2 continuam disponíveis na 0.3.
 
-Todas existem desde a 0.2-alpha {PUBLICADO}.
-
-| Melhoria | Efeito por nível | Limite | No limite |
-|---|---|---|---|
-| [[melhorias/poder-arcano]] | +20% de dano | 10 | +200% (30 de dano) |
-| [[melhorias/cadencia]] | +15% de velocidade de disparo | 8 | +120% |
-| [[melhorias/nucleo-vital]] | +25% de vida máxima e recupera 25 de vida | 8 | 300 de vida máxima |
-| [[melhorias/passos-ligeiros]] | +15% de velocidade de movimento | 5 | 8,75 m/s |
-| [[melhorias/projetil-adicional]] | +1 projétil por disparo | 4 | 5 projéteis |
-| [[melhorias/campo-de-ruptura]] | +20% de alcance | 5 | 22 m |
+| Melhoria | Efeito por nível | Limite |
+|---|---|---:|
+| [[melhorias/poder-arcano]] | +20% de dano de todas as armas | 10 |
+| [[melhorias/cadencia]] | +15% de velocidade de disparo do Raio e dos pulsos da Aura | 8 |
+| [[melhorias/nucleo-vital]] | +25% de vida máxima e recupera 25 de vida | 8 |
+| [[melhorias/passos-ligeiros]] | +15% de velocidade de movimento | 5 |
+| [[melhorias/projetil-adicional]] | +1 projétil do Raio por disparo | 4 |
+| [[melhorias/campo-de-ruptura]] | +20% de alcance do Raio e +10% de raio da Aura | 5 |
 
 ## Como os bônus se somam
 
-Os bônus **se somam sobre o valor base**, sem se multiplicar entre si. Dois níveis de Poder arcano dão +40% (10 → 14 de dano), e não +44%. A cada escolha o jogo recalcula todos os valores a partir da base, então não há erro acumulado.
+Os bônus de cada melhoria são calculados sobre os valores base e somados por nível, não multiplicados entre si. O jogo recalcula os atributos a partir da base para evitar acúmulo incorreto.
 
-## Lista
+As melhorias chegaram à versão 0.3 com sinergias ampliadas: Poder arcano afeta todas as armas; Cadência também acelera os pulsos da Aura; Campo de ruptura também aumenta o raio da Aura.
 
 {{artigos}}

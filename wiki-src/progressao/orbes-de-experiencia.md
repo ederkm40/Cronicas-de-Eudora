@@ -1,24 +1,25 @@
 ---
 titulo: Orbes de experiência
-resumo: Cristais azul-claros deixados pelos inimigos; voam até o personagem quando ele chega perto.
+resumo: Cristais de experiência deixados pelos inimigos derrotados e coletados por proximidade.
 estado: PUBLICADO
 versao: 0.2-alpha
 ordem: 20
 ---
-Cada inimigo derrotado deixa um **orbe de experiência** no lugar onde morreu. Hoje ele aparece como um pequeno cristal azul-claro flutuando, uma arte provisória.
+Cada inimigo derrotado deixa um **orbe de experiência** no lugar onde morreu. O visual atual é um pequeno cristal azul-claro flutuando.
 
 ## Coleta por proximidade
 
-| Etapa | Distância do personagem | O que acontece |
-|---|---|---|
-| Parado | mais de 3 m | o orbe fica no chão, esperando |
-| Ímã | até 3 m | o orbe voa até o personagem, cada vez mais rápido |
-| Coleta | até 0,6 m | o orbe some e a XP entra na [[progressao/experiencia\|barra]] |
+| Etapa | Distância | O que acontece |
+|---|---:|---|
+| Parado | Mais de 3 m | O orbe fica no chão. |
+| Ímã | Até 3 m | O orbe voa em direção ao personagem. |
+| Coleta | Até 0,6 m | O orbe desaparece e a XP entra na barra. |
 
-Não é preciso tocar em nada: basta passar perto.
+Não é preciso tocar no orbe: basta passar perto. A melhoria permanente [[progressao/melhorias-permanentes|Atração do eco]] aumenta o raio do ímã em 20% por nível (a coleta final continua a 0,6 m).
 
-## Detalhes
+## Limites
 
-- Orbes **não somem com o tempo**. Os que caíram longe continuam lá até você passar perto.
-- Limite de 400 orbes no chão. Acima disso, o valor do orbe novo é **somado ao orbe mais antigo**, então nenhuma experiência se perde.
-- Os orbes param durante o [[progressao/level-up]] e depois da derrota.
+- Orbes não somem com o tempo.
+- O limite é de 400 orbes no chão.
+- Acima do limite, o valor do novo orbe é somado ao orbe mais antigo, sem perda de experiência.
+- Os orbes param durante o [[progressao/level-up|level-up]] e depois do encerramento da partida.

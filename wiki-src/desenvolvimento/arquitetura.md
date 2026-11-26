@@ -1,28 +1,38 @@
 ---
 titulo: Arquitetura
-resumo: Como o jogo é organizado por dentro, em linguagem simples.
+resumo: Como os sistemas da versão 0.3-alpha são organizados por dentro.
 ordem: 60
 ---
-O jogo é feito no **Godot 4.7.2** com **GDScript**. Tudo é texto, para que uma IA consiga ler e editar o projeto sem abrir o editor visual. A partida inteira é montada em código, em `scripts/main.gd`.
+O jogo é feito no **Godot 4.7.2** com **GDScript**, Compatibility Renderer e exportação Web sem threads. A partida é montada em código por `scripts/main.gd`.
 
-| Sistema | Arquivo | Função |
+## Sistemas principais
+
+| Sistema | Arquivo ou classe | Função |
 |---|---|---|
-| Partida | `scripts/main.gd` | monta o mundo e liga todos os sistemas |
-| Personagem | `scripts/player.gd` | movimento, vida, dano |
-| Câmera | `scripts/camera_rig.gd` | câmera isométrica que segue o personagem |
-| Joystick | `scripts/floating_joystick.gd` | joystick flutuante |
-| Inimigos | `scripts/enemy_manager.gd` | todos os inimigos de uma vez |
-| Arma | `scripts/auto_weapon.gd` | disparos automáticos |
-| Orbes | `scripts/xp_orbs.gd` | orbes de experiência |
-| Progressão | `scripts/progression.gd` | XP e níveis |
-| Melhorias | `scripts/upgrades.gd` | sorteio e efeitos das melhorias |
-| Tela de nível | `scripts/level_up_panel.gd` | cartões de escolha |
-| Interface | `scripts/hud.gd` | tempo, vida, XP, derrota |
+| Partida | `scripts/main.gd` | Monta o ambiente e coordena os sistemas. |
+| Personagem | `scripts/player.gd` | Movimento, vida, dano e esquiva. |
+| Câmera | `scripts/camera_rig.gd` | Câmera isométrica que segue o personagem. |
+| Joystick | `scripts/floating_joystick.gd` | Movimento por toque e gesto de esquiva. |
+| Inimigos | `scripts/enemy_manager.gd`, `EnemyTypes` | Estado e comportamento de cada tipo. |
+| Projéteis inimigos | `scripts/enemy_projectiles.gd` | Projéteis do Lançador e do chefe. |
+| Chefe | `scripts/boss_controller.gd` | Máquina de estados do Sentinela do Eco. |
+| Arma inicial | `scripts/auto_weapon.gd` | Raio arcano. |
+| Aura | `scripts/aura_weapon.gd` | Pulsos de dano em área. |
+| Lâminas | `scripts/orbit_blades.gd` | Dano orbital e visual das lâminas. |
+| Arsenal | `WeaponCatalog`, `Arsenal`, `LevelUpOffers` | Definições, estado das armas e ofertas. |
+| Orbes | `scripts/xp_orbs.gd` | Coleta de experiência. |
+| Progressão | `scripts/progression.gd`, `scripts/upgrades.gd` | XP, níveis e melhorias da partida. |
+| Progressão permanente | `scripts/meta_progress.gd` | Ecos, loja permanente e save versionado. |
+| Estatísticas | `scripts/run_stats.gd` | Dano, abates, esquivas e dados do encontro. |
+| Resultados | `scripts/results_screen.gd` | Vitória, derrota, resumo e compra de melhorias permanentes. |
+| Interface | `scripts/hud.gd`, `scripts/level_up_panel.gd` | HUD e escolhas. |
 
-## Escolhas importantes
+## Decisões de arquitetura
 
-- **Muitos objetos iguais sem nós individuais.** Inimigos, projéteis e orbes ficam em listas de dados e são desenhados de uma vez só (MultiMesh), o que é essencial para o celular.
-- **Pausa nativa.** O level-up usa a pausa do próprio Godot, que congela tudo de uma vez.
-- **Melhorias recalculadas a partir da base**, sem erro acumulado.
+- **Definição separada de estado e execução:** `WeaponCatalog` guarda dados, `Arsenal` guarda as armas adquiridas e cada arma tem um nó próprio de execução.
+- **Inimigos em estruturas compartilhadas:** os inimigos usam arrays e MultiMesh por tipo, em vez de um nó individual para cada criatura.
+- **Dano centralizado:** o `EnemyManager` aplica dano e registra a vida realmente retirada para as estatísticas.
+- **Pausa nativa:** o level-up usa `SceneTree.paused` para congelar a simulação.
+- **Save versionado:** a progressão permanente fica em `user://progresso.json`.
 
-Os detalhes técnicos estão no [documento técnico](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/TECNICO.md) e nas [[desenvolvimento/decisoes\|decisões técnicas]].
+Os detalhes técnicos e decisões estão no [documento técnico](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/TECNICO.md) e em [[desenvolvimento/decisoes|decisões técnicas]].

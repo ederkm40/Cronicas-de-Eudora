@@ -1,13 +1,15 @@
 ---
 titulo: Progressão
-resumo: Experiência, orbes e level-up dentro da partida.
+resumo: Experiência, level-up, resultados e progressão permanente entre partidas.
 ---
-Desde a 0.2-alpha, o personagem fica mais forte **durante a partida**: os inimigos derrotados deixam orbes, os orbes dão experiência, a experiência sobe o nível, e cada nível dá uma [[melhorias\|melhoria]].
+A progressão tem duas camadas:
 
-```
-inimigo derrotado → orbe → coleta → experiência → nível → escolha de melhoria → partida continua
-```
+1. **Durante a partida:** inimigos derrotados deixam orbes; a XP aumenta o nível; o level-up oferece armas e melhorias.
+2. **Entre partidas:** o jogador recebe Ecos e pode comprar melhorias permanentes na tela de resultados.
 
-Toda a progressão vale **só para a partida atual**. Ao reiniciar, tudo volta ao começo. Progressão permanente entre partidas é um plano para depois do protótipo {PLANEJADO}.
+```text
+inimigo derrotado → orbe → coleta → XP → nível → escolha → combate
+fim da partida → resultados → Ecos → melhoria permanente → próxima partida
+```
 
 {{artigos}}
