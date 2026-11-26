@@ -18,5 +18,5 @@ jobs:
           ARQS="scripts/camera_rig.gd scripts/player.gd scripts/level_up_panel.gd scripts/upgrades.gd scripts/auto_weapon.gd scripts/enemy_manager.gd tests/run_tests.gd tests/smoke_test.gd tests/long_simulation.gd"
           cp -r . /tmp/copia && cd /tmp/copia
           /tmp/gd/bin/gdformat $ARQS
-          echo "== DIFF INICIO"; git -c core.quotepath=off diff -- $ARQS | base64 -w0; echo; echo "== DIFF FIM"
-          echo "== gdlint depois"; /tmp/gd/bin/gdlint scripts tests || true
+          git -c core.quotepath=off diff -- $ARQS | base64 -w 76 | sed 's/^/B64|/'
+          /tmp/gd/bin/gdlint scripts tests 2>&1 | sed 's/^/LINT|/' || true
