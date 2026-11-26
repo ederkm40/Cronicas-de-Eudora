@@ -37,10 +37,10 @@ A etapa técnica do PR #7 não criou uma nova versão jogável. A versão oficia
 - O save passou a validar estrutura e tipos, preservar cópias de arquivos corrompidos e corrigir campos inválidos individualmente.
 - O joystick retoma corretamente após o level-up, sem exigir novo toque e sem gerar esquiva acidental.
 - Foi removido um arquivo temporário versionado.
-- Foi criado o [Documento Mestre de Sistemas](../../docs/design/DOCUMENTO_MESTRE_SISTEMAS.md), com 38 áreas e 30 catálogos, separando design, implementação e validação. Propostas não aprovadas não autorizam implementação.
+- Foi criado o [Documento Mestre de Sistemas](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/design/DOCUMENTO_MESTRE_SISTEMAS.md), com 38 áreas e 30 catálogos, separando design, implementação e validação. Propostas não aprovadas não autorizam implementação.
 
-Relatório técnico: [Manutenção pós-0.3-alpha](../../docs/versoes/manutencao-pos-0.3/RELATORIO.md).  
-Registro editorial: [Changelog](../../docs/CHANGELOG.md).
+Relatório técnico: [[desenvolvimento/relatorios/manutencao-pos-0.3]].  
+Registro editorial: [[desenvolvimento/changelog]].
 
 ## Histórico de prompts utilizados
 
