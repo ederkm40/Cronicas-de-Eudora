@@ -2,9 +2,13 @@
 
 Jogo de hordas isométrico para celular: partidas curtas no estilo *survivors*, com a progressão de personagem e loot de um ARPG. Feito em **Godot 4.7**, quase todo construído por IA.
 
-**Jogar no navegador (celular ou PC):** https://ederkm40.github.io/Cronicas-de-Eudora/
+| | |
+|---|---|
+| **Jogar (versão oficial)** | https://ederkm40.github.io/Cronicas-de-Eudora/ |
+| **Wiki** | https://ederkm40.github.io/Cronicas-de-Eudora/wiki/ |
+| **Prévias em teste** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/ |
 
-O link mostra sempre a versão do branch `main`. Ele é atualizado sozinho alguns minutos depois de cada merge.
+A versão oficial é a do branch `main` e se atualiza sozinha alguns minutos depois de cada merge. Cada Pull Request ganha uma **prévia jogável** em `/previews/pr-<número>/`, com a própria Wiki, para ser testada antes da aprovação. O endereço aparece num comentário automático no PR.
 
 ## Estado atual: 0.2-alpha "Ecos da Evolução"
 
@@ -36,18 +40,30 @@ A arte ainda é provisória (cápsulas e cristais): o objetivo agora é testar s
 
 ## Documentação
 
-- [Documentação técnica](docs/TECNICO.md): como o jogo funciona por dentro, números de ajuste e testes.
-- [Roadmap](docs/ROADMAP.md): o que já foi feito e as próximas etapas.
-- [CLAUDE.md](CLAUDE.md): regras para a IA que trabalha no projeto.
+| Para | Leia |
+|---|---|
+| Jogadores | a [Wiki](https://ederkm40.github.io/Cronicas-de-Eudora/wiki/) (fontes em `wiki-src/`) |
+| Qualquer IA que for trabalhar no projeto | [AGENTS.md](AGENTS.md), depois [docs/IA/](docs/IA/) |
+| Claude Code | [CLAUDE.md](CLAUDE.md) |
+| Como o jogo funciona | [docs/TECNICO.md](docs/TECNICO.md) |
+| O que vem a seguir | [docs/ROADMAP.md](docs/ROADMAP.md) |
+| Histórico | [docs/CHANGELOG.md](docs/CHANGELOG.md), [docs/versoes/](docs/versoes/) (relatórios), [docs/decisoes/](docs/decisoes/) |
+
+## Como o projeto é feito
+
+- **Claude Code** desenvolve o jogo, os testes e a infraestrutura.
+- **ChatGPT** acompanha as entregas e mantém a Wiki e o changelog.
+- O **proprietário** testa as prévias e aprova os Pull Requests.
+- Tudo usa só ferramentas gratuitas: GitHub Free, GitHub Pages, GitHub Actions e Godot.
 
 ## Testes
 
-Todos rodam sem tela e também no GitHub Actions, antes de cada exportação:
+Rodam sem tela e também no GitHub Actions, antes de cada publicação:
 
 ```bash
 godot --headless --path . --import
 godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd        # testes específicos
 godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd       # partida de ponta a ponta
 godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=600
-godot --headless --path . --export-release "Web" build/web/index.html
+python3 tools/wiki/test_wiki.py && python3 tools/site/test_montar_site.py        # Wiki e site
 ```

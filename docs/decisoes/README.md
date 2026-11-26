@@ -1,0 +1,16 @@
+# Decisões técnicas
+
+Cada arquivo registra uma decisão: contexto, decisão e consequências. **Nunca apague uma decisão.** Para mudar, crie uma nova com o próximo número e marque a antiga como *Substituída por NNNN*, explicando o porquê.
+
+| Nº | Decisão | Situação | Data |
+|---|---|---|---|
+| 0001 | [Godot 4.7.2, GDScript, renderizador Compatibility e exportação Web sem threads](0001-godot-web-compatibility.md) | Aceita | 25/11/2026 |
+| 0002 | [Projeto 100% em texto, com a partida montada em código](0002-projeto-em-texto.md) | Aceita | 25/11/2026 |
+| 0003 | [Objetos repetidos em arrays + MultiMesh, nunca um nó por objeto](0003-arrays-multimesh.md) | Aceita | 25/11/2026 |
+| 0004 | [Level-up usa a pausa nativa do Godot (`SceneTree.paused`)](0004-pausa-nativa-level-up.md) | Aceita | 26/11/2026 |
+| 0005 | [Melhorias recalculadas a partir dos valores base](0005-melhorias-recalculadas.md) | Aceita | 26/11/2026 |
+| 0006 | [Publicação pelo branch `gh-pages`, com prévias por Pull Request](0006-publicacao-gh-pages-previas.md) | Aceita | 26/11/2026 |
+| 0007 | [Wiki com gerador estático próprio em Python (só biblioteca padrão)](0007-wiki-gerador-proprio.md) | Aceita | 26/11/2026 |
+| 0008 | [Duas IAs com papéis separados e o GitHub como fonte de verdade](0008-divisao-ias-github-fonte-de-verdade.md) | Aceita | 26/11/2026 |
+
+Modelo para uma nova decisão: copie qualquer arquivo e mantenha as seções *Contexto*, *Decisão* e *Consequências*.

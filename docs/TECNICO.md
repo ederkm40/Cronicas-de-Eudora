@@ -1,6 +1,6 @@
 # Documentação técnica
 
-Estado de referência: versão 0.2-alpha "Ecos da Evolução". Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
+Estado de referência: versão 0.2-alpha "Ecos da Evolução", com a infraestrutura de Wiki e prévias. Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
 
 ## Visão geral
 
@@ -106,19 +106,47 @@ Os testes usam ganchos que só existem para isso: `EnemyManager.spawning_enabled
 
 Os testes também foram conferidos ao contrário: quebrando o jogo de propósito (sem pausa, sem orbes, sorteio com repetição, sem a cura do Núcleo vital), os testes correspondentes falham.
 
-## Publicação
+## Publicação, Wiki e prévias
 
-`.github/workflows/web.yml`:
+Workflow `.github/workflows/publicar.yml` (decisão [0006](decisoes/0006-publicacao-gh-pages-previas.md)). O site fica no branch `gh-pages`, e o GitHub Pages precisa usar *Deploy from a branch → gh-pages / (root)*.
 
-1. Importa o projeto.
-2. Roda os testes: `run_tests`, `smoke_test` e a simulação prolongada de 5 minutos.
-3. Exporta para Web.
-4. Verifica os arquivos exportados (`index.html`, `.js`, `.pck`, `.wasm`).
-5. Publica no GitHub Pages, **só** em push no `main`. Em Pull Request, a versão web fica disponível para download como artefato `versao-web`, sem publicar.
+| Evento | Job `testar` | Job `publicar` / `remover-previa` |
+|---|---|---|
+| Push no `main` (ou execução manual no `main`) | importa → `run_tests` → smoke → simulação de 5 min → testes da Wiki e do site → exporta e gera a Wiki → verifica os arquivos | publica o jogo na raiz e a Wiki em `/wiki/`; remove prévias de PRs que já não estão abertos; verifica no ar |
+| Pull Request do próprio repositório (aberto ou novo envio) | o mesmo, com o commit da branch | publica em `/previews/pr-N/` (jogo + Wiki com faixa de prévia), sem tocar na raiz; comenta o endereço e a verificação no PR |
+| Pull Request fechado ou integrado | — | `remover-previa` apaga `/previews/pr-N/` |
+| Pull Request de fork | testa com permissão só de leitura | nunca publica |
+
+Garantias:
+
+- **Uma publicação por vez:** grupo de concorrência `gh-pages`, sem cancelar a que está rodando.
+- **Convergência:** antes de publicar uma prévia, o workflow confere em `publicacao.json` se a raiz corresponde ao `main` atual. Se não corresponder (por exemplo, porque uma publicação do `main` foi cancelada na fila), reconstrói a raiz a partir do `main`.
+- **Verificação real:** `tools/ci/verificar_publicacao.sh` espera o `versao.json` do endereço mostrar o commit publicado e testa `index.html`, `.js`, `.pck`, `.wasm` e a Wiki. O resultado vai para o resumo da execução e para o comentário do PR.
+- **Segurança:** permissões mínimas por job, sem `pull_request_target`, sem segredos. Forks não publicam.
+
+Ferramentas (Python 3 e shell, sem dependências externas):
+
+| Arquivo | Papel |
+|---|---|
+| `tools/ci/instalar_godot.sh` | baixa o Godot `GODOT_VERSION` e os modelos Web |
+| `tools/ci/construir_parte.sh` | exporta o jogo, gera a Wiki e grava `versao.json` |
+| `tools/site/montar_site.py` | aplica a parte no site: `oficial`, `previa`, `remover`, `limpar` |
+| `tools/ci/abrir_gh_pages.sh`, `enviar_gh_pages.sh` | baixam e enviam o branch `gh-pages` |
+| `tools/wiki/build_wiki.py`, `markdown_mini.py` | geram a Wiki (decisão [0007](decisoes/0007-wiki-gerador-proprio.md)) |
+
+### Wiki
+
+- Fontes em `wiki-src/`, uma página por arquivo `.md`, com cabeçalho `titulo/resumo/estado/versao/ordem`. A sintaxe está em `wiki-src/README.md`.
+- Links internos `[[caminho]]` são validados: link quebrado, estado desconhecido, artigo sem título ou diretiva desconhecida **fazem a geração falhar**.
+- Busca no navegador sobre `search-index.json` (`wiki-src/assets/busca.js`), sem servidor.
+- A geração é determinística (mesmas fontes = mesmos arquivos) e nunca altera as fontes.
+- `docs/CHANGELOG.md`, `docs/versoes/*/RELATORIO.md` e `docs/decisoes/*.md` aparecem como páginas somente leitura do painel de desenvolvimento.
+- `docs/`, `tools/` e `wiki-src/` têm `.gdignore`, então não entram no `.pck` do jogo.
 
 ## Limitações conhecidas
 
 - **Sem teste em celular físico.** Até aqui o jogo foi conferido em Chrome com tela e toque de celular simulados.
+- **Tela deitada:** o jogo funciona, mas a câmera mantém 14 m de largura e mostra pouco mapa na vertical.
 - **Pausa e dedo no joystick:** se o dedo ainda estiver na tela quando a pausa termina, o joystick só volta a responder depois de levantar e tocar de novo.
 - **Equilíbrio ainda não ajustado:** a arma base mata devagar diante da horda máxima. Na simulação, a horda chega a 300 inimigos por volta dos 2 minutos, e quem fica parado cai rápido. Esse ajuste depende de testes com pessoas.
 - **Orbes distantes:** orbes que caem longe ficam no chão até o jogador passar perto. Não somem nem são puxados de longe.
