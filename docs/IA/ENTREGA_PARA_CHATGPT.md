@@ -9,10 +9,10 @@
 | **Etapa** | Infraestrutura: Wiki, prévias jogáveis e memória permanente |
 | **Versão do jogo** | continua **0.2-alpha** (sem mudança de gameplay) |
 | **Branch** | `infra/wiki-previews-memoria` |
-| **Commit** | PENDENTE_COMMIT |
-| **Pull Request** | PENDENTE_PR |
-| **Prévia do jogo** | PENDENTE_PREVIA |
-| **Prévia da Wiki** | PENDENTE_PREVIA`wiki/` |
+| **Commit** | último commit da branch `infra/wiki-previews-memoria` (ver o PR #2) |
+| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/2 |
+| **Prévia do jogo** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/2EVIA |
+| **Prévia da Wiki** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/2EVIA`wiki/` |
 
 ## Resumo técnico
 

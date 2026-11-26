@@ -3,7 +3,7 @@
 ## Último estado validado
 
 - **`main`:** `e516f2187f4726b6d63ad674955c15397a0f548d`, versão 0.2-alpha, publicada e com o workflow aprovado (execução 45802232546).
-- **Em revisão:** etapa de infraestrutura no PR PENDENTE_PR (branch `infra/wiki-previews-memoria`). Veja o relatório em `docs/versoes/0.2-alpha-infra/RELATORIO.md`.
+- **Em revisão:** etapa de infraestrutura no PR #2 (branch `infra/wiki-previews-memoria`). Veja o relatório em `docs/versoes/0.2-alpha-infra/RELATORIO.md`.
 
 ## Decisões importantes (resumo; detalhes em `docs/decisoes/`)
 

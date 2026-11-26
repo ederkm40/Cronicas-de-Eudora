@@ -7,7 +7,7 @@
 | **Versão estável (oficial)** | 0.2-alpha "Ecos da Evolução" |
 | **Branch principal** | `main` |
 | **Commit do `main`** | `e516f2187f4726b6d63ad674955c15397a0f548d` (merge do PR #1) |
-| **Etapa em desenvolvimento** | Infraestrutura: Wiki, prévias e memória (branch `infra/wiki-previews-memoria`, PR PENDENTE_PR) |
+| **Etapa em desenvolvimento** | Infraestrutura: Wiki, prévias e memória (branch `infra/wiki-previews-memoria`, PR #2) |
 | **Próxima etapa de gameplay** | 0.3-alpha, variedade de combate (2 armas novas) |
 | **Fase** | 1, protótipo |
 
@@ -56,4 +56,4 @@
 | `tests/long_simulation.gd -- --segundos=300` | aprovado | local, nesta etapa |
 | `tools/wiki/test_wiki.py` (14 testes) | aprovado | local, nesta etapa |
 | `tools/site/test_montar_site.py` (7 testes) | aprovado | local, nesta etapa |
-| Workflow no GitHub | ver o PR | GitHub Actions |
+| Workflow no GitHub (execução 45818565861) | aprovado: testar e publicar; verificação no ar pendente do ajuste do Pages | GitHub Actions |

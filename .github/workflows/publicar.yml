@@ -177,10 +177,18 @@ jobs:
       - name: Verificar se abriu de verdade
         id: verificar
         continue-on-error: true
+        env:
+          URL: ${{ steps.montar.outputs.url }}
         run: |
-          echo "Configuração do GitHub Pages:"
-          gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '{build_type, source, html_url}' || true
-          bash tools/ci/verificar_publicacao.sh "${{ steps.montar.outputs.url }}" "$COMMIT" 10
+          CONFIG=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '"\(.build_type) \(.source.branch)"' 2>/dev/null || echo "desconhecida")
+          echo "Configuração do GitHub Pages: ${CONFIG}"
+          if [ "$CONFIG" != "legacy gh-pages" ] && [ "$CONFIG" != "desconhecida" ]; then
+            # Não adianta esperar: o Pages ainda não lê o branch gh-pages.
+            echo "verificado=nao" >> "$GITHUB_OUTPUT"
+            echo "detalhe=Ainda não está no ar: o GitHub Pages publica pelo método antigo (${CONFIG}). Ajuste em Settings → Pages → Source: Deploy from a branch → gh-pages / (root) e rode de novo o job Publicar." >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          bash tools/ci/verificar_publicacao.sh "$URL" "$COMMIT" 10
 
       - name: Resumo
         if: always()
