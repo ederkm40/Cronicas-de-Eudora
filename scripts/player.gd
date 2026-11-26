@@ -5,12 +5,16 @@ extends Node3D
 
 signal died
 
-@export var move_speed := 5.0
-@export var max_hp := 100.0
+@export var move_speed := 5.0 ## Metros por segundo, sem melhorias.
+@export var base_max_hp := 100.0 ## Vida máxima sem melhorias.
 @export var hit_flash_time := 0.12
 
+var max_hp := 100.0 ## Vida máxima atual (base x melhorias).
 var hp := 100.0
 var alive := true
+var speed_multiplier := 1.0 ## Alterado pela melhoria "Passos ligeiros".
+var invulnerable := false ## Só para testes e simulações longas.
+var scripted_input := Vector2.ZERO ## Movimento comandado por testes e simulações (tem prioridade).
 var joystick: FloatingJoystick
 var camera_rig: CameraRig
 
@@ -21,6 +25,7 @@ const FLASH_COLOR := Color(1.0, 1.0, 1.0)
 
 
 func _ready() -> void:
+	max_hp = base_max_hp
 	hp = max_hp
 	_material = StandardMaterial3D.new()
 	_material.albedo_color = BODY_COLOR
@@ -57,11 +62,28 @@ func _process(delta: float) -> void:
 	if input == Vector2.ZERO or camera_rig == null:
 		return
 	var direction := camera_rig.screen_to_ground(input)
-	global_position += direction * move_speed * delta
+	global_position += direction * effective_speed() * delta
 	look_at(global_position + direction.normalized(), Vector3.UP)
 
 
+func effective_speed() -> float:
+	return move_speed * speed_multiplier
+
+
+## Muda a vida máxima sem mexer na vida atual (a cura vem separada, quando houver).
+func set_max_hp_multiplier(multiplier: float) -> void:
+	max_hp = base_max_hp * multiplier
+	hp = minf(hp, max_hp)
+
+
+func heal(amount: float) -> void:
+	if alive and amount > 0.0:
+		hp = minf(hp + amount, max_hp)
+
+
 func _read_input() -> Vector2:
+	if scripted_input != Vector2.ZERO:
+		return scripted_input.limit_length(1.0)
 	var keys := Vector2(
 		float(_pressed(KEY_D) or _pressed(KEY_RIGHT)) - float(_pressed(KEY_A) or _pressed(KEY_LEFT)),
 		float(_pressed(KEY_S) or _pressed(KEY_DOWN)) - float(_pressed(KEY_W) or _pressed(KEY_UP))
@@ -78,7 +100,7 @@ func _pressed(key: Key) -> bool:
 
 
 func take_damage(amount: float) -> void:
-	if not alive or amount <= 0.0:
+	if not alive or invulnerable or amount <= 0.0:
 		return
 	hp = maxf(hp - amount, 0.0)
 	_flash = hit_flash_time

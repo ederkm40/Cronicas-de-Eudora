@@ -4,41 +4,50 @@ Jogo de hordas isométrico para celular: partidas curtas no estilo *survivors*, 
 
 **Jogar no navegador (celular ou PC):** https://ederkm40.github.io/Cronicas-de-Eudora/
 
-O link é atualizado sozinho alguns minutos depois de cada mudança no branch `main`.
+O link mostra sempre a versão do branch `main`. Ele é atualizado sozinho alguns minutos depois de cada merge.
 
-## Estado atual: projeto base do protótipo
+## Estado atual: 0.2-alpha "Ecos da Evolução"
 
-- Tela em retrato (720 x 1280), câmera isométrica ortográfica fixa.
-- Joystick flutuante: toque em qualquer ponto da tela e arraste. No PC, também dá para usar WASD ou as setas.
-- Arma automática que atira no inimigo mais próximo.
-- Hordas que aumentam com o tempo (até 300 inimigos), com vida crescente.
-- Tela de derrota com "Jogar de novo".
-- Contador de FPS e de inimigos no rodapé, para acompanhar o desempenho.
+O que já dá para jogar:
 
-A arte é provisória (cápsulas): o objetivo agora é testar se o movimento e a sobrevivência são divertidos no celular.
+- **Controles:** joystick flutuante (toque em qualquer ponto da tela e arraste). No PC, WASD ou as setas.
+- **Câmera:** isométrica ortográfica fixa, tela em retrato (720 x 1280).
+- **Combate:** arma automática que atira no inimigo mais próximo.
+- **Hordas:** crescem com o tempo, até 300 inimigos, cada vez mais resistentes.
+- **Experiência:** cada inimigo derrotado deixa um orbe azul-claro. Chegando perto, ele voa até o personagem e é coletado. A barra azul abaixo da vida mostra quanto falta para o próximo nível (Nv.).
+- **Level-up:** ao completar a barra, a partida pausa por completo e aparecem 3 melhorias diferentes. Toque em uma (no PC, teclas 1, 2 ou 3) e a partida continua. Dá para subir vários níveis na mesma partida.
+- **Fim de partida:** tela de derrota com tempo, nível e abates, e o botão "Jogar de novo", que começa tudo do zero.
+- **Desempenho:** contador de FPS e de inimigos no rodapé.
 
-## Como o projeto funciona
+### As 6 melhorias
 
-Tudo é texto: cenas, scripts e configurações. A partida é montada em código, em `scripts/main.gd`, para que a IA consiga ler e editar tudo sem abrir o editor do Godot.
+| Melhoria | Efeito por nível | Limite |
+| --- | --- | --- |
+| Poder arcano | +20% de dano | 10 níveis (+200%) |
+| Cadência | +15% de velocidade de disparo | 8 níveis (+120%) |
+| Núcleo vital | +25% de vida máxima e recupera 25 de vida | 8 níveis (+200%) |
+| Passos ligeiros | +15% de velocidade de movimento | 5 níveis (+75%) |
+| Projétil adicional | +1 projétil por disparo, em leque | 4 níveis (5 por disparo) |
+| Campo de ruptura | +20% de alcance da arma | 5 níveis (+100%) |
 
-| Arquivo | O que faz |
-| --- | --- |
-| `scripts/main.gd` | Monta a partida: ambiente, chão, jogador, câmera, inimigos, arma e interface |
-| `scripts/floating_joystick.gd` | Joystick flutuante (raio, zona morta, centro que acompanha o dedo) |
-| `scripts/camera_rig.gd` | Câmera isométrica e conversão da direção da tela para o chão |
-| `scripts/player.gd` | Movimento, vida e dano do jogador |
-| `scripts/enemy_manager.gd` | Todos os inimigos em arrays + um único MultiMesh (rápido no celular) |
-| `scripts/auto_weapon.gd` | Arma automática e projéteis |
-| `scripts/hud.gd` | Tempo, abates, barra de vida, FPS e tela de derrota |
-| `tests/smoke_test.gd` | Teste sem tela que simula um toque no joystick e uma partida |
-| `.github/workflows/web.yml` | Compila, testa e publica no GitHub Pages a cada envio |
+Os efeitos se somam sobre o valor base (dois níveis de Poder arcano = +40%, não +44%). Uma melhoria que chegou ao limite para de aparecer nos sorteios.
 
-Os valores de ajuste (velocidade, vida, dano, raio do joystick, ângulo da câmera) ficam no topo de cada script, marcados com `@export`.
+A arte ainda é provisória (cápsulas e cristais): o objetivo agora é testar se o ciclo de jogo é divertido no celular.
 
-## Rodar localmente (opcional)
+## Documentação
+
+- [Documentação técnica](docs/TECNICO.md): como o jogo funciona por dentro, números de ajuste e testes.
+- [Roadmap](docs/ROADMAP.md): o que já foi feito e as próximas etapas.
+- [CLAUDE.md](CLAUDE.md): regras para a IA que trabalha no projeto.
+
+## Testes
+
+Todos rodam sem tela e também no GitHub Actions, antes de cada exportação:
 
 ```bash
 godot --headless --path . --import
-godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
+godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd        # testes específicos
+godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd       # partida de ponta a ponta
+godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=600
 godot --headless --path . --export-release "Web" build/web/index.html
 ```

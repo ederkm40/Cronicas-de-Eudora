@@ -6,6 +6,8 @@ signal restart_requested
 
 var _status: Label
 var _hp_bar: ProgressBar
+var _xp_bar: ProgressBar
+var _level_label: Label
 var _debug: Label
 var _game_over: Control
 var _summary: Label
@@ -32,19 +34,21 @@ func _ready() -> void:
 	_status = _make_label(34)
 	column.add_child(_status)
 
-	_hp_bar = ProgressBar.new()
-	_hp_bar.custom_minimum_size = Vector2(0, 22)
-	_hp_bar.show_percentage = false
-	_hp_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color(0.85, 0.25, 0.3)
-	fill.set_corner_radius_all(6)
-	var back := StyleBoxFlat.new()
-	back.bg_color = Color(1, 1, 1, 0.12)
-	back.set_corner_radius_all(6)
-	_hp_bar.add_theme_stylebox_override("fill", fill)
-	_hp_bar.add_theme_stylebox_override("background", back)
+	_hp_bar = _make_bar(Color(0.85, 0.25, 0.3), 22)
 	column.add_child(_hp_bar)
+
+	# Linha da experiência: "Nv. 3" + barra até o próximo nível.
+	var xp_row := HBoxContainer.new()
+	xp_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	xp_row.add_theme_constant_override("separation", 12)
+	column.add_child(xp_row)
+	_level_label = _make_label(26)
+	_level_label.custom_minimum_size = Vector2(96, 0)
+	xp_row.add_child(_level_label)
+	_xp_bar = _make_bar(Color(0.35, 0.95, 1.0), 16)
+	_xp_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_xp_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	xp_row.add_child(_xp_bar)
 
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -56,6 +60,22 @@ func _ready() -> void:
 	column.add_child(_debug)
 
 	_build_game_over()
+
+
+func _make_bar(color: Color, height: int) -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.custom_minimum_size = Vector2(0, height)
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = color
+	fill.set_corner_radius_all(6)
+	var back := StyleBoxFlat.new()
+	back.bg_color = Color(1, 1, 1, 0.12)
+	back.set_corner_radius_all(6)
+	bar.add_theme_stylebox_override("fill", fill)
+	bar.add_theme_stylebox_override("background", back)
+	return bar
 
 
 func _make_label(font_size: int) -> Label:
@@ -100,15 +120,23 @@ func _build_game_over() -> void:
 	box.add_child(button)
 
 
-func update_stats(elapsed: float, kills: int, hp: float, max_hp: float, enemy_count: int) -> void:
+func update_stats(elapsed: float, kills: int, hp: float, max_hp: float, enemy_count: int,
+		level: int = 1, xp: int = 0, xp_needed: int = 1) -> void:
 	_status.text = "%s   ·   Abates: %d" % [format_time(elapsed), kills]
 	_hp_bar.max_value = max_hp
 	_hp_bar.value = hp
+	_level_label.text = "Nv. %d" % level
+	_xp_bar.max_value = xp_needed
+	_xp_bar.value = xp
 	_debug.text = "FPS %d   ·   Inimigos %d" % [Engine.get_frames_per_second(), enemy_count]
 
 
-func show_game_over(elapsed: float, kills: int) -> void:
-	_summary.text = "Sobreviveu %s\n%d abates" % [format_time(elapsed), kills]
+func xp_bar_ratio() -> float:
+	return _xp_bar.value / _xp_bar.max_value
+
+
+func show_game_over(elapsed: float, kills: int, level: int = 1) -> void:
+	_summary.text = "Sobreviveu %s\nNível %d · %d abates" % [format_time(elapsed), level, kills]
 	_game_over.visible = true
 
 
