@@ -1,7 +1,9 @@
-class_name WebBridge
 extends Node
-## Ponte de testes para o navegador. Só liga quando a página é aberta com `?teste=1`:
-## o jogo publicado normal não expõe nada.
+## Ponte de testes para o navegador. Existe só na build "Web QA" (funcionalidade de
+## exportação `qa`), usada pelos testes do Playwright no CI. A build de produção ("Web"),
+## publicada no site e nas prévias, exclui este arquivo (`exclude_filter` do preset) e
+## `main.gd` só carrega a ponte quando a funcionalidade `qa` existe. Sem `class_name` de
+## propósito: nada no jogo depende desta classe.
 ##
 ## A cada 0,1 s escreve o estado da partida em `window.__eudora` (posição, vida, nível,
 ## esquivas, tela de level-up, tela de resultados, chefe) e a posição dos botões na tela,
@@ -19,15 +21,12 @@ var _active := false
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_game = get_parent()
-	if not OS.has_feature("web"):
+	if not (OS.has_feature("web") and OS.has_feature("qa")):
 		return
-	# Lê o endereço pelo objeto `location` (devolve texto; evita converter booleanos do JS).
-	var location: JavaScriptObject = JavaScriptBridge.get_interface("location")
-	_active = location != null and str(location.search).contains("teste=1")
-	if _active:
-		# Termina com "void 0": o eval não devolve objetos do JS para o Godot converter.
-		var setup := "window.__eudoraComandos = window.__eudoraComandos || []; void 0"
-		JavaScriptBridge.eval(setup, true)
+	_active = true
+	# Termina com "void 0": o eval não devolve objetos do JS para o Godot converter.
+	var setup := "window.__eudoraComandos = window.__eudoraComandos || []; void 0"
+	JavaScriptBridge.eval(setup, true)
 
 
 func _process(delta: float) -> void:

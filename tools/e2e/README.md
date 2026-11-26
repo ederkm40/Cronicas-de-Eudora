@@ -30,7 +30,7 @@ Testes da **versão Web realmente exportada** pelo Godot, abertos no Chromium. R
 - encontro final: o chefe surge, a vitória abre os resultados e "Jogar de novo" (tocado) começa uma partida limpa;
 - derrota: os resultados abrem e "Jogar de novo" recomeça.
 
-Esses testes abrem o jogo com `?teste=1`, que liga a ponte `scripts/web_bridge.gd`. Ela escreve o estado da partida em `window.__eudora` (posição, vida, esquivas, tela de level-up, resultados e a posição dos botões em frações da tela) e aceita comandos em `window.__eudoraComandos` só para **preparar** situações (dar XP, chamar o chefe, desligar as hordas). Sem `?teste=1`, o jogo publicado não expõe nada. Os toques e gestos testados são reais.
+Esses testes rodam na build **Web QA** (`E2E_MODO=qa`), a única que tem a ponte `scripts/web_bridge.gd`. Ela escreve o estado da partida em `window.__eudora` (posição, vida, esquivas, tela de level-up, resultados e a posição dos botões em frações da tela) e aceita comandos em `window.__eudoraComandos` só para **preparar** situações (dar XP, chamar o chefe, desligar as hordas). A build de produção (`E2E_MODO=producao`, a publicada) não tem a ponte: `testes/producao.spec.js` confere isso abrindo a página com e sem `?teste=1`. Os toques e gestos testados são reais.
 
 Os eventos são enviados pelo protocolo do Chromium (`Input.dispatchTouchEvent` e `Input.dispatchMouseEvent`). Cada evento só volta depois que a página o processa, o que leva um quadro ou mais com renderização por software (~25 quadros por segundo). Por isso um toque curto envia "encostar" e "soltar" juntos (`ajudantes.js`).
 

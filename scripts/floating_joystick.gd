@@ -10,6 +10,12 @@ extends Control
 ## - se o segundo toque também é curto, a esquiva vai para onde o personagem está indo.
 ## Segurar e girar o joystick nunca conta como toque: só toques curtos armam a esquiva.
 ## Os tempos usam o relógio do jogo (não o do sistema), então valem igual nos testes.
+##
+## Pausa (level-up): o joystick fica desligado (sem movimento e sem gestos), mas continua
+## acompanhando o dedo que já estava nele (process_mode = ALWAYS). Ao religar, se esse dedo
+## ainda está na tela, o controle volta na hora, a partir da posição atual do dedo; se ele
+## foi levantado durante a pausa, o joystick volta neutro. Toques que começam durante a
+## pausa (como o toque no cartão) nunca viram joystick nem esquiva.
 
 signal dodge_requested(screen_direction: Vector2)
 
@@ -42,9 +48,11 @@ var _max_move := 0.0
 var _last_tap_end := -100.0
 var _last_tap_pos := Vector2.ZERO
 var _armed := false  ## Segundo toque de um duplo toque, esperando a direção.
+var _finger := Vector2.ZERO  ## Última posição conhecida do dedo do joystick.
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS  # acompanha o dedo também durante a pausa
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -53,12 +61,23 @@ func _process(delta: float) -> void:
 	_clock += delta
 
 
+## Desligar não esquece o dedo que está no joystick: só zera a saída e os gestos.
+## Religar retoma esse dedo (se ainda estiver na tela) sem precisar tocar de novo.
 func set_enabled(value: bool) -> void:
 	enabled = value
-	if not enabled:
-		_release()
-		_armed = false
-		_last_tap_end = -100.0
+	_reset_gestures()
+	if enabled and _touch_index != -1:
+		_update(_finger)
+	else:
+		output = Vector2.ZERO
+	queue_redraw()
+
+
+## O toque em andamento deixa de contar como toque curto: soltá-lo não arma esquiva.
+func _reset_gestures() -> void:
+	_armed = false
+	_last_tap_end = -100.0
+	_press_time = -100.0
 
 
 func is_active() -> bool:
@@ -67,12 +86,14 @@ func is_active() -> bool:
 
 func _input(event: InputEvent) -> void:
 	if not enabled:
+		_track_while_disabled(event)
 		return
 	if event is InputEventScreenTouch:
 		var touch := make_input_local(event) as InputEventScreenTouch
 		if touch.pressed and _touch_index == -1:
 			_touch_index = touch.index
 			_center = touch.position
+			_finger = touch.position
 			_begin_gesture(touch.position)
 			_update(touch.position)
 		elif not touch.pressed and touch.index == _touch_index:
@@ -81,8 +102,23 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventScreenDrag:
 		var drag := make_input_local(event) as InputEventScreenDrag
 		if drag.index == _touch_index:
+			_finger = drag.position
 			_track_gesture(drag.position)
 			_update(drag.position)
+
+
+## Desligado: só acompanha o dedo que já estava no joystick (onde está e se foi solto).
+func _track_while_disabled(event: InputEvent) -> void:
+	if _touch_index == -1:
+		return
+	if event is InputEventScreenTouch:
+		var touch := event as InputEventScreenTouch
+		if not touch.pressed and touch.index == _touch_index:
+			_release()
+	elif event is InputEventScreenDrag:
+		var drag := make_input_local(event) as InputEventScreenDrag
+		if drag.index == _touch_index:
+			_finger = drag.position
 
 
 func _begin_gesture(where: Vector2) -> void:
@@ -150,7 +186,7 @@ func _release() -> void:
 
 
 func _draw() -> void:
-	if _touch_index == -1:
+	if _touch_index == -1 or not enabled:
 		return
 	draw_circle(_center, radius, base_color)
 	draw_arc(_center, radius, 0.0, TAU, 48, ring_color, 3.0, true)

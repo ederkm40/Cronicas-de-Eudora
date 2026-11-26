@@ -9,6 +9,7 @@ const SUITES := [
 	"res://tests/suites/armas_e_ofertas.gd",
 	"res://tests/suites/inimigos_e_chefe.gd",
 	"res://tests/suites/esquiva_e_encerramento.gd",
+	"res://tests/suites/save_e_joystick.gd",
 ]
 const TEST_SAVE := "user://teste_progresso.json"
 
@@ -29,7 +30,15 @@ func _run_all() -> void:
 	var total := 0
 	var failed_tests := 0
 	for path in SUITES:
-		var suite: RefCounted = load(path).new()
+		var script := load(path) as GDScript
+		if script == null or not script.can_instantiate():
+			# Suíte com erro de sintaxe: conta como falha e segue, em vez de travar o executor.
+			total += 1
+			failed_tests += 1
+			_failures.append("%s: a suíte não carregou (erro no script)" % path)
+			print("  FALHOU ", path.get_file())
+			continue
+		var suite: RefCounted = script.new()
 		suite.runner = self
 		print("== ", path.get_file())
 		for test_name in suite.TESTS:

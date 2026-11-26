@@ -3,14 +3,14 @@
 // mouse no perfil de computador, como um jogador faria).
 const { expect } = require("@playwright/test");
 
-/** Abre o jogo com ?teste=1 (liga a ponte de testes do jogo) e espera a partida começar. */
+/** Abre a build de QA (que tem a ponte de testes) e espera a partida começar. */
 async function abrirPartida(page) {
   const erros = [];
   page.on("pageerror", (erro) => erros.push(`exceção: ${erro.message}`));
   page.on("console", (msg) => {
     if (msg.type() === "error") erros.push(`console.error: ${msg.text()}`);
   });
-  const resposta = await page.goto("./?teste=1", { waitUntil: "load" });
+  const resposta = await page.goto("./", { waitUntil: "load" });
   expect(resposta?.status()).toBe(200);
   await page.waitForFunction(() => !document.getElementById("status"), null, { timeout: 90_000 });
   await page.waitForFunction(() => window.__eudora && window.__eudora.partida, null, { timeout: 30_000 });

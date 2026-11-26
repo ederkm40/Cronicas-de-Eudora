@@ -8,12 +8,19 @@
 //                     "mesa" só funciona com uma tela (no CI: xvfb-run); sem tela o Chromium
 //                     cai no SwiftShader. O renderizador usado de verdade é impresso pelo teste.
 //   E2E_CHROME        caminho de um Chrome já instalado (só para rodar fora do CI)
+//   E2E_MODO          "qa" (padrão): build "Web QA", com a ponte de testes → jogo.spec e
+//                     jogabilidade.spec. "producao": build "Web" publicada → jogo.spec e
+//                     producao.spec (confere que a ponte de testes NÃO existe).
 const path = require("path");
 const { defineConfig, devices } = require("@playwright/test");
 
 const porta = Number(process.env.E2E_PORTA || 8060);
 const pasta = path.resolve(process.env.E2E_DIR || path.join(__dirname, "..", "..", "build", "parte"));
 const renderizador = process.env.E2E_RENDERIZADOR || "mesa";
+const modo = process.env.E2E_MODO || "qa";
+const arquivos = modo === "producao"
+  ? ["jogo.spec.js", "producao.spec.js"]
+  : ["jogo.spec.js", "jogabilidade.spec.js"];
 
 // SwiftShader (o padrão do Chromium sem placa de vídeo) não mostra atualizações de MultiMesh
 // do Godot (ver docs/IA/ESTADO_ATUAL.md). Mesa/llvmpipe pelo ANGLE-GL renderiza corretamente.
@@ -29,14 +36,15 @@ const navegador = process.env.E2E_CHROME
 
 module.exports = defineConfig({
   testDir: "./testes",
+  testMatch: arquivos,
   timeout: 120_000,
   expect: { timeout: 30_000 },
   fullyParallel: false,
   workers: 1,
   retries: 0,
   forbidOnly: !!process.env.CI,
-  reporter: [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
-  outputDir: "test-results",
+  reporter: [["list"], ["html", { open: "never", outputFolder: `playwright-report/${modo}` }]],
+  outputDir: `test-results/${modo}`,
   use: {
     baseURL: `http://127.0.0.1:${porta}/`,
     screenshot: "only-on-failure",

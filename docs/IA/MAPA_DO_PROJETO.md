@@ -9,7 +9,7 @@
 ├── README.md                 apresentação e links
 ├── requirements-ci.txt       versões fixadas do GDScript Toolkit (só para o CI)
 ├── project.godot             configuração do Godot (retrato 720x1280, Compatibility, toque pelo mouse)
-├── export_presets.cfg        preset "Web" (sem threads; ensure_cross_origin_isolation_headers=false)
+├── export_presets.cfg        presets "Web" (produção, sem a ponte de testes) e "Web QA" (funcionalidade qa, só para testes); sem threads
 ├── icon.svg (+ .import)      ícone do jogo
 ├── scenes/main.tscn          cena única: um Node3D com scripts/main.gd
 ├── scripts/                  todo o código do jogo (GDScript)
@@ -32,6 +32,7 @@
 │   ├── CHANGELOG.md          registro de mudanças (editorial: ChatGPT)
 │   ├── versoes/<v>/RELATORIO.md   relatório de cada versão
 │   ├── decisoes/NNNN-*.md    decisões técnicas
+│   ├── design/               Documento Mestre de Sistemas e catálogos (design; não autoriza implementar)
 │   └── IA/                   estado, mapa, continuidade, entrega para o ChatGPT
 └── .github/
     ├── workflows/publicar.yml       testes, prévias e publicação
@@ -68,7 +69,7 @@
 | `results_screen.gd` | `ResultsScreen` | `MetaProgress`, `Hud.format_time` | `main.gd` (sinal `restart_requested`) |
 | `run_stats.gd` | `RunStats` (RefCounted) | `EnemyTypes` | `EnemyManager`, `main.gd`, tela de resultados |
 | `meta_progress.gd` | `MetaProgress` (RefCounted) | arquivo `user://progresso.json` | `main.gd`, `ResultsScreen` |
-| `web_bridge.gd` | `WebBridge` | `JavaScriptBridge` (só Web, só com `?teste=1`) | testes de navegador |
+| `web_bridge.gd` | (sem `class_name`) | `JavaScriptBridge`; só existe na build "Web QA" | `main.gd` carrega por caminho na build QA; testes de navegador |
 | `blob_shadow.gd` | `BlobShadow` | — | `Player` |
 
 Fluxo de uma partida: `EnemyManager.damage(índice, dano, arma)` → `RunStats` → `enemy_killed(posição, tipo, xp)` → `XpOrbManager.spawn()` → `collected` → `Progression.add_xp()` (cura 12% por nível) → `main._open_level_up()` (pausa) → `LevelUpOffers.roll_for_level_up()` → `LevelUpPanel` (`chosen` / `reroll_requested` / `banish_requested`) → `main.apply_offer()` → `_sync_weapons()` → retoma. Aos 600 s: `main.start_encounter()` → `BossController.spawn()`. Chefe derrotado (`boss_died`) ou jogador morto (`died`) → `main._finish()` → `MetaProgress.record_run()` + `save()` → `ResultsScreen`.
@@ -77,12 +78,13 @@ Fluxo de uma partida: `EnemyManager.damage(índice, dano, arma)` → `RunStats` 
 
 | Arquivo | Roda com | Cobre |
 |---|---|---|
-| `tests/run_tests.gd` | Godot `--script` | executor das suítes de `tests/suites/` (41 testes) |
+| `tests/run_tests.gd` | Godot `--script` | executor das suítes de `tests/suites/` (51 testes) |
 | `tests/suites/base.gd` | — | base das suítes: ajudantes (partida nova, toques, teclas, inimigos parados) |
 | `tests/suites/progressao.gd` | (pelo executor) | 16 testes da 0.2: XP, level-up, efeitos, pausa, derrota, reinício |
 | `tests/suites/armas_e_ofertas.gd` | (pelo executor) | 9 testes: arsenal, aura, horda, lâmina, níveis, ofertas, troca, bloqueio |
 | `tests/suites/inimigos_e_chefe.gd` | (pelo executor) | 7 testes: mistura por tempo, velocidades e resistência, Lançador, Volátil, chefe |
 | `tests/suites/esquiva_e_encerramento.gd` | (pelo executor) | 9 testes: esquiva, duplo toque, derrota, reinício após vitória, progresso salvo |
+| `tests/suites/save_e_joystick.gd` | (pelo executor) | 10 testes: save com estrutura/campos inválidos, versão futura, retomada do joystick após a pausa |
 | `tests/smoke_test.gd` | Godot `--script` | partida de 60 s de ponta a ponta (joystick, D, Espaço, ofertas) |
 | `tests/long_simulation.gd` | Godot `--script -- --segundos=N [--invulneravel] [--armas-maximas]` | estabilidade, desempenho, memória, reinícios |
 | `tests/balance_simulation.gd` | Godot `--script -- --modo=dps\|partida\|chefe` | **fora do CI**: telemetria de equilíbrio |
@@ -91,9 +93,11 @@ Fluxo de uma partida: `EnemyManager.damage(índice, dano, arma)` → `RunStats` 
 | `tools/site/test_montar_site.py` | Python 3 | montagem: oficial × prévia, remoção, limpeza |
 | `tools/ci/verificar_gdscript.sh lint` / `formato <base>` | gdtoolkit 4.5.0 (CI) | `gdlint`; `gdformat --check` nos `.gd` alterados (mostra o diff se falhar) |
 | `tools/e2e/testes/jogo.spec.js` | Playwright 1.65.1 + Chromium (CI, `xvfb-run`) | jogo exportado abre e roda nos 3 perfis |
-| `tools/e2e/testes/jogabilidade.spec.js` | idem | controles reais: joystick, duplo toque, Espaço, level-up, vitória, derrota |
+| `tools/e2e/testes/jogabilidade.spec.js` | idem, na build Web QA | controles reais: joystick, duplo toque, Espaço, level-up, vitória, derrota, retomada do joystick |
+| `tools/e2e/testes/producao.spec.js` | idem, na build de produção | sem ponte de testes, com e sem `?teste=1` |
+| `tools/ci/construir_qa.sh` / `verificar_producao.sh` | bash (CI) | exporta a build Web QA; confere que o `.pck` de produção não tem a ponte |
 
-Ganchos de teste no código: `EnemyManager.spawning_enabled`, `spawn_at()`; `Player.invulnerable`, `scripted_input`; `AutoWeapon.shots_fired`; `Main.start_encounter()`, `apply_offer()`, `encounter_time`; `MetaProgress.path`; `WebBridge` (`?teste=1`).
+Ganchos de teste no código: `EnemyManager.spawning_enabled`, `spawn_at()`; `Player.invulnerable`, `scripted_input`; `AutoWeapon.shots_fired`; `Main.start_encounter()`, `apply_offer()`, `encounter_time`; `MetaProgress.path`; ponte `web_bridge.gd` (só na build Web QA).
 
 ## Configuração e publicação
 
