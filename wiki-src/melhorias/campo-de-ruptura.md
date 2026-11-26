@@ -1,22 +1,26 @@
 ---
 titulo: Campo de ruptura
-resumo: +20% de alcance da arma.
+resumo: +20% de alcance do Raio e +10% de raio da Aura por nível.
 estado: PUBLICADO
 versao: 0.2-alpha
 ordem: 60
 ---
-**Efeito por nível:** +20% de alcance da arma.
-**Limite:** 5 níveis. Depois disso, a melhoria não aparece mais nos sorteios.
+**Efeito por nível:**
+- +20% de alcance de mira do [[armas/arma-automatica|Raio arcano]].
+- +10% de raio da [[armas/aura-de-brasas|Aura de brasas]].
+**Limite:** 5 níveis.
 
-Aumenta a distância em que a arma encontra alvos. A duração do projétil cresce na mesma proporção, para ele alcançar inimigos mais distantes. Começa a atirar mais cedo em quem se aproxima.
+Para o Raio, a duração do projétil cresce na mesma proporção do alcance, permitindo que ele chegue aos alvos mais distantes.
 
-## Valores por nível
+Para a Aura, o bônus aumenta o raio da área, sem alterar o dano por pulso.
 
-| Nível | Alcance de mira | Duração do projétil |
-|---|---|---|
-| 0 | 11 m | 1,2 s |
-| 1 | 13,2 m | 1,44 s |
-| 3 | 17,6 m | 1,92 s |
-| 5 (limite) | 22 m | 2,4 s |
+## Alcance do Raio por nível
 
-Veja também: [[melhorias\|todas as melhorias]] · [[progressao/level-up]]
+| Nível | Alcance de mira |
+|---|---:|
+| 0 | 11 m |
+| 1 | 13,2 m |
+| 3 | 17,6 m |
+| 5 (limite) | 22 m |
+
+Veja também: [[melhorias|todas as melhorias]] · [[progressao/level-up]].

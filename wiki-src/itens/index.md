@@ -1,12 +1,15 @@
 ---
 titulo: Itens e equipamentos
-resumo: Loot e equipamentos.
+resumo: Estado atual do loot e dos equipamentos.
 ---
-**Ainda não existem itens nem equipamentos no jogo.** Hoje, tudo o que deixa o personagem mais forte vem das [[melhorias]] escolhidas no [[progressao/level-up]], e elas valem só durante a partida.
+A versão 0.3-alpha ainda **não possui itens nem equipamentos**.
 
-| Planejado | Etapa | Estado |
-|---|---|---|
-| Itens que mudam as regras das armas (estilo RPG de ação) | depois do protótipo | {PLANEJADO} |
-| Progressão permanente entre partidas | depois do protótipo | {PLANEJADO} |
+Já existe uma camada diferente de progressão entre partidas: as quatro [[progressao/melhorias-permanentes|melhorias permanentes]] compradas com [[progressao/ecos|Ecos]]. Elas alteram atributos do jogador, mas não são itens equipáveis.
+
+| Sistema | Estado |
+|---|---|
+| Melhorias passivas durante a partida | {PUBLICADO} |
+| Ecos e melhorias permanentes | {PUBLICADO} |
+| Itens que mudam as regras das armas (estilo RPG de ação) | {PLANEJADO}, depois do protótipo |
 
 {{artigos}}

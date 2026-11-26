@@ -1,12 +1,7 @@
 ---
 titulo: Chefes
-resumo: Adversários especiais.
+resumo: O Sentinela do Eco, chefe do encontro final da versão 0.3-alpha.
 ---
-**Ainda não existem chefes no jogo.**
-
-| Planejado | Etapa | Estado |
-|---|---|---|
-| Mini-chefe aos 10 minutos de partida | 0.4-alpha | {PLANEJADO} |
-| Chefe da fase completa | depois do protótipo | {PLANEJADO} |
+A versão 0.3-alpha tem um chefe: o [[chefes/sentinela-do-eco|Sentinela do Eco]]. Ele aparece aos dez minutos de partida. O cronômetro não encerra a partida automaticamente: é preciso derrotá-lo para obter a vitória.
 
 {{artigos}}

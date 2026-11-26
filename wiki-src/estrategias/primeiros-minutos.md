@@ -1,20 +1,29 @@
 ---
 titulo: Primeiros minutos
-resumo: Fique em movimento, colete os orbes e não deixe a horda fechar o cerco.
+resumo: Movimente-se, recolha experiência e monte um arsenal antes do encontro final.
 estado: PUBLICADO
 versao: 0.2-alpha
 ordem: 10
 ---
-## Não fique parado
+## Mantenha-se em movimento
 
-Até 5 inimigos encostados causam até 45 de dano por segundo. Parado no meio da horda, o personagem cai em poucos segundos. Ande em **círculos largos**: assim os inimigos vêm atrás de você em fila, e a [[armas/arma-automatica]] acerta os da frente.
+A horda cresce em quantidade e resistência. Evite ficar parado cercado. Use trajetórias amplas e observe o espaço livre antes de mudar de direção.
 
-## Passe pelos orbes
+## Recolha os orbes
 
-Os [[progressao/orbes-de-experiencia\|orbes]] ficam onde os inimigos morreram, normalmente a alguns metros de você, e só voam até o personagem a menos de 3 m. Desvie o caminho para passar por eles. [[melhorias/passos-ligeiros]] ajuda nisso.
+Os [[progressao/orbes-de-experiencia|orbes]] ficam no local em que os inimigos caíram e são atraídos quando você chega a até 3 m. Passe perto deles para não deixar a experiência espalhada pelo mapa.
 
-## Melhorias que se combinam
+## Monte o arsenal
 
-- [[melhorias/projetil-adicional]] + [[melhorias/poder-arcano]]: o bônus de dano vale para cada projétil do leque.
-- [[melhorias/cadencia]] + [[melhorias/poder-arcano]]: mais disparos, cada um mais forte.
-- [[melhorias/nucleo-vital]] cura 25 de vida na hora. É uma boa escolha quando a vida está baixa.
+O [[progressao/level-up|level-up]] pode oferecer uma arma nova ou a evolução de uma arma que você já tem. A [[armas/aura-de-brasas|Aura de brasas]] ajuda contra inimigos próximos; a [[armas/lamina-orbital|Lâmina orbital]] atinge alvos que atravessam sua órbita; o [[armas/arma-automatica|Raio arcano]] procura alvos dentro do alcance.
+
+## Leia os inimigos
+
+- O [[inimigos/espreitador|Espreitador]] tenta antecipar seu movimento.
+- O [[inimigos/couracado|Couraçado]] exige mais dano para ser derrotado.
+- O [[inimigos/lancador|Lançador]] avisa antes de atirar.
+- O [[inimigos/volatil|Volátil]] mostra um círculo antes de explodir.
+
+## Prepare-se para o chefe
+
+Aos 9:50 aparece o aviso do encontro final. Aos 10:00 surge o [[chefes/sentinela-do-eco|Sentinela do Eco]]. Observe as faixas e círculos no chão e use a janela de recuperação depois dos ataques para se aproximar.
