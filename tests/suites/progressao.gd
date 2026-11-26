@@ -20,7 +20,6 @@ const TESTS := [
 	"test_reinicio_sem_melhorias_anteriores",
 ]
 
-
 # ---------------------------------------------------------------- experiência
 
 

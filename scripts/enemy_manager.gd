@@ -45,7 +45,7 @@ const ACTIVE := 1  ## Lançador preparando o disparo ou Volátil com o pavio ace
 @export var shooter_max_distance := 8.5
 @export var shooter_interval := 3.2
 @export var shooter_windup := 0.55  ## Tempo parado e brilhando antes de disparar (aviso).
-@export var shooter_projectile_speed := 7.5
+@export var shooter_projectile_speed := 6.5
 @export var shooter_projectile_damage := 8.0
 @export_group("Volátil")
 @export var exploder_trigger_distance := 1.9

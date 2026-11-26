@@ -13,10 +13,10 @@ extends Control
 
 signal dodge_requested(screen_direction: Vector2)
 
-@export var radius := 90.0 ## Raio máximo do joystick, em unidades da tela base (720 de largura).
-@export_range(0.0, 0.5) var dead_zone := 0.12 ## Fração do raio que é ignorada (evita tremidas).
-@export var follow_finger := true ## Se o dedo passa do raio, o centro é arrastado junto.
-@export var analog := false ## false = velocidade fixa fora da zona morta; true = proporcional.
+@export var radius := 90.0  ## Raio máximo do joystick, em unidades da tela base (720 de largura).
+@export_range(0.0, 0.5) var dead_zone := 0.12  ## Fração do raio que é ignorada (evita tremidas).
+@export var follow_finger := true  ## Se o dedo passa do raio, o centro é arrastado junto.
+@export var analog := false  ## false = velocidade fixa fora da zona morta; true = proporcional.
 @export var base_color := Color(1, 1, 1, 0.14)
 @export var ring_color := Color(1, 1, 1, 0.35)
 @export var knob_color := Color(1, 1, 1, 0.5)

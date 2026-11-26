@@ -16,6 +16,7 @@ const GRID_CELL := 2.0
 @export var encounter_time := 600.0  ## Segundos de partida até o chefe aparecer.
 @export var encounter_spawn_rate := 0.3  ## Ritmo das hordas durante o encontro final.
 @export var encounter_warning := 10.0  ## Segundos de aviso antes do encontro.
+@export var level_up_heal := 0.12  ## Fração da vida máxima recuperada a cada nível ganho.
 
 var player: Player
 var camera_rig: CameraRig
@@ -119,6 +120,7 @@ func _ready() -> void:
 	offers = LevelUpOffers.new(upgrades, arsenal, player)
 	offers.rerolls_left += meta.extra_rerolls()
 	orbs.collected.connect(progression.add_xp)
+	progression.leveled_up.connect(_on_leveled_up)
 	orbs.collected.connect(func(amount: int) -> void: stats.orbs_xp += amount)
 
 	var ui := CanvasLayer.new()
@@ -248,6 +250,11 @@ func _on_enemy_killed(where: Vector3, _kind: int, xp: int) -> void:
 		orbs.spawn(where, xp * xp_per_enemy)
 
 
+## Subir de nível recupera um pouco de vida: a única fonte de cura constante da partida.
+func _on_leveled_up(_level: int) -> void:
+	player.heal(player.max_hp * level_up_heal)
+
+
 ## Pausa toda a simulação (inimigos, projéteis, orbes, hordas, tempo) e mostra as escolhas.
 func _open_level_up() -> void:
 	var choices := offers.roll_for_level_up()
@@ -340,14 +347,17 @@ func _finish(won: bool) -> void:
 func result_data() -> Dictionary:
 	var weapons: Array[Dictionary] = []
 	for id in arsenal.owned_ids():
-		weapons.append(
-			{
-				"id": id,
-				"name": WeaponCatalog.definition(id).name,
-				"level": arsenal.level(id),
-				"damage": stats.damage_of(id),
-				"kills": stats.kills_of(id),
-			}
+		(
+			weapons
+			. append(
+				{
+					"id": id,
+					"name": WeaponCatalog.definition(id).name,
+					"level": arsenal.level(id),
+					"damage": stats.damage_of(id),
+					"kills": stats.kills_of(id),
+				}
+			)
 		)
 	var upgrade_lines: Array[String] = []
 	for id in Upgrades.all_ids():

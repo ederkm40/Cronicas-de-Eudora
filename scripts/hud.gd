@@ -132,8 +132,16 @@ func _make_label(font_size: int) -> Label:
 	return label
 
 
-func update_stats(elapsed: float, kills: int, hp: float, max_hp: float, enemy_count: int,
-		level: int = 1, xp: int = 0, xp_needed: int = 1) -> void:
+func update_stats(
+	elapsed: float,
+	kills: int,
+	hp: float,
+	max_hp: float,
+	enemy_count: int,
+	level: int = 1,
+	xp: int = 0,
+	xp_needed: int = 1
+) -> void:
 	_status.text = "%s   ·   Abates: %d" % [format_time(elapsed), kills]
 	_hp_bar.max_value = max_hp
 	_hp_bar.value = hp

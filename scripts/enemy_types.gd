@@ -84,7 +84,7 @@ const STATS := [
 const SCHEDULE := [
 	{"kind": RAPIDO, "start": 45.0, "ramp": 200.0, "max": 0.45},
 	{"kind": RESISTENTE, "start": 100.0, "ramp": 300.0, "max": 0.22},
-	{"kind": ATIRADOR, "start": 150.0, "ramp": 300.0, "max": 0.2},
+	{"kind": ATIRADOR, "start": 150.0, "ramp": 300.0, "max": 0.15},
 	{"kind": EXPLOSIVO, "start": 210.0, "ramp": 300.0, "max": 0.2},
 ]
 

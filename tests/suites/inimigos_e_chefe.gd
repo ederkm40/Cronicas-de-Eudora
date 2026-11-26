@@ -17,7 +17,6 @@ const TESTS := [
 	"test_chefe_fase_dois_e_vitoria",
 ]
 
-
 # ---------------------------------------------------------------- inimigos
 
 
@@ -164,6 +163,7 @@ func test_volatil_aviso_explosao_e_abate() -> void:
 func test_chefe_surge_aos_dez_minutos() -> void:
 	await _new_game()
 	game.player.invulnerable = true
+	_disable_bolt()
 	game._elapsed = 595.0
 	await _frames(60)
 	_check(not game.encounter_started(), "antes dos 10 minutos não há chefe")

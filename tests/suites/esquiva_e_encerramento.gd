@@ -13,7 +13,6 @@ const TESTS := [
 	"test_progressao_migracao_e_protecao",
 ]
 
-
 # ---------------------------------------------------------------- esquiva
 
 

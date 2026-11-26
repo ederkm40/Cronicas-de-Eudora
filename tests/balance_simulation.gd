@@ -144,14 +144,12 @@ func _step_dps(delta: float) -> bool:
 	var parts: Array[String] = []
 	for id in game.arsenal.owned_ids():
 		parts.append(
-			(
-				"%s %.0f/s (%d abates)"
-				% [id, stats.damage_of(id) / DPS_SECONDS, stats.kills_of(id)]
-			)
+			"%s %.0f/s (%d abates)" % [id, stats.damage_of(id) / DPS_SECONDS, stats.kills_of(id)]
 		)
-	var line := "%-26s total %5.0f/s · %s" % [
-		DPS_LOADOUTS[_loadout][0], stats.total_damage() / DPS_SECONDS, " · ".join(parts)
-	]
+	var line := (
+		"%-26s total %5.0f/s · %s"
+		% [DPS_LOADOUTS[_loadout][0], stats.total_damage() / DPS_SECONDS, " · ".join(parts)]
+	)
 	print(line)
 	_results.append(line)
 	_loadout += 1
@@ -200,9 +198,9 @@ func _pilot() -> void:
 		if enemies.kind_of(i) == EnemyTypes.CHEFE:
 			# Chega perto (3 m) quando o chefe persegue ou se recupera, para a aura e as lâminas
 			# acertarem; nos avisos de ataque, afasta-se para 6 a 9 m.
-			var calm: bool = game.boss.state in [
-				BossController.State.PERSEGUIR, BossController.State.RECUPERAR
-			]
+			var calm: bool = (
+				game.boss.state in [BossController.State.PERSEGUIR, BossController.State.RECUPERAR]
+			)
 			var near := 3.0 if calm else 6.0
 			if dist < near:
 				away += d.normalized() * 1.5

@@ -26,7 +26,7 @@ enum State {
 const ATTACKS := [State.PREPARAR_INVESTIDA, State.PREPARAR_ERUPCAO, State.PREPARAR_RAJADA]
 const DANGER := Color(1.0, 0.2, 0.25, 0.45)
 
-@export var max_hp := 4500.0
+@export var max_hp := 3800.0
 @export var chase_speed := 2.4
 @export var chase_time := 2.2  ## Segundos perseguindo entre um ataque e outro.
 @export var charge_windup := 1.0
@@ -41,7 +41,7 @@ const DANGER := Color(1.0, 0.2, 0.25, 0.45)
 @export var volley_count := 14
 @export var volley_speed := 6.0
 @export var volley_damage := 12.0
-@export var recover_time := 1.1  ## Janela em que o chefe fica parado e vulnerável.
+@export var recover_time := 1.4  ## Janela em que o chefe fica parado e vulnerável.
 @export var phase_two_ratio := 0.5
 @export var reinforcements := 6
 
@@ -266,9 +266,7 @@ func _enter_phase_two(pos: Vector3) -> void:
 	for k in reinforcements:
 		var angle := TAU * float(k) / float(reinforcements)
 		var kind := EnemyTypes.EXPLOSIVO if k % 2 == 0 else EnemyTypes.RAPIDO
-		var hp := (
-			enemies.base_hp * float(EnemyTypes.STATS[kind].hp) * enemies.time_hp_multiplier()
-		)
+		var hp := enemies.base_hp * float(EnemyTypes.STATS[kind].hp) * enemies.time_hp_multiplier()
 		enemies.spawn_at(pos + Vector3(cos(angle), 0.0, sin(angle)) * 3.0, hp, kind)
 
 

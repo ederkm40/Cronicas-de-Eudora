@@ -123,8 +123,7 @@ func _report() -> void:
 	_check(progression.total_xp > 0, "deveria coletar experiência")
 	_check(progression.level >= 2, "deveria subir pelo menos 1 nível em 60 s")
 	_check(
-		_choices_made == progression.level - 1,
-		"cada nível ganho deveria ter uma opção escolhida"
+		_choices_made == progression.level - 1, "cada nível ganho deveria ter uma opção escolhida"
 	)
 	_check(_paused_frames > 0, "a partida deveria ter pausado nas escolhas")
 	_check(not paused or not player.alive, "a partida não deveria terminar presa na pausa")
