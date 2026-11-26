@@ -42,6 +42,7 @@ fi
 echo "== gdformat --check em ${#ALTERADOS[@]} arquivo(s) alterado(s) desde ${PONTO:0:7}:"
 printf '   %s\n' "${ALTERADOS[@]}"
 if ! "$GDFORMAT" --check "${ALTERADOS[@]}"; then
-  echo "ERRO: arquivos alterados fora do padrão do gdformat. Para ver o que mudaria: gdformat --diff <arquivo>"
+  echo "ERRO: arquivos alterados fora do padrão do gdformat. O que mudaria:"
+  "$GDFORMAT" --diff "${ALTERADOS[@]}" || true
   exit 1
 fi
