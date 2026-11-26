@@ -32,7 +32,7 @@
 | Workflow `publicar.yml` (testes, prévia por PR, publicação no `gh-pages`) | implementado; validado no PR |
 | Wiki (`wiki-src/` + `tools/wiki/`) | implementada, 56 páginas, testada |
 | Memória para IAs (`AGENTS.md`, `docs/IA/`, `docs/versoes/`, `docs/decisoes/`, `docs/CHANGELOG.md`) | escrita |
-| GitHub Pages lendo o branch `gh-pages` | **depende de um ajuste do proprietário** (ver `CONTINUIDADE.md`) |
+| GitHub Pages lendo o branch `gh-pages` | **feito pelo proprietário** (verificado pelo workflow: `legacy gh-pages`) |
 
 ## Sistemas incompletos ou ausentes
 
@@ -56,4 +56,4 @@
 | `tests/long_simulation.gd -- --segundos=300` | aprovado | local, nesta etapa |
 | `tools/wiki/test_wiki.py` (14 testes) | aprovado | local, nesta etapa |
 | `tools/site/test_montar_site.py` (7 testes) | aprovado | local, nesta etapa |
-| Workflow no GitHub (execuções 45818565861, 45820818639, 45820854673, 45821063474) | aprovado: testes, publicação, atualização da prévia, fila de publicações e remoção; verificação no ar pendente do ajuste do Pages | GitHub Actions |
+| Workflow no GitHub (execuções 45818565861, 45820818639, 45820854673, 45821063474) | aprovado: testes, publicação, atualização da prévia, fila de publicações e remoção. Execução 45824707443: prévia **verificada no ar** (commit `ec1ddba`) | GitHub Actions |

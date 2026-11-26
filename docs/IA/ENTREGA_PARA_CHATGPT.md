@@ -44,7 +44,7 @@ Todos os testes do jogo, da Wiki e do site passaram, localmente e no GitHub Acti
 
 ## Problemas conhecidos
 
-- As prévias e a Wiki só ficam acessíveis depois que o proprietário muda a origem do GitHub Pages para o branch `gh-pages`.
+- Nenhum problema de publicação em aberto: o GitHub Pages já lê o branch `gh-pages`, e a prévia foi verificada no ar.
 - Os demais problemas do jogo seguem os da 0.2-alpha (ver `docs/IA/ESTADO_ATUAL.md`).
 
 ## Para a Wiki

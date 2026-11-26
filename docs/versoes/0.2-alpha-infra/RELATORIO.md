@@ -58,7 +58,8 @@ Sem mudanças: `scripts/`, `scenes/`, `tests/`, `project.godot`, `export_presets
 | Exportação + verificação dos 4 arquivos do Godot | local e Actions | **aprovado** |
 | Primeira publicação real no `gh-pages` (execução 45818565861) | Actions | raiz reconstruída a partir do `main` `e516f21`; prévia em `previews/pr-2/` com o commit `dd6ba05`; comentário publicado no PR |
 | Conteúdo real do `gh-pages`, baixado e aberto no Chrome no mesmo caminho do Pages (celular em pé, deitado e computador) | local | jogo oficial e da prévia carregam e rodam; Wiki da prévia com faixa de aviso; busca "nucleo vital" → Núcleo vital; links internos e "Jogar" corretos; lista de prévias |
-| Verificação do endereço público | Actions | **não abriu**, como esperado: o log mostra o Pages ainda em `build_type: workflow`. Depende do ajuste do proprietário |
+| Verificação do endereço público, antes do ajuste do Pages | Actions (45818565861) | **não abriu**, como esperado: o log mostrava o Pages em `build_type: workflow` |
+| Verificação do endereço público, depois do ajuste do proprietário | Actions (45824707443) | **verificado no ar**: Pages em `legacy gh-pages`; `previews/pr-2/` (jogo, .js, .pck, .wasm, Wiki, busca, CSS) respondeu 200 com o commit `ec1ddba` |
 | `verificar_publicacao.sh` contra o servidor local | local | aprova com o commit certo e acusa com o commit errado |
 
 ### Fluxo completo no GitHub (envios reais)
@@ -76,7 +77,8 @@ O branch `teste/remocao-de-previa` não pôde ser apagado pela sessão do Claude
 
 ## Problemas conhecidos e limitações
 
-- **O endereço público depende de um ajuste do proprietário:** Settings → Pages → Source: *Deploy from a branch* → `gh-pages` / `(root)`. Na sessão do Claude Code na nuvem, a API de configuração do Pages fica bloqueada e `*.github.io` não abre, então a confirmação no ar só vem pelo workflow.
+- O GitHub Pages precisa continuar em *Deploy from a branch* → `gh-pages` / `(root)` (ajustado pelo proprietário). Na sessão do Claude Code na nuvem, a API de configuração do Pages fica bloqueada e `*.github.io` não abre, então a confirmação no ar vem pelo workflow.
+- O caminho de falha da verificação (job `Publicar` vermelho) não foi observado depois da remoção do `continue-on-error`, porque o Pages já estava ajustado e a verificação passou. Antes, a mesma etapa falhava com o Pages no método antigo.
 - A Wiki oficial (`/wiki/`) mostra um aviso até o merge. A Wiki completa está na prévia.
 - A primeira publicação de uma prévia, quando a raiz está desatualizada, demora alguns minutos a mais, porque reconstrói o oficial.
 - Envios só de documentação também rodam todos os testes, cerca de 5 minutos. É gratuito, mas não é instantâneo.

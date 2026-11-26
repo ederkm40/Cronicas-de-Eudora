@@ -22,7 +22,7 @@
 
 ## Pendências
 
-- **Ação do proprietário, uma vez só:** Settings → Pages → Build and deployment → Source: **Deploy from a branch** → branch **gh-pages**, pasta **/ (root)** → Save. Sem isso, as prévias e a Wiki não aparecem no endereço público. O jogo oficial continua no ar pela publicação anterior.
+- ~~Ajuste do GitHub Pages para o branch `gh-pages`~~: **feito** pelo proprietário em 26/11/2026. Se um dia voltar ao método antigo, a verificação do workflow acusa e o job `Publicar` falha.
 - Testar o jogo num celular físico e anotar o FPS com a horda cheia.
 - Ajustar o equilíbrio (dano base, ritmo das hordas, curva de XP).
 
@@ -39,6 +39,6 @@ Ver `AGENTS.md`, seção "Comandos de verificação". Todos precisam terminar co
 
 ## Próximas ações
 
-1. O proprietário ajusta o Pages, testa a prévia e a Wiki e aprova o PR de infraestrutura.
+1. O proprietário testa a prévia e a Wiki e aprova o PR de infraestrutura.
 2. O ChatGPT revisa a Wiki e o changelog na branch do PR (opcional antes do merge).
 3. Etapa **0.3-alpha (variedade de combate)**: 2 armas novas (aura de dano e lâmina giratória), com espaços de arma próprios e melhorias que podem trazer uma arma nova. Seguir o fluxo do `AGENTS.md`.
