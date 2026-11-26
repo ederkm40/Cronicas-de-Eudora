@@ -105,18 +105,7 @@ func _process(delta: float) -> bool:
 			for i in 5:
 				game.apply_offer(WeaponCatalog.AURA)
 				game.apply_offer(WeaponCatalog.BLADE)
-	if not player.alive:
-		_deaths += 1
-		_restarting = true
-		if _nodes_after_first_game == -1:
-			_nodes_after_first_game = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
-		game.results.restart_requested.emit()
-		return false
-
-	if game.is_over() and player.alive:  # vitória: recomeça também
-		_bosses_defeated += 1
-		_restarting = true
-		game.results.restart_requested.emit()
+	if _restart_if_over(player):
 		return false
 
 	var panel: LevelUpPanel = game.level_up_panel
@@ -168,6 +157,21 @@ func _process(delta: float) -> bool:
 		_report()
 		return true
 	return false
+
+
+## Derrota ou vitória: aperta "Jogar de novo" e continua. Retorna true se reiniciou.
+func _restart_if_over(player: Player) -> bool:
+	if not game.is_over():
+		return false
+	if player.alive:
+		_bosses_defeated += 1  # vitória
+	else:
+		_deaths += 1
+		if _nodes_after_first_game == -1:
+			_nodes_after_first_game = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+	_restarting = true
+	game.results.restart_requested.emit()
+	return true
 
 
 func _report() -> void:
