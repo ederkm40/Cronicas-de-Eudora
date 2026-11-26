@@ -61,7 +61,18 @@ Sem mudanças: `scripts/`, `scenes/`, `tests/`, `project.godot`, `export_presets
 | Verificação do endereço público | Actions | **não abriu**, como esperado: o log mostra o Pages ainda em `build_type: workflow`. Depende do ajuste do proprietário |
 | `verificar_publicacao.sh` contra o servidor local | local | aprova com o commit certo e acusa com o commit errado |
 
-Os resultados dos envios seguintes (atualização da prévia, remoção ao fechar um PR) ficam registrados nos comentários do PR #2.
+### Fluxo completo no GitHub (envios reais)
+
+| Teste | Execução | Resultado |
+|---|---|---|
+| **Novo envio atualiza a prévia** | 45820818639 | `previews/pr-2/` passou de `dd6ba05` para `696e96e`; o mesmo comentário do PR foi atualizado, sem criar outro |
+| **Segunda prévia ao mesmo tempo** (PR #3, descartável) | 45820854673 | `previews/pr-3/` publicada ao lado da `pr-2`; raiz intacta |
+| **Publicações simultâneas** | as duas acima | serializadas pelo grupo `gh-pages`: PR #2 publicou das 12:34:33 às 12:34:49; PR #3 começou às 12:34:51. Nenhuma sobrescreveu a outra |
+| **Remoção ao fechar o PR** | 45821063474 | PR #3 fechado sem merge → `previews/pr-3/` apagada, lista de prévias atualizada, comentário "Prévia removida"; `pr-2` e a raiz byte a byte iguais |
+| **Aviso imediato de Pages mal configurado** | 45820818639 | comentário: "Ainda não está no ar: o GitHub Pages publica pelo método antigo (workflow main)…" |
+| **Integração no `main`** (publicar oficial + remover a prévia do PR integrado) | — | não executado: o merge é decisão do proprietário. Os dois caminhos usam o mesmo código já exercitado (a publicação do oficial rodou na reconstrução da raiz; a remoção rodou no PR #3) e estão cobertos por `test_montar_site.py` |
+
+O branch `teste/remocao-de-previa` não pôde ser apagado pela sessão do Claude Code (o proxy bloqueia). Ele não tem efeito e pode ser apagado pelo botão "Delete branch" do PR #3.
 
 ## Problemas conhecidos e limitações
 

@@ -56,4 +56,4 @@
 | `tests/long_simulation.gd -- --segundos=300` | aprovado | local, nesta etapa |
 | `tools/wiki/test_wiki.py` (14 testes) | aprovado | local, nesta etapa |
 | `tools/site/test_montar_site.py` (7 testes) | aprovado | local, nesta etapa |
-| Workflow no GitHub (execução 45818565861) | aprovado: testar e publicar; verificação no ar pendente do ajuste do Pages | GitHub Actions |
+| Workflow no GitHub (execuções 45818565861, 45820818639, 45820854673, 45821063474) | aprovado: testes, publicação, atualização da prévia, fila de publicações e remoção; verificação no ar pendente do ajuste do Pages | GitHub Actions |

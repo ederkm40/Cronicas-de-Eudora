@@ -40,7 +40,7 @@ Nenhum valor do jogo.
 
 ## Testes realizados e resultados
 
-Ver `docs/versoes/0.2-alpha-infra/RELATORIO.md` (seção Testes) para os resultados registrados.
+Todos os testes do jogo, da Wiki e do site passaram, localmente e no GitHub Actions. O fluxo real também foi testado: publicação da prévia, atualização num novo envio, duas prévias ao mesmo tempo, publicações em fila e remoção ao fechar um PR (PR #3, descartável). Detalhes e números das execuções em `docs/versoes/0.2-alpha-infra/RELATORIO.md`.
 
 ## Problemas conhecidos
 
