@@ -1,7 +1,7 @@
 // Testes de jogabilidade no jogo exportado, com controles de verdade: arrastar o joystick,
 // duplo toque para esquivar, tocar nos cartões e botões do level-up e na tela de resultados.
 // Rodam nos 3 perfis (computador com mouse; Pixel 7 em pé e deitado com toque).
-// O jogo é aberto com ?teste=1, que liga a ponte scripts/web_bridge.gd: ela informa o estado
+// Roda na build "Web QA" (só no CI), que tem a ponte scripts/web_bridge.gd: ela informa o estado
 // da partida e a posição dos botões, e aceita comandos só para preparar situações
 // (dar experiência, chamar o chefe). Os toques nos botões e os gestos são reais.
 const { test, expect } = require("@playwright/test");
@@ -122,5 +122,44 @@ test("derrota: resultados e reinício pelo toque", async ({ page }, testInfo) =>
   await page.waitForTimeout(300);
   await dedo.tocar(await centro(page, (await estado(page)).resultados.reiniciar));
   await esperarEstado(page, (e) => e.partida !== primeira && !e.fim && e.vivo, "a partida deveria recomeçar");
+  expect(erros).toEqual([]);
+});
+
+test("joystick volta a responder depois do level-up sem levantar o dedo", async ({ page }, testInfo) => {
+  const erros = await abrirPartida(page);
+  await comandos(page, "hordas:0", "invulneravel:1", "limpar");
+  const dedo = await criarDedo(page, testInfo);
+  const base = await ponto(page, 0.5, 0.7);
+
+  // Dedo no joystick, arrastado para a direita e mantido na tela.
+  await dedo.encostar(base);
+  for (let k = 1; k <= 6; k++) await dedo.mover({ x: base.x + k * 15, y: base.y });
+  await page.waitForTimeout(300);
+
+  // Sobe de nível com o dedo ainda pressionado; escolhe pelo teclado (o dedo continua parado).
+  await comandos(page, "xp:4");
+  await esperarEstado(page, (e) => e.painel.aberto && !e.painel.travado && e.pausado, "a escolha deveria abrir");
+  const pausado = await estado(page);
+  await page.waitForTimeout(500);
+  const ainda = await estado(page);
+  expect(Math.hypot(ainda.x - pausado.x, ainda.z - pausado.z), "parado durante a pausa").toBeLessThan(0.01);
+  await page.keyboard.press("1");
+  await esperarEstado(page, (e) => !e.painel.aberto && !e.pausado, "a escolha deveria fechar");
+
+  // Sem novo toque: o personagem volta a andar.
+  const retomou = await estado(page);
+  await page.waitForTimeout(1_000);
+  const depois = await estado(page);
+  const andou = Math.hypot(depois.x - retomou.x, depois.z - retomou.z);
+  expect(andou, `deveria andar sem tocar de novo (andou ${andou.toFixed(2)} m)`).toBeGreaterThan(1.5);
+
+  // Soltar para o personagem e não esquiva.
+  await dedo.soltar();
+  await page.waitForTimeout(400);
+  const solto = await estado(page);
+  await page.waitForTimeout(600);
+  const fim = await estado(page);
+  expect(Math.hypot(fim.x - solto.x, fim.z - solto.z), "soltar deveria parar").toBeLessThan(0.01);
+  expect(fim.esquivas, "sem esquiva acidental").toBe(0);
   expect(erros).toEqual([]);
 });

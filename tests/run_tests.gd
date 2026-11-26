@@ -9,6 +9,7 @@ const SUITES := [
 	"res://tests/suites/armas_e_ofertas.gd",
 	"res://tests/suites/inimigos_e_chefe.gd",
 	"res://tests/suites/esquiva_e_encerramento.gd",
+	"res://tests/suites/save_e_joystick.gd",
 ]
 const TEST_SAVE := "user://teste_progresso.json"
 
