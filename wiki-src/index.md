@@ -29,6 +29,7 @@ A versão atual tem três armas, cinco tipos de inimigos, um chefe no encontro d
 
 | Data | Versão | O que mudou |
 |---|---|---|
+| 26/11/2026 | infraestrutura | Manutenção pós-0.3: build publicada sem ponte de QA, recuperação de save, retomada do joystick e Documento Mestre de Sistemas (PR #7) |
 | 26/11/2026 | 0.3-alpha | [[armas|Duas armas novas]], [[inimigos|quatro tipos de inimigo adicionais]], [[chefes/sentinela-do-eco|Sentinela do Eco]], [[controles/esquiva|esquiva]], [[progressao/ecos|Ecos]] e resultados |
 | 26/11/2026 | infraestrutura | Wiki pública, prévias jogáveis por Pull Request, testes de navegador e documentação permanente |
 | 26/11/2026 | 0.2-alpha | [[progressao/experiencia|experiência]], [[progressao/orbes-de-experiencia|orbes]], [[progressao/level-up|level-up]] e seis [[melhorias|melhorias]] |

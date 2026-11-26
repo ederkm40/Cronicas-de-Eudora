@@ -2,15 +2,32 @@
 
 Registro das mudanças funcionais de Crônicas de Eudora, da mais recente para a mais antiga.
 
-**Responsável editorial: ChatGPT.** O Claude Code entrega os dados de cada etapa em `docs/IA/ENTREGA_PARA_CHATGPT.md`. As entradas abaixo até a etapa de infraestrutura foram escritas pelo Claude Code, para iniciar o registro.
+**Responsável editorial: ChatGPT.** O Claude Code entrega os dados de cada etapa em `docs/IA/ENTREGA_PARA_CHATGPT.md`. As entradas são mantidas editorialmente pelo ChatGPT a partir dos relatórios técnicos do Claude Code.
 
 Categorias: **Jogabilidade**, **Interface**, **Desempenho**, **Correção**, **Testes**, **Infraestrutura**, **Documentação**.
 
 ---
 
-## 0.3-alpha: grande expansão do combate (em revisão)
+## Manutenção pós-0.3-alpha + Documento Mestre de Sistemas
 
-**Data:** 26/11/2026 · **Pull Request:** #5 · *Entrada escrita pelo Claude Code a pedido do proprietário; a revisão editorial continua com o ChatGPT.* Detalhes e números em `docs/versoes/0.3-alpha/RELATORIO.md`.
+**Data:** 26/11/2026 · **Pull Request:** [#7](https://github.com/ederkm40/Cronicas-de-Eudora/pull/7) · **Merge:** `202965a3f1f0f9b18de0d63773da93e2a1ded475`. Esta etapa **não é uma nova versão de gameplay**: a versão oficial continua 0.3-alpha. Não houve mudança de equilíbrio, conteúdo, progressão ou economia.
+
+| Categoria | Descrição | Motivo | Efeito no jogo | Arquivos | Testes |
+|---|---|---|---|---|---|
+| Infraestrutura | Separação definitiva entre build de produção (`Web`), sem ponte de QA, e build `Web QA`, usada somente nos testes automatizados | Impedir que ferramentas de teste sejam incluídas no jogo publicado | `?teste=1` não ativa mais a ponte; somente a build de produção é publicada | `export_presets.cfg`, `scripts/main.gd`, `scripts/web_bridge.gd`, `tools/ci/`, workflow | Verificação: produção 0 referências à ponte, QA 3; Playwright em produção |
+| Correção | Validação de estrutura e tipos do arquivo de progresso | Evitar que saves danificados interrompam a leitura ou apaguem dados válidos | Estrutura inválida é preservada em cópia `.corrompido` e inicia progresso novo; campo inválido é corrigido individualmente; versão futura não é sobrescrita | `scripts/meta_progress.gd` | Suíte `save_e_joystick`; conferência ao contrário |
+| Correção | Retomada correta do joystick após o level-up | Evitar que o jogador precise soltar e tocar novamente depois da pausa | Dedo mantido retoma o controle; dedo solto deixa o joystick neutro; toques durante a pausa não viram movimento ou esquiva | `scripts/floating_joystick.gd` | 5 testes Godot e Playwright nos 3 perfis emulados |
+| Testes | Executor registra suíte inválida como falha, em vez de travar; cobertura ampliada | Tornar falhas de testes visíveis e confiáveis | Nenhuma mudança de gameplay | `tests/run_tests.gd`, `tests/suites/save_e_joystick.gd` | 51 testes, 4.482 verificações, 0 falhas |
+| Documentação | Criação do Documento Mestre de Sistemas, com 38 áreas e 30 catálogos | Organizar sistemas, dependências e estados de design, implementação e validação | Não autoriza implementação nem altera a roadmap | `docs/design/DOCUMENTO_MESTRE_SISTEMAS.md`, `docs/design/catalogos/` | 9 catálogos com conteúdo comprovado pelo código; 21 planejados sem entradas fictícias |
+| Limpeza | Remoção de `scripts/main.gd.orig` | Retirar arquivo temporário versionado | Nenhum | `scripts/main.gd.orig` | Busca por temporários versionados |
+
+**Validação registrada no PR #7:** smoke test e simulação de 300 s aprovados; Wiki (14 testes) e montagem do site (7 testes) aprovadas; Playwright na QA (21 aprovados, 3 pulados por desenho) e na produção (11 aprovados, 1 pulado por desenho), nos três perfis. Não houve teste em celular físico nem teste com pessoas. Detalhes: `docs/versoes/manutencao-pos-0.3/RELATORIO.md`.
+
+---
+
+## 0.3-alpha: grande expansão do combate (publicada)
+
+**Data:** 26/11/2026 · **Pull Request:** #5 Detalhes e números em `docs/versoes/0.3-alpha/RELATORIO.md`.
 
 | Categoria | Descrição | Motivo | Efeito no jogo | Arquivos | Testes |
 |---|---|---|---|---|---|

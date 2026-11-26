@@ -23,6 +23,6 @@ A direção é relativa à tela: arrastar para cima move o personagem para o alt
 
 Dois toques curtos e próximos podem ativar a [[controles/esquiva|esquiva]]. Um arrasto rápido no segundo toque também pode definir a direção.
 
-## Pausa
+## Pausa e retomada
 
-Durante o [[progressao/level-up|level-up]], o joystick fica desabilitado. Há uma limitação conhecida: se o dedo continuar pressionando a tela durante a pausa, o controle pode só voltar depois que o dedo for levantado e um novo toque começar. Essa limitação ainda não foi corrigida na versão 0.3-alpha.
+Durante o [[progressao/level-up|level-up]], o movimento fica pausado. Se o dedo que controlava o joystick continuar pressionando a tela, o controle retoma a partir da posição atual quando a escolha termina. Se o dedo for solto durante a pausa, o joystick volta neutro. Toques iniciados durante a pausa não assumem o controle nem geram esquiva. Esse comportamento foi implementado na manutenção pós-0.3-alpha e testado no Godot e no Chromium emulado; ainda não foi confirmado em celular físico.
