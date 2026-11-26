@@ -1,37 +1,42 @@
-# Instruções para IA neste repositório
+# CLAUDE.md — instruções específicas do Claude Code
 
-Jogo de hordas isométrico para celular (retrato), Godot 4.7, GDScript, renderizador Compatibility. O dono do projeto não programa: escreva em português do Brasil, tanto nos comentários quanto nas mensagens de commit, e explique as mudanças em linguagem simples.
+**Leia primeiro o `AGENTS.md`.** Ele traz as regras gerais, a divisão de responsabilidades com o ChatGPT, as regras técnicas, as de honestidade e as de custo zero. Este arquivo só acrescenta o que é específico do Claude Code.
 
-Antes de mexer, leia `docs/TECNICO.md` (como o jogo funciona) e `docs/ROADMAP.md` (o que vem a seguir).
+## Seu papel
 
-## Regras do projeto
+Você desenvolve o jogo. Concentre o contexto em código, testes e builds. **Não escreva artigos enciclopédicos nem reconstrua a Wiki** a cada atualização: isso é tarefa do ChatGPT. Entregue os fatos técnicos em `docs/IA/ENTREGA_PARA_CHATGPT.md`.
 
-- Tudo em texto. Prefira criar nós em código (como em `scripts/main.gd`) a escrever cenas `.tscn` complexas à mão.
+## Ao começar uma sessão
+
+1. Leia `docs/IA/ESTADO_ATUAL.md` e `docs/IA/CONTINUIDADE.md`.
+2. Confira o `main` real (`git log origin/main`) e os Pull Requests abertos. A documentação pode estar atrasada em relação ao código.
+3. Crie a branch da etapa a partir do `main` atualizado. Nunca trabalhe direto no `main` e nunca faça merge.
+
+## Regras de código
+
+- Prefira criar nós em código (como em `scripts/main.gd`) a escrever cenas `.tscn` complexas à mão.
 - GDScript com tipos estáticos e `class_name` por sistema. Valores de ajuste como `@export` no topo do script.
-- Desempenho de celular em primeiro lugar: muitos objetos iguais (inimigos, projéteis, orbes) usam arrays + `MultiMesh`, nunca um nó por objeto. Sem sombras em tempo real; use `BlobShadow`.
-- O jogo roda no navegador (exportação Web sem threads). Não use recursos que exijam threads nem C#.
-- Commite os arquivos `.uid` e `.import` gerados pelo Godot. Não commite `.godot/` nem `build/`.
-- **Pausa:** o level-up usa `get_tree().paused`. Sistemas novos de jogo devem ser pausáveis (o padrão). Só interfaces que precisam funcionar na pausa usam `PROCESS_MODE_ALWAYS`.
-- **Melhorias:** efeitos são recalculados a partir dos valores base em `Upgrades.refresh()`. Uma melhoria nova entra em `Upgrades.DEFINITIONS`, `describe_next()` e `refresh()`, e ganha um teste de efeito em `tests/run_tests.gd`.
-- Não declare um teste como aprovado sem rodá-lo. Não diga que algo foi testado em celular físico se não foi.
-
-## Fluxo de trabalho
-
-- Cada etapa numa branch própria (`etapa-<versão>-<nome>`), nunca direto no `main`.
-- Abra um Pull Request com o resumo, os testes executados e as limitações conhecidas. Espere o workflow passar.
-- O `main` publica no GitHub Pages. Em Pull Request, o workflow só testa e exporta, sem publicar.
+- Uma melhoria nova entra em `Upgrades.DEFINITIONS`, `describe_next()` e `refresh()`, e ganha um teste de efeito em `tests/run_tests.gd`.
+- Um sistema novo ganha testes em `tests/run_tests.gd` e uma verificação numa partida real em `tests/smoke_test.gd`. Use os ganchos `spawning_enabled`, `spawn_at`, `invulnerable` e `scripted_input` em vez de esperar o acaso.
 
 ## Antes de cada commit
 
-```bash
-godot --headless --path . --import
-godot --headless --path . --fixed-fps 60 --script res://tests/run_tests.gd        # "TESTES: OK"
-godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd       # "SMOKE TEST: OK"
-godot --headless --path . --fixed-fps 60 --script res://tests/long_simulation.gd -- --segundos=300   # "SIMULAÇÃO LONGA: OK"
-```
+Rode os comandos de verificação do `AGENTS.md` e confira as mensagens de sucesso. Para mudanças visuais, exporte para Web e confira no navegador, com tela de celular simulada, em pé e deitada.
 
-Ao criar um sistema novo, acrescente testes dele em `tests/run_tests.gd`, e confira no smoke test que ele funciona numa partida de verdade. Nos testes, use os ganchos existentes (`spawning_enabled`, `spawn_at`, `invulnerable`, `scripted_input`) em vez de esperar o acaso.
+## Ao entregar uma etapa
 
-## Publicação
+Atualize, em poucos commits, com mensagens em português:
 
-O workflow `.github/workflows/web.yml` segue esta ordem: importar → testes → exportar → verificar arquivos → publicar (só no `main`). Endereço: https://ederkm40.github.io/Cronicas-de-Eudora/
+1. `docs/TECNICO.md`, se a arquitetura ou os números mudaram.
+2. `docs/versoes/<versão>/RELATORIO.md`: objetivo, mudanças, valores, arquivos, testes e resultados reais, problemas, commit, PR e link da prévia.
+3. `docs/IA/ESTADO_ATUAL.md` e `docs/IA/CONTINUIDADE.md`.
+4. `docs/IA/ENTREGA_PARA_CHATGPT.md`: o pacote de fatos para a Wiki.
+5. `docs/decisoes/`, se tomou uma decisão técnica importante (nunca apague as antigas).
+
+Abra o Pull Request com o resumo, os testes executados, as limitações e instruções de teste. Espere o workflow passar e confira, no comentário automático, se a prévia foi **verificada no ar**. Entregue ao proprietário o link da prévia.
+
+## Ambiente do Claude Code
+
+- Na sessão na nuvem, a API de configuração do GitHub Pages fica bloqueada pelo proxy. Não dá para ler nem mudar a origem do Pages daqui: peça ao proprietário. O `GITHUB_TOKEN` do workflow consegue ler essa configuração (o passo "Verificar se abriu de verdade" mostra o resultado no log).
+- Pull Requests são abertos pela API REST (`gh api repos/<dono>/<repo>/pulls`). O `gh pr create` usa GraphQL, que fica bloqueado.
+- Daqui não dá para abrir `*.github.io`. Para confirmar uma publicação, leia o log e o comentário do workflow.

@@ -1,0 +1,86 @@
+{
+  "nome": "Crônicas de Eudora",
+  "descricao": "Wiki oficial de Crônicas de Eudora, jogo de hordas isométrico para celular.",
+  "versao_oficial": "0.2-alpha",
+  "nome_versao": "Ecos da Evolução",
+  "categorias": [
+    {
+      "id": "personagens",
+      "titulo": "Personagens",
+      "icone": "P",
+      "descricao": "Quem você controla."
+    },
+    {
+      "id": "armas",
+      "titulo": "Armas",
+      "icone": "A",
+      "descricao": "O que ataca os inimigos por você."
+    },
+    {
+      "id": "melhorias",
+      "titulo": "Melhorias",
+      "icone": "M",
+      "descricao": "Escolhas feitas a cada nível."
+    },
+    {
+      "id": "inimigos",
+      "titulo": "Inimigos",
+      "icone": "I",
+      "descricao": "O que vem nas hordas."
+    },
+    {
+      "id": "chefes",
+      "titulo": "Chefes",
+      "icone": "C",
+      "descricao": "Adversários especiais."
+    },
+    {
+      "id": "itens",
+      "titulo": "Itens e equipamentos",
+      "icone": "E",
+      "descricao": "Loot e equipamento."
+    },
+    {
+      "id": "mapas",
+      "titulo": "Mapas e ambientes",
+      "icone": "Q",
+      "descricao": "Onde as partidas acontecem."
+    },
+    {
+      "id": "combate",
+      "titulo": "Sistemas de combate",
+      "icone": "S",
+      "descricao": "Como o dano e as hordas funcionam."
+    },
+    {
+      "id": "progressao",
+      "titulo": "Progressão",
+      "icone": "N",
+      "descricao": "Experiência, orbes e níveis."
+    },
+    {
+      "id": "controles",
+      "titulo": "Controles",
+      "icone": "J",
+      "descricao": "Joystick, teclado e toques."
+    },
+    {
+      "id": "estrategias",
+      "titulo": "Estratégias",
+      "icone": "T",
+      "descricao": "Dicas baseadas no jogo atual."
+    },
+    {
+      "id": "glossario",
+      "titulo": "Glossário",
+      "icone": "G",
+      "descricao": "Termos usados no jogo e na Wiki."
+    }
+  ],
+  "areas": [
+    {
+      "id": "desenvolvimento",
+      "titulo": "Painel de desenvolvimento"
+    }
+  ]
+}

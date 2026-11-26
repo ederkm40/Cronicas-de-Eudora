@@ -18,11 +18,17 @@ O plano segue as fases do documento de criação: conceito → protótipo → ve
 - 16 testes específicos, smoke test de ponta a ponta e simulação prolongada.
 - Workflow valida Pull Requests sem publicar.
 
+### Infraestrutura: Wiki, prévias e memória (em revisão)
+- Wiki pública em `/wiki/`, gerada a partir de `wiki-src/`, com 12 categorias e painel de desenvolvimento.
+- Prévia jogável e Wiki candidata para cada Pull Request, em `/previews/pr-N/`.
+- Memória permanente: `AGENTS.md`, `docs/IA/`, relatórios por versão, decisões técnicas e changelog.
+- Divisão de papéis: Claude Code desenvolve, ChatGPT documenta.
+
 ## Próximas etapas (fase 1, protótipo)
 
 | Etapa | Objetivo | Principais entregas |
 | --- | --- | --- |
-| 0.3-alpha | Variedade de combate | 2 armas novas (aura de dano, lâmina giratória) que ocupam espaços próprios; melhorias que podem trazer arma nova |
+| **0.3-alpha (próxima)** | Variedade de combate | 2 armas novas (aura de dano, lâmina giratória) que ocupam espaços próprios; melhorias que podem trazer arma nova |
 | 0.4-alpha | Variedade de inimigos | 4 tipos além do comum (rápido, tanque, atirador, explosivo) e mini-chefe aos 10 minutos |
 | 0.5-alpha | Habilidade ativa | Botão de esquiva com recarga, sem atrapalhar o joystick |
 | 0.6-alpha | Fim de partida | Vitória aos 10 minutos, resumo da partida e equilíbrio a partir de testes com pessoas |
