@@ -9,12 +9,6 @@
       "commit": "696e96ec53cde483260dcc0efa3647c1de1d55b5",
       "publicado_em": "2026-11-26T12:34:40Z",
       "titulo": "Infraestrutura: Wiki pública, prévias jogáveis por PR e memória permanente"
-    },
-    "3": {
-      "branch": "teste/remocao-de-previa",
-      "commit": "ce9d3a075c11f8da864615d9d64d62213f2c57e1",
-      "publicado_em": "2026-11-26T12:34:55Z",
-      "titulo": "[Teste descartável] Validar remoção de prévia — será fechado sem merge"
     }
   }
 }
