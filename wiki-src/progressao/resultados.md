@@ -2,7 +2,7 @@
 titulo: Resultados da partida
 resumo: Resumo de vitória ou derrota com estatísticas e acesso à progressão permanente.
 estado: PUBLICADO
-versao: 0.3-alpha
+versao: 0.4-alpha
 ordem: 60
 ---
 Ao vencer ou perder, a tela de resultados apresenta um resumo da partida.
@@ -18,6 +18,9 @@ Ao vencer ou perder, a tela de resultados apresenta um resumo da partida.
 - Armas usadas, níveis, dano e abates por arma.
 - Melhorias escolhidas.
 - Ecos recebidos.
+- Elites derrotados.
+- Fendas do Eco fechadas.
+- Armas evoluídas.
 
 As estatísticas são registradas durante a partida, quando o dano e os abates acontecem. O dano causado corresponde à vida realmente retirada do inimigo, sem contar excesso do golpe final ou dano bloqueado por resistência.
 
