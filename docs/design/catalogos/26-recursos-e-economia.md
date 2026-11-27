@@ -23,5 +23,5 @@
 |---|---|---|---|---|---|
 | `vigor_ancestral` | Vigor ancestral | +8% de vida máxima | 5 | 15, 30, 50, 75, 110 | `APROVADO` · `IMPLEMENTADO` · `TESTADO` |
 | `furia_latente` | Fúria latente | +5% de dano de todas as armas | 5 | 20, 40, 65, 95, 130 | `APROVADO` · `IMPLEMENTADO` · `TESTADO` |
-| `atracao_do_eco` | Atração do eco | +20% de raio do ímã de orbes (o texto no jogo diz "raio de coleta") | 3 | 12, 25, 45 | `APROVADO` · `IMPLEMENTADO` · `TESTADO` |
+| `atracao_do_eco` | Atração do eco | +20% de raio do ímã de orbes | 3 | 12, 25, 45 | `APROVADO` · `IMPLEMENTADO` · `TESTADO` |
 | `renovacao` | Renovação | +1 troca de opções no level-up | 2 | 40, 90 | `APROVADO` · `IMPLEMENTADO` · `TESTADO` |

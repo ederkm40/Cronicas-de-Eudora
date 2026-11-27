@@ -51,7 +51,8 @@
 | `camera_rig.gd` | `CameraRig` | — | `Player`, `EnemyManager`, `main.gd` |
 | `floating_joystick.gd` | `FloatingJoystick` | — | `Player` (sinal `dodge_requested`), `main.gd` |
 | `enemy_types.gd` | `EnemyTypes` (dados) | — | `EnemyManager`, `BossController`, `RunStats`, testes |
-| `enemy_manager.gd` | `EnemyManager` | `Player`, `CameraRig`, `EnemyProjectiles`, `GroundEffects`, `RunStats` | armas, `BossController`, `main.gd` (sinais `enemy_killed`, `boss_died`) |
+| `enemy_manager.gd` | `EnemyManager` | `Player`, `CameraRig`, `EnemyProjectiles`, `GroundEffects`, `RunStats`, `EnemyRenderer` | armas, `BossController`, `main.gd` (sinais `enemy_killed`, `boss_died`) |
+| `enemy_renderer.gd` | `EnemyRenderer` (filho do `EnemyManager`) | `EnemyTypes` | `EnemyManager` (`draw()` uma vez por quadro) |
 | `enemy_projectiles.gd` | `EnemyProjectiles` | `Player` | `EnemyManager` (Lançador), `BossController` (rajada) |
 | `boss_controller.gd` | `BossController` | `EnemyManager`, `Player`, `GroundEffects`, `EnemyProjectiles` | `main.gd` (`start_encounter`, sinal `phase_changed`) |
 | `ground_effects.gd` | `GroundEffects` | — | inimigos, chefe, lâmina, esquiva |

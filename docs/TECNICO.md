@@ -1,6 +1,6 @@
 # Documentação técnica
 
-Estado de referência: versão 0.3-alpha "grande expansão do combate" (integrada no `main` pelo PR #5), com a manutenção pós-0.3 (builds de produção e QA, save validado, retomada do joystick). **A seção "0.4-alpha: O Despertar de Eudora" descreve o que o PR #10 acrescenta (em revisão, ainda não na `main`).** Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
+Estado de referência: versão **0.4-alpha "O Despertar de Eudora"** (integrada no `main` pelo PR #10, `f51db23`), sobre a 0.3-alpha e a manutenção pós-0.3, mais a manutenção pós-0.4 (desenho dos inimigos no `EnemyRenderer`). Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
 
 ## Visão geral
 
@@ -12,7 +12,8 @@ Main (main.gd)
 ├── GroundEffects (ground_effects.gd)      avisos e anéis no chão: arrays + 3 MultiMesh
 ├── Player (player.gd)                     personagem, vida, movimento, esquiva
 ├── CameraRig (camera_rig.gd)              câmera isométrica que segue o jogador
-├── EnemyManager (enemy_manager.gd)        todos os inimigos e o corpo do chefe: arrays + 1 MultiMesh por tipo
+├── EnemyManager (enemy_manager.gd)        todos os inimigos e o corpo do chefe: arrays paralelos
+│   └── EnemyRenderer (enemy_renderer.gd)  desenho dos inimigos: 1 MultiMesh por tipo
 ├── EnemyProjectiles (enemy_projectiles.gd) projéteis do Lançador e do chefe: arrays + 1 MultiMesh
 ├── BossController (boss_controller.gd)    máquina de estados do Sentinela do Eco
 ├── AutoWeapon (auto_weapon.gd)            Raio arcano (arma inicial): arrays + 1 MultiMesh
@@ -98,7 +99,7 @@ Recalculadas a partir dos valores base em `Upgrades.refresh()`, que também apli
 
 ## Inimigos (`EnemyTypes` + `EnemyManager`)
 
-Todos vivem nos mesmos arrays paralelos do `EnemyManager` (posição, vida, vida máxima, velocidade, empurrão, tipo, estado, temporizador, recarga da lâmina, piscada, aviso ligado e id estável). Um `MultiMesh` por tipo, com cor por instância (piscada de dano e brilho dos avisos).
+Todos vivem nos mesmos arrays paralelos do `EnemyManager` (posição, vida, vida máxima, velocidade, empurrão, tipo, estado, temporizador, recarga da lâmina, piscada, aviso ligado e id estável). O desenho fica no `EnemyRenderer`, filho do `EnemyManager`: um `MultiMesh` por tipo, com tamanho (elites maiores) e cor por instância. A cada quadro, o `EnemyManager` calcula a cor de cada inimigo (piscada de dano, brilho dos avisos, estados) num `PackedColorArray` e chama `EnemyRenderer.draw()` uma vez, passando os arrays (só leitura, sem cópia). A forma de cada tipo está em `EnemyRenderer.make_mesh()`. Se um ponto está na tela: `CameraRig.is_on_screen(ponto, centro, metade, margem)`.
 
 | Tipo | Vida | Velocidade | Contato | Comportamento |
 |---|---|---|---|---|
@@ -146,7 +147,7 @@ Vida 3.800. Abaixo de 50%: fase 2 (aviso no HUD, avisos e pausas 25% mais curtos
   - **Versão mais nova:** só leitura, tolerante a tipos desconhecidos; nunca salva por cima.
   - O original só é substituído no próximo salvamento, depois da cópia. Campos desconhecidos são mantidos ao salvar.
 - Recompensa: 1 Eco a cada 20 s, 1 a cada 15 abates, 40 por chefe derrotado.
-- Loja (na tela de resultados): Vigor ancestral (+8% de vida por nível, 5 níveis), Fúria latente (+5% de dano, 5), Atração do eco (+20% no raio do ímã dos orbes, 3; o texto no jogo diz "raio de coleta"), Renovação (+1 troca de opções, 2). Os preços estão em `MetaProgress.UPGRADES`.
+- Loja (na tela de resultados): Vigor ancestral (+8% de vida por nível, 5 níveis), Fúria latente (+5% de dano, 5), Atração do eco (+20% no raio do ímã dos orbes, 3), Renovação (+1 troca de opções, 2). Os preços estão em `MetaProgress.UPGRADES`.
 
 ## Desempenho
 
@@ -156,13 +157,13 @@ Nada repetido vira nó: inimigos, projéteis (do jogador e dos inimigos), orbes,
 - **Aura:** uma passada pelos inimigos por pulso, não por quadro. **Lâmina:** uma passada por quadro para achar quem está perto do anel, e só esses são comparados com as lâminas.
 - **Ciclo de vida:** tudo é filho de `Main`; "Jogar de novo" recarrega a cena e libera tudo. Os testes conferem que a partida anterior é liberada e que a nova começa sem inimigos, projéteis, efeitos, chefe, armas extras ou estatísticas antigas.
 
-Medições: ver `docs/versoes/0.3-alpha/RELATORIO.md`. São tempos de CPU do servidor de testes, sem renderização: **não** representam um celular.
+Medições: ver `docs/versoes/0.3-alpha/RELATORIO.md`, `docs/versoes/0.4-alpha/RELATORIO.md` e `docs/versoes/manutencao-pos-0.4/RELATORIO.md`. São tempos de CPU do servidor de testes, sem renderização: **não** representam um celular.
 
 ## Testes
 
 | Arquivo | O que cobre |
 |---|---|
-| `tests/run_tests.gd` + `tests/suites/` | 71 testes em 6 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (7); esquiva, encerramento e progressão permanente (9); save e joystick (10); despertar (20, 0.4) |
+| `tests/run_tests.gd` + `tests/suites/` | 73 testes em 6 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (8, com o desenho por tipo); esquiva, encerramento e progressão permanente (9); save e joystick (11, com a Atração do eco); despertar (20, 0.4) |
 | `tests/smoke_test.gd` | 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa; 0.4: elite e fenda forçados, pausa por Esc, sons e estouros |
 | `tests/long_simulation.gd` | partida longa (`--segundos=N`, `--invulneravel`): tempo por quadro, máximos, nós e memória, com reinícios |
 | `tests/balance_simulation.gd` | **não roda no CI**: comparação de armas (`--modo=dps`), partida com piloto (`--modo=partida`) e encontro final (`--modo=chefe`) |
@@ -249,7 +250,7 @@ Ferramentas de publicação (Python 3 e shell, sem dependências externas):
 - `docs/CHANGELOG.md`, `docs/versoes/*/RELATORIO.md` e `docs/decisoes/*.md` aparecem como páginas somente leitura do painel de desenvolvimento.
 - `docs/`, `tools/` e `wiki-src/` têm `.gdignore`, então não entram no `.pck` do jogo.
 
-## 0.4-alpha: O Despertar de Eudora (PR #10, em revisão)
+## 0.4-alpha: O Despertar de Eudora (PR #10)
 
 ### Dano e estados nos inimigos
 
@@ -322,6 +323,6 @@ Usa `EnemyManager.elapsed`. Só começa eventos com `spawning_enabled` e antes d
 - **Sem teste em celular físico.** Os testes de navegador emulam toque e tela de Pixel 7 num Chromium de computador.
 - **Equilíbrio medido só com piloto automático:** os números da versão vêm de simulações. Falta testar com pessoas (critério da fase 1).
 - **Tela deitada:** na 0.4 a câmera passa a mostrar 11 m na vertical (antes, uma faixa fina); as interfaces continuam numa coluna central. Não testado em aparelho.
-- **Destro/canhoto e ajuste do joystick:** implementados no PR #10 (em revisão); não testados em celular físico.
+- **Destro/canhoto e ajuste do joystick:** implementados na 0.4 (PR #10); não testados em celular físico.
 - **Orbes distantes** ficam no chão até o jogador passar perto.
 - **Som provisório (procedural) e sem arte final.** O som da 0.4 não foi ouvido por uma pessoa nesta etapa.
