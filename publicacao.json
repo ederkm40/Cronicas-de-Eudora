@@ -3,5 +3,12 @@
     "commit": "baea23d8413d2fbe19d900409060452588bb9b98",
     "publicado_em": "2026-11-27T15:26:54Z"
   },
-  "previas": {}
+  "previas": {
+    "13": {
+      "branch": "docs/her-001-guerreiro-arcano",
+      "commit": "84bbcfe1fd9c5354c1979c464baff56c343d9bb1",
+      "publicado_em": "2026-11-27T16:40:17Z",
+      "titulo": "docs: atualizar Wiki e changelog após manutenção pós-0.4-alpha"
+    }
+  }
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Controles · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Como jogar no celular e no computador, incluindo pausa e personalização.">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/wiki.css">
+</head>
+<body data-raiz="../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #13, branch <code>docs/her-001-guerreiro-arcano</code>, commit <code>84bbcfe</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../"><img src="../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../personagens/">Personagens</a></li><li><a href="../armas/">Armas</a></li><li><a href="../melhorias/">Melhorias</a></li><li><a href="../inimigos/">Inimigos</a></li><li><a href="../chefes/">Chefes</a></li><li><a href="../itens/">Itens e equipamentos</a></li><li><a href="../mapas/">Mapas e ambientes</a></li><li><a href="../combate/">Sistemas de combate</a></li><li><a href="../progressao/">Progressão</a></li><li><a href="./" aria-current=page>Controles</a></li><li><a href="../estrategias/">Estratégias</a></li><li><a href="../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../personagens/">Personagens</a></li><li><a href="../armas/">Armas</a></li><li><a href="../melhorias/">Melhorias</a></li><li><a href="../inimigos/">Inimigos</a></li><li><a href="../chefes/">Chefes</a></li><li><a href="../itens/">Itens e equipamentos</a></li><li><a href="../mapas/">Mapas e ambientes</a></li><li><a href="../combate/">Sistemas de combate</a></li><li><a href="../progressao/">Progressão</a></li><li><a href="./" aria-current=page>Controles</a></li><li><a href="../estrategias/">Estratégias</a></li><li><a href="../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../">Wiki</a></nav>
+<article>
+<h1>Controles</h1>
+
+
+<p>O jogo foi pensado para o <strong>celular na vertical</strong>, com movimento por joystick e ataques automáticos. Na 0.4-alpha, o jogador pode personalizar o controle para destros ou canhotos e escolher joystick fixo ou flutuante. No computador, o movimento também funciona pelo teclado. Consulte <a href="pausa-e-configuracoes/">Pausa e configurações</a> para conhecer as opções.</p>
+<div class="tabela"><table><thead><tr><th>Ação</th><th>Celular</th><th>Computador</th></tr></thead><tbody><tr><td>Mover</td><td><a href="joystick-flutuante/">Toque e arraste</a></td><td><a href="teclado/">WASD ou setas</a></td></tr><tr><td>Atacar</td><td>Automático</td><td>Automático</td></tr><tr><td>Esquivar</td><td><a href="esquiva/">Duplo toque no joystick</a></td><td>Espaço</td></tr><tr><td>Pausar e abrir configurações</td><td>Botão <strong>II</strong></td><td>Esc ou P</td></tr><tr><td>Escolher melhoria</td><td>Tocar no cartão</td><td>1, 2 ou 3</td></tr><tr><td>Trocar ofertas</td><td>Tocar em Trocar opções</td><td>R</td></tr><tr><td>Bloquear uma oferta</td><td>Tocar em Bloquear</td><td>Clicar em Bloquear</td></tr><tr><td>Jogar de novo</td><td>Tocar no botão</td><td>Clicar no botão</td></tr></tbody></table></div>
+<h2 id="personalizacao-mobile-0-4-alpha">Personalização mobile (0.4-alpha)</h2>
+<ul><li><strong>Mão:</strong> destro ou canhoto. O modo canhoto espelha a posição dos controles e indicadores relevantes.</li><li><strong>Joystick:</strong> flutuante ou fixo. No fixo, o centro permanece no lado do polegar, mas o toque pode começar em qualquer ponto.</li><li><strong>Tamanho:</strong> pequeno (0,8×), médio (1×) ou grande (1,25×).</li><li><strong>Altura:</strong> alta, média ou baixa para o joystick fixo.</li><li><strong>Opções de feedback:</strong> som, tremor da tela e números de dano podem ser ligados ou desligados.</li><li>As escolhas ficam salvas em user://configuracoes.json, separadas do progresso.</li></ul>
+<p>A esquiva continua por duplo toque direcional no joystick. Não existem botões exclusivos de ataque ou esquiva. O controle com um dedo continua sendo a diretriz mobile.</p>
+<p><strong>Limite:</strong> a configuração foi testada automaticamente em navegador emulado; ainda não foi conferida em aparelhos físicos com diferentes entalhes e áreas seguras.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit 84bbcfe</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/docs/her-001-guerreiro-arcano/wiki-src/controles/index.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../assets/busca.js" defer></script>
+</body>
+</html>
