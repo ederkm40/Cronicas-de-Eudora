@@ -26,9 +26,9 @@ Regras gerais: até 300 inimigos (todos os tipos); dano de contato de até 5 ini
 
 Dependências: combate, `GroundEffects` (avisos), `EnemyProjectiles` (Lançador), progressão (XP), `RunStats`.
 
-## Em desenvolvimento na 0.4-alpha (PR #10, ainda não na `main`)
+## Implementado na 0.4-alpha (PR #10, integrada à `main` em `f51db23`)
 
-**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `EM_DESENVOLVIMENTO` (PR #10) · **V** `TESTADO` (`tests/suites/despertar.gd`; sem teste com pessoas).
+**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `IMPLEMENTADO` (PR #10) · **V** `TESTADO` (`tests/suites/despertar.gd`; sem teste com pessoas).
 
 | Tipo (número) | Nome | Arquétipo | Vida | Velocidade | Contato | XP | Entrada | Peso máximo | Comportamento | Referência visual |
 |---|---|---|---|---|---|---|---|---|---|---|

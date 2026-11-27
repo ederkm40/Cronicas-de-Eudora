@@ -72,7 +72,7 @@ Medição de dano por segundo (simulação, não pessoas): ver [catálogo 30](30
 
 ## Evoluções (0.4-alpha, PR #10, ainda não na `main`)
 
-**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `EM_DESENVOLVIMENTO` (PR #10, `WeaponCatalog.EVOLUTIONS`, `Arsenal.evolve`) · **V** `TESTADO` (`tests/suites/despertar.gd`, `armas_e_ofertas.gd`).
+**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `IMPLEMENTADO` (PR #10, `WeaponCatalog.EVOLUTIONS`, `Arsenal.evolve`) · **V** `TESTADO` (`tests/suites/despertar.gd`, `armas_e_ofertas.gd`).
 
 Aparecem como carta dourada "EVOLUÇÃO · arma" no level-up (peso 5, contra 1 das outras), só quando a arma e as passivas cumprem os requisitos. Cada arma evolui uma vez. A carta mostra "Requisitos cumpridos: …".
 

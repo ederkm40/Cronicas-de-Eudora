@@ -22,9 +22,9 @@
 | **Estado de validação** | `TESTADO` (`inimigos_e_chefe.gd`: surgimento, avisos antes dos ataques, fase 2, vitória; Playwright: vitória e reinício). **Equilíbrio não validado com pessoas:** na última simulação o piloto automático sobreviveu, mas não derrotou o chefe |
 | **Histórico** | 0.3: criado; vida 7.000 → 4.500 → 3.800 durante o balanceamento por simulação |
 
-### Em desenvolvimento na 0.4-alpha (PR #10, ainda não na `main`)
+### Implementado na 0.4-alpha (PR #10, integrada à `main` em `f51db23`)
 
-**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `EM_DESENVOLVIMENTO` (PR #10) · **V** `TESTADO` (`tests/suites/despertar.gd`).
+**D** `PROPOSTO_NAO_APROVADO` (experimental) · **I** `IMPLEMENTADO` (PR #10) · **V** `TESTADO` (`tests/suites/despertar.gd`).
 
 | Mudança | Regra |
 |---|---|

@@ -99,6 +99,15 @@ func screen_to_ground(screen_dir: Vector2) -> Vector3:
 	return ground_right() * screen_dir.x + ground_forward() * -screen_dir.y
 
 
+## Se `pos` está dentro da área visível ao redor de `center` (com uma margem em metros).
+## `half` vem de `visible_ground_half_extent()`.
+func is_on_screen(pos: Vector3, center: Vector3, half: Vector2, margin: float) -> bool:
+	var rel := pos - center
+	var sx := rel.dot(ground_right())
+	var sz := rel.dot(ground_forward())
+	return absf(sx) < half.x - margin and absf(sz) < half.y - margin
+
+
 ## Metade da área visível do chão: x = largura, y = profundidade (em metros).
 func visible_ground_half_extent() -> Vector2:
 	var viewport_size := get_viewport().get_visible_rect().size

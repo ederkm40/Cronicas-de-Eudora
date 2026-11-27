@@ -15,6 +15,7 @@ const TESTS := [
 	"test_chefe_surge_aos_dez_minutos",
 	"test_chefe_ataques_com_aviso",
 	"test_chefe_fase_dois_e_vitoria",
+	"test_desenho_um_por_inimigo_e_tela",
 ]
 
 # ---------------------------------------------------------------- inimigos
@@ -37,8 +38,8 @@ func test_mistura_de_inimigos_por_tempo() -> void:
 	game.enemies.elapsed = 400.0
 	await _frames(300)
 	for kind in NEW_KINDS:
-		_check(game.enemies.count_of_kind(kind) > 0, "tipo %d deveria nascer aos 400 s" % kind)
-	_check(game.enemies.count_of_kind(EnemyTypes.CHEFE) == 0, "o chefe não nasce nas hordas")
+		_check(_count_of_kind(kind) > 0, "tipo %d deveria nascer aos 400 s" % kind)
+	_check(_count_of_kind(EnemyTypes.CHEFE) == 0, "o chefe não nasce nas hordas")
 
 
 func test_velocidade_e_resistencia_dos_tipos() -> void:
@@ -111,10 +112,13 @@ func test_lancador_distancia_aviso_e_disparo() -> void:
 	for f in 240:
 		await process_frame
 		var pos: Vector3 = game.enemies.position_of(_index_of_id(far_id))
-		if not game.enemies.is_on_screen(pos, half, 0.0):
+		if not game.camera_rig.is_on_screen(pos, game.player.global_position, half, 0.0):
 			shots_offscreen += game.enemy_projectiles.count
 	var final_pos: Vector3 = game.enemies.position_of(_index_of_id(far_id))
-	_check(game.enemies.is_on_screen(final_pos, half, 0.0), "o Lançador entra na tela")
+	_check(
+		game.camera_rig.is_on_screen(final_pos, game.player.global_position, half, 0.0),
+		"o Lançador entra na tela"
+	)
 	_check(shots_offscreen == 0, "o Lançador não atira de fora da tela")
 
 
@@ -233,3 +237,27 @@ func test_chefe_fase_dois_e_vitoria() -> void:
 	_check(game.ecos_earned >= 40, "a vitória dá pelo menos 40 Ecos (%d)" % game.ecos_earned)
 	var data: Dictionary = game.result_data()
 	_check(data.won and data.bosses == 1 and data.boss_seconds >= 0.0, "resumo da vitória")
+
+
+## O EnemyRenderer desenha exatamente os inimigos vivos de cada tipo, e o CameraRig diz
+## quem está dentro da tela.
+func test_desenho_um_por_inimigo_e_tela() -> void:
+	await _new_game()
+	_disable_bolt()
+	game.player.invulnerable = true
+	var renderer: EnemyRenderer = game.enemies.get_node("Desenho")
+	for k in 3:
+		_spawn_still(4.0 + k, 1.0e6, EnemyTypes.RESISTENTE)
+	_spawn_still(6.0, 1.0e6, EnemyTypes.EXPLOSIVO)
+	await _frames(1)
+	_check(renderer.drawn_of_kind(EnemyTypes.RESISTENTE) == 3, "3 Couraçados desenhados")
+	_check(renderer.drawn_of_kind(EnemyTypes.EXPLOSIVO) == 1, "1 Volátil desenhado")
+	_check(renderer.drawn_of_kind(EnemyTypes.COMUM) == 0, "nenhum comum")
+	_clear_enemies()
+	await _frames(1)
+	_check(renderer.drawn_of_kind(EnemyTypes.RESISTENTE) == 0, "sem inimigos, nada desenhado")
+	var center: Vector3 = game.player.global_position
+	var half: Vector2 = game.camera_rig.visible_ground_half_extent()
+	_check(game.camera_rig.is_on_screen(center, center, half, 0.0), "o centro está na tela")
+	var far: Vector3 = center + game.camera_rig.ground_right() * (half.x + 1.0)
+	_check(not game.camera_rig.is_on_screen(far, center, half, 0.0), "fora da largura, fora")

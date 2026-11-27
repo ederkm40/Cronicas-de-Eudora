@@ -2,8 +2,9 @@
 
 ## Último estado validado
 
-- **`main`:** `7aba866` (0.3-alpha, manutenção pós-0.3 e Documento Mestre do PR #7, documentação dos PRs #8 e #9). Jogo e Wiki oficiais publicados a partir dele.
-- **Em revisão:** PR #10 (branch `feat/despertar-de-eudora-04`): 0.4-alpha "O Despertar de Eudora". Traz configurações mobile e pausa, som procedural, evoluções, estados, Tecelão, Semeador, elites, chefe atordoado e Prisão de ecos, e eventos. Relatório em `docs/versoes/0.4-alpha/RELATORIO.md`. Não fazer merge: o proprietário aprova. As mecânicas são **propostas experimentais**: depois do merge, atualize os estados no Documento Mestre (`EM_DESENVOLVIMENTO (PR #10)` → `IMPLEMENTADO`; design só vira `APROVADO` com a palavra do proprietário).
+- **`main`:** `7a7daf2`: 0.4-alpha "O Despertar de Eudora" (PR #10, `f51db23`) e a Wiki dela (PR #11). Jogo e Wiki oficiais publicados a partir dele.
+- **Em revisão:** manutenção pós-0.4 (branch `claude/bold-clarke-aixtws`, PR #12): `EnemyRenderer` (decisão 0013), texto da Atração do eco e documentação atualizada. Não fazer merge: o proprietário aprova.
+- **Mecânicas da 0.4:** estão `IMPLEMENTADO (PR #10)` no Documento Mestre, mas o design continua `PROPOSTO_NAO_APROVADO (experimental)` até o proprietário dizer quais ficam.
 - **Proteção da `main`:** checks `Testar e exportar` e `Publicar`. Mantenha esses nomes de job.
 
 ## Onde procurar antes de criar algo
@@ -12,7 +13,7 @@
 2. **`docs/TECNICO.md`**: como o que existe funciona, com os números.
 3. **`docs/ROADMAP.md`**: o que está aprovado para entregar.
 4. **`docs/design/DOCUMENTO_MESTRE_SISTEMAS.md`** e **`docs/design/catalogos/`**: design de todos os sistemas, com estados independentes de design (`PROPOSTO_NAO_APROVADO`, `APROVADO`, `REJEITADO`, `SUBSTITUÍDO`), implementação e validação. **Não autoriza implementar.** Consulte antes de propor um sistema, para não duplicar. Ao implementar algo, atualize os estados e os números a partir do código.
-5. **`docs/decisoes/`**: decisões técnicas (0001–0012).
+5. **`docs/decisoes/`**: decisões técnicas (0001–0013).
 
 ## Decisões importantes (detalhes em `docs/decisoes/`)
 
@@ -20,12 +21,14 @@
 10. Arquitetura do combate 0.3 (item 9, a ponte por `?teste=1`, substituído pela 0011).
 11. Build de produção (preset `Web`) sem a ponte de testes; build `Web QA` só no CI para o Playwright.
 12. Gameplay da 0.4: estados em arrays do `EnemyManager`, um ponto de entrada para o dano (`_hurt`), evoluções como dados, `EventDirector` separado, configurações em arquivo próprio, som gerado no código.
+13. O `EnemyManager` ganha classes auxiliares: o desenho fica no `EnemyRenderer` (arrays passados só para leitura, uma chamada por quadro); auxiliares nunca leem membros com `_` de outra classe.
 
 ## Pendências
 
-- Aprovação do PR #10 e decisão sobre cada mecânica experimental.
+- Decisão do proprietário sobre cada mecânica experimental da 0.4.
 - Teste com pessoas em celulares físicos (equilíbrio, chefe — o piloto venceu 3/3 na 0.4 —, fenda, botão de pausa, joystick fixo, som) e FPS com a horda cheia.
-- `EnemyManager` está no limite de 20 métodos públicos: o próximo sistema de inimigos precisa de uma classe auxiliar.
+- `EnemyManager`: 18 de 20 métodos públicos, 772 de 1.000 linhas. Um sistema de inimigos grande deve vir numa classe auxiliar (decisão 0013).
+- Orbes distantes ficam no chão: falta o proprietário decidir (sumir, fundir ou puxar de longe).
 - Pesquisa nas fontes de referência do Documento Mestre (seção 38): ainda não consultadas.
 - Wiki e changelog (ChatGPT): dados em `ENTREGA_PARA_CHATGPT.md`.
 
