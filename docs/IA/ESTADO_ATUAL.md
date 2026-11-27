@@ -64,5 +64,5 @@ Mecânicas novas: **propostas experimentais** até o proprietário dizer que fic
 
 ## Estado dos testes
 
-- Desta etapa: `docs/versoes/0.5-alpha-parte-1/RELATORIO.md`. Local: 86 testes do Godot, 4.704 verificações, 0 falhas; smoke (pelo menu) e simulação longa OK. Playwright no CI.
+- Desta etapa: `docs/versoes/0.5-alpha-parte-1/RELATORIO.md`. Local: 86 testes do Godot, 4.704 verificações, 0 falhas; smoke (pelo menu) e simulação longa OK. Playwright no CI: QA 33 aprovados e 3 pulados; produção 11 aprovados e 1 pulado.
 - Históricos: `docs/versoes/manutencao-pos-0.4/`, `0.4-alpha/`, `0.3-alpha/` e `manutencao-pos-0.3/` (não repetidos nem alterados).

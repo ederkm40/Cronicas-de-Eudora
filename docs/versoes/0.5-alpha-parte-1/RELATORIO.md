@@ -69,7 +69,8 @@ Deitado (1280 × 600): as mesmas telas, numa coluna central.
 | `smoke_test` | `SMOKE TEST: OK` (agora abre o menu e toca em JOGAR) |
 | `long_simulation` (300 s) | `SIMULAÇÃO LONGA: OK`; média 1,85 ms, p95 4,75 ms, p99 6,81 ms |
 | Wiki e montagem do site | OK |
-| Playwright | só no CI: resultado no PR |
+| Playwright no CI (commit `8b62994`), Mesa/llvmpipe nos 3 perfis | build QA: **33 aprovados**, 3 pulados de propósito (eram 24; +9 = 3 testes do menu × 3 perfis). Build de produção: 11 aprovados, 1 pulado |
+| Prévia | publicada e **verificada no ar** pelo workflow (commit `8b62994`) |
 
 Testes novos da suíte `menu.gd`: abre na inicial com os Ecos; navegação, Voltar e Esc; voltar do Android; personagem e missão com números do código; configuração do menu vale na partida; configuração da pausa aparece no menu; compra no menu vale na partida (108 de vida com Vigor 1); JOGAR abre a partida com a escolha (só uma, mesmo com dois toques); Voltar ao menu pelos resultados; Encerrar com confirmação; voltar do celular na partida (e não no level-up); botão de pausa visível; tela inicial cabe em pé.
 
