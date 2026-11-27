@@ -6,8 +6,6 @@ resumo: Wiki oficial do RPG de ação isométrico de hordas, com combate automá
 
 A versão 0.4-alpha amplia o núcleo de gameplay com configurações mobile, evoluções de armas, uma melhoria de risco/recompensa, novos inimigos e elites, eventos temporários, novas mecânicas para a Sentinela do Eco e feedback audiovisual.
 
-O desenvolvimento editorial de personagens também começou: o **HER-001 — O Guerreiro Arcano** está documentado como proposta conceitual, sem implementação na build atual.
-
 {{jogar}}
 
 > **Versão oficial: 0.4-alpha — O Despertar de Eudora** {PUBLICADO}
@@ -28,15 +26,11 @@ O desenvolvimento editorial de personagens também começou: o **HER-001 — O G
 - **Feedback:** som procedural, estouros nos abates, números de dano seletivos e tremor de câmera.
 - **Resultados:** estatísticas de elites derrotados, Fendas fechadas e armas evoluídas.
 
-## Conteúdo em desenvolvimento
-
-- [[personagens/her-001-guerreiro-arcano|HER-001 — O Guerreiro Arcano]]: proposta conceitual do primeiro novo herói, ainda sem implementação.
-
 ## Últimas atualizações
 
 | Data | Versão | O que mudou |
 |---|---|---|
-| 27/11/2026 | Design | Ficha conceitual do HER-001 — O Guerreiro Arcano; proposta, sem mudança na build |
+| 27/11/2026 | Manutenção | Correção do texto da Atração do eco, extração do EnemyRenderer e atualização técnica, sem nova versão de gameplay (PR #12) |
 | 26/11/2026 | 0.4-alpha | O Despertar de Eudora: personalização mobile, evoluções, Pacto do Eco, Tecelão, Semeador, elites, eventos, chefe e feedback audiovisual (PR #10) |
 | 26/11/2026 | infraestrutura | Manutenção pós-0.3: build publicada sem ponte de QA, recuperação de save, retomada do joystick e Documento Mestre de Sistemas (PR #7) |
 | 26/11/2026 | 0.3-alpha | Duas armas novas, quatro tipos de inimigo adicionais, Sentinela do Eco, esquiva, Ecos e resultados |
