@@ -109,6 +109,14 @@ func _clear_enemies() -> void:
 		game.enemies._remove(game.enemies.count - 1)
 
 
+func _count_of_kind(kind: int) -> int:
+	var total := 0
+	for i in game.enemies.count:
+		if game.enemies.kind_of(i) == kind:
+			total += 1
+	return total
+
+
 func _index_of_id(id: int) -> int:
 	for i in game.enemies.count:
 		if game.enemies.id_of(i) == id:

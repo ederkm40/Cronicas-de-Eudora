@@ -46,7 +46,7 @@ const UPGRADES := [
 	{
 		"id": MAGNET,
 		"name": "Atração do eco",
-		"description": "+20% de raio de coleta dos orbes por nível.",
+		"description": "+20% no raio do ímã dos orbes por nível.",
 		"costs": [12, 25, 45],
 	},
 	{

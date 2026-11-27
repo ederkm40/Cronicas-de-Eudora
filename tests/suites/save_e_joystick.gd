@@ -13,6 +13,7 @@ const TESTS := [
 	"test_joystick_segue_o_dedo_movido_na_pausa",
 	"test_joystick_varios_level_ups_seguidos",
 	"test_joystick_retomada_sem_esquiva_acidental",
+	"test_atracao_do_eco_texto_e_efeito_no_ima",
 ]
 
 
@@ -255,3 +256,19 @@ func test_joystick_retomada_sem_esquiva_acidental() -> void:
 	await _double_tap(at, 5)
 	await _frames(15)
 	_check(game.player.dodges_used == 1, "o duplo toque normal funciona depois da pausa")
+
+
+## A Atração do eco aumenta o ímã dos orbes, e o texto da loja diz isso (antes dizia
+## "raio de coleta", que é outra distância: 0,6 m, e não muda).
+func test_atracao_do_eco_texto_e_efeito_no_ima() -> void:
+	var text: String = MetaProgress.definition(MetaProgress.MAGNET).description
+	_check("ímã" in text, "o texto fala do ímã (%s)" % text)
+	_check(not "coleta" in text, "o texto não fala em raio de coleta")
+	_delete_save()
+	var meta := MetaProgress.load_from(TEST_SAVE)
+	meta.ecos = 1000
+	_check(meta.buy(MetaProgress.MAGNET) and meta.buy(MetaProgress.MAGNET), "compra 2 níveis")
+	_check(meta.save(), "deveria salvar")
+	await _new_game(false, true)
+	var radius: float = game.orbs.magnet_radius
+	_check(_near(radius, 3.0 * 1.4), "Atração 2: ímã de 4,2 m (%.2f)" % radius)

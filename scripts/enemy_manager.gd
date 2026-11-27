@@ -1,7 +1,8 @@
 class_name EnemyManager
 extends Node3D
 ## Controla todos os inimigos de uma vez, sem um nó por inimigo.
-## Os dados ficam em arrays paralelos e o desenho sai de um MultiMesh por tipo de inimigo.
+## Os dados ficam em arrays paralelos; o desenho fica com o EnemyRenderer (um MultiMesh
+## por tipo de inimigo).
 ## Assim dá para ter centenas de inimigos na tela no celular.
 ##
 ## Tipos (ver EnemyTypes): Errante (comum), Espreitador (rápido), Couraçado (resistente),
@@ -23,7 +24,6 @@ const CELL := 1.5
 const INDEX_BITS := 16
 const INDEX_MASK := (1 << INDEX_BITS) - 1
 const CELL_OFFSET := 1 << 20  ## Deixa as coordenadas de célula sempre positivas.
-const FLOATS := 16  ## 12 da matriz + 4 da cor, por instância.
 const FLASH_TIME := 0.1
 const BOSS_CAPACITY := 2
 ## Raio do inimigo comum: o alcance dos acertos é medido a partir dele.
@@ -111,99 +111,20 @@ var _spawn_timer := 0.0
 var _frame := 0
 var _last_player_pos := Vector3.ZERO
 var _player_velocity := Vector3.ZERO
-var _meshes: Array[MultiMesh] = []
-var _buffers: Array[PackedFloat32Array] = []
-var _drawn := PackedInt32Array()
+var _renderer: EnemyRenderer
+var _colors := PackedColorArray()  ## Cor de cada inimigo no quadro (reaproveitado).
 ## (célula << 16) | índice, ordenado: inimigos agrupados por célula.
 var _sorted := PackedInt64Array()
 var _cell_start := {}  ## célula -> posição em _sorted onde ela começa.
 
 
 func _ready() -> void:
-	_drawn.resize(EnemyTypes.COUNT)
-	for kind in EnemyTypes.COUNT:
-		var capacity := BOSS_CAPACITY if kind == EnemyTypes.CHEFE else max_enemies
-		var multimesh := MultiMesh.new()
-		multimesh.transform_format = MultiMesh.TRANSFORM_3D
-		multimesh.use_colors = true
-		multimesh.mesh = _make_mesh(kind)
-		multimesh.instance_count = capacity
-		multimesh.visible_instance_count = 0
-		var buffer := PackedFloat32Array()
-		buffer.resize(capacity * FLOATS)
-		for i in capacity:
-			buffer[i * FLOATS + 0] = 1.0
-			buffer[i * FLOATS + 5] = 1.0
-			buffer[i * FLOATS + 10] = 1.0
-		_meshes.append(multimesh)
-		_buffers.append(buffer)
-		var instance := MultiMeshInstance3D.new()
-		instance.multimesh = multimesh
-		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		instance.custom_aabb = AABB(Vector3(-5000, -10, -5000), Vector3(10000, 20, 10000))
-		add_child(instance)
+	_renderer = EnemyRenderer.new()
+	_renderer.name = "Desenho"
+	add_child(_renderer)
+	_renderer.setup(max_enemies, BOSS_CAPACITY)
 	if player:
 		_last_player_pos = player.global_position
-
-
-## Formas provisórias, uma por tipo, para cada inimigo ser reconhecido de longe.
-func _make_mesh(kind: int) -> Mesh:
-	var mesh: PrimitiveMesh
-	match kind:
-		EnemyTypes.RAPIDO:
-			var capsule := CapsuleMesh.new()
-			capsule.radius = 0.26
-			capsule.height = 0.84
-			capsule.radial_segments = 10
-			capsule.rings = 2
-			mesh = capsule
-		EnemyTypes.RESISTENTE:
-			var box := BoxMesh.new()
-			box.size = Vector3(0.95, 1.1, 0.95)
-			mesh = box
-		EnemyTypes.ATIRADOR:
-			var prism := PrismMesh.new()
-			prism.size = Vector3(0.7, 1.2, 0.7)
-			mesh = prism
-		EnemyTypes.EXPLOSIVO:
-			var sphere := SphereMesh.new()
-			sphere.radius = 0.42
-			sphere.height = 0.84
-			sphere.radial_segments = 12
-			sphere.rings = 6
-			mesh = sphere
-		EnemyTypes.TECELAO:
-			var pillar := CylinderMesh.new()
-			pillar.top_radius = 0.12
-			pillar.bottom_radius = 0.38
-			pillar.height = 1.5
-			pillar.radial_segments = 8
-			mesh = pillar
-		EnemyTypes.SEMEADOR:
-			var mound := SphereMesh.new()
-			mound.radius = 0.5
-			mound.height = 0.6
-			mound.radial_segments = 10
-			mound.rings = 4
-			mesh = mound
-		EnemyTypes.CHEFE:
-			var body := CylinderMesh.new()
-			body.top_radius = 0.55
-			body.bottom_radius = 1.0
-			body.height = 2.4
-			body.radial_segments = 16
-			mesh = body
-		_:
-			var capsule := CapsuleMesh.new()
-			capsule.radius = 0.32
-			capsule.height = 1.1
-			capsule.radial_segments = 12
-			capsule.rings = 3
-			mesh = capsule
-	var material := StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	mesh.material = material
-	return mesh
 
 
 func _process(delta: float) -> void:
@@ -501,7 +422,7 @@ func _shooter_velocity(
 					EnemyTypes.ATIRADOR
 				)
 		return Vector3.ZERO
-	var on_screen := is_on_screen(pos, half, 0.6)
+	var on_screen := camera_rig.is_on_screen(pos, player.global_position, half, 0.6)
 	if on_screen and dist < shooter_max_distance + 2.5:
 		_timer[i] -= delta
 		if _timer[i] <= 0.0:
@@ -514,14 +435,6 @@ func _shooter_velocity(
 		return -dir * _speed[i]
 	var side := 1.0 if _ids[i] % 2 == 0 else -1.0
 	return Vector3(-dir.z, 0.0, dir.x) * side * _speed[i] * 0.5
-
-
-## Se o ponto está dentro da área visível ao redor do jogador (com uma margem em metros).
-func is_on_screen(pos: Vector3, half: Vector2, margin: float) -> bool:
-	var rel := pos - player.global_position
-	var sx := rel.dot(camera_rig.ground_right())
-	var sz := rel.dot(camera_rig.ground_forward())
-	return absf(sx) < half.x - margin and absf(sz) < half.y - margin
 
 
 ## Volátil: acende o pavio perto do jogador e explode depois do aviso.
@@ -597,35 +510,12 @@ static func _cell_key(x: int, z: int) -> int:
 # ---------------------------------------------------------------- desenho
 
 
+## Calcula a cor de cada inimigo e entrega tudo ao EnemyRenderer de uma vez.
 func _draw_instances() -> void:
-	var counts := PackedInt32Array()
-	counts.resize(EnemyTypes.COUNT)
+	_colors.resize(count)
 	for i in count:
-		var kind := _kind[i]
-		var b := counts[kind] * FLOATS
-		var buffer := _buffers[kind]
-		if b >= buffer.size():
-			continue
-		var pos := _positions[i]
-		var color := _color_of(i, kind)
-		var size := EnemyTypes.ELITE_SCALE if _elite[i] != 0 else 1.0
-		buffer[b + 0] = size
-		buffer[b + 5] = size
-		buffer[b + 10] = size
-		buffer[b + 3] = pos.x
-		buffer[b + 7] = pos.y + float(EnemyTypes.STATS[kind].height) * size
-		buffer[b + 11] = pos.z
-		buffer[b + 12] = color.r
-		buffer[b + 13] = color.g
-		buffer[b + 14] = color.b
-		buffer[b + 15] = 1.0
-		counts[kind] += 1
-	for kind in EnemyTypes.COUNT:
-		if counts[kind] == 0 and _drawn[kind] == 0:
-			continue
-		_meshes[kind].buffer = _buffers[kind]
-		_meshes[kind].visible_instance_count = counts[kind]
-		_drawn[kind] = counts[kind]
+		_colors[i] = _color_of(i, _kind[i])
+	_renderer.draw(count, _positions, _kind, _elite, _colors)
 
 
 ## Cor de cada inimigo neste quadro: pisca branco ao levar dano e brilha nos avisos.
@@ -748,14 +638,6 @@ func state_of(index: int) -> int:
 
 func boss_index() -> int:
 	return _boss_index
-
-
-func count_of_kind(kind: int) -> int:
-	var total := 0
-	for k in _kind:
-		if k == kind:
-			total += 1
-	return total
 
 
 ## A lâmina orbital acerta cada inimigo no máximo uma vez a cada `cooldown` segundos.
