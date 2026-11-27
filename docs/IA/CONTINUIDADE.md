@@ -3,7 +3,7 @@
 ## Último estado validado
 
 - **`main`:** `7a7daf2`: 0.4-alpha "O Despertar de Eudora" (PR #10, `f51db23`) e a Wiki dela (PR #11). Jogo e Wiki oficiais publicados a partir dele.
-- **Em revisão:** manutenção pós-0.4 (branch `claude/bold-clarke-aixtws`): `EnemyRenderer` (decisão 0013), texto da Atração do eco e documentação atualizada. Não fazer merge: o proprietário aprova.
+- **Em revisão:** manutenção pós-0.4 (branch `claude/bold-clarke-aixtws`, PR #12): `EnemyRenderer` (decisão 0013), texto da Atração do eco e documentação atualizada. Não fazer merge: o proprietário aprova.
 - **Mecânicas da 0.4:** estão `IMPLEMENTADO (PR #10)` no Documento Mestre, mas o design continua `PROPOSTO_NAO_APROVADO (experimental)` até o proprietário dizer quais ficam.
 - **Proteção da `main`:** checks `Testar e exportar` e `Publicar`. Mantenha esses nomes de job.
 

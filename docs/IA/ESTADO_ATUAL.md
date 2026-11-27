@@ -1,6 +1,6 @@
 # Estado atual do projeto
 
-*Atualizado pelo Claude Code a cada entrega. Última atualização: 27/11/2026, manutenção pós-0.4 (branch `claude/bold-clarke-aixtws`, em revisão).*
+*Atualizado pelo Claude Code a cada entrega. Última atualização: 27/11/2026, manutenção pós-0.4 (branch `claude/bold-clarke-aixtws`, PR #12, em revisão).*
 
 | | |
 |---|---|

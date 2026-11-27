@@ -5,8 +5,8 @@
 | **Data** | 27/11/2026 |
 | **Versão do jogo** | continua 0.4-alpha (sem mudança de equilíbrio, conteúdo ou progressão) |
 | **Branch** | `claude/bold-clarke-aixtws` (a partir do `main` `7a7daf2`, que tem a 0.4-alpha do PR #10 e a Wiki do PR #11) |
-| **Pull Request** | (preenchido ao abrir) |
-| **Prévia** | (preenchido ao abrir) |
+| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/12 |
+| **Prévia** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-12/ (build de produção) |
 
 ## Objetivo
 
@@ -78,4 +78,4 @@ As diferenças estão dentro do ruído do servidor: não houve ganho nem perda. 
 
 ## Commit e PR
 
-Ver o Pull Request.
+Código em `5adf868`, documentação nos commits seguintes da branch. PR #12.

@@ -9,7 +9,8 @@
 | **Etapa** | Manutenção pós-0.4-alpha |
 | **Versão do jogo** | continua **0.4-alpha** (sem mudança de equilíbrio, conteúdo ou progressão) |
 | **Branch** | `claude/bold-clarke-aixtws` (a partir do `main` `7a7daf2`) |
-| **Pull Request** | ver o PR desta branch |
+| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/12 |
+| **Prévia** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-12/ |
 | **Relatório** | `docs/versoes/manutencao-pos-0.4/RELATORIO.md` |
 
 ## Fatos para a Wiki (só depois do merge)
