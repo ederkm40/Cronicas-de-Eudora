@@ -3,8 +3,8 @@
 // mouse no perfil de computador, como um jogador faria).
 const { expect } = require("@playwright/test");
 
-/** Abre a build de QA (que tem a ponte de testes) e espera a partida começar. */
-async function abrirPartida(page) {
+/** Abre a build de QA (que tem a ponte de testes) e espera o menu inicial aparecer. */
+async function abrirMenu(page) {
   const erros = [];
   page.on("pageerror", (erro) => erros.push(`exceção: ${erro.message}`));
   page.on("console", (msg) => {
@@ -13,6 +13,17 @@ async function abrirPartida(page) {
   const resposta = await page.goto("./", { waitUntil: "load" });
   expect(resposta?.status()).toBe(200);
   await page.waitForFunction(() => !document.getElementById("status"), null, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__eudora && window.__eudora.tela === "menu", null, { timeout: 30_000 });
+  return erros;
+}
+
+/** Abre o jogo, toca em JOGAR no menu (como um jogador) e espera a partida começar. */
+async function abrirPartida(page, testInfo) {
+  const erros = await abrirMenu(page);
+  const dedo = await criarDedo(page, testInfo);
+  // Espera um pouco: o primeiro quadro do menu ainda pode estar montando o layout.
+  await page.waitForTimeout(300);
+  await dedo.tocar(await centro(page, (await estado(page)).menu.jogar));
   await page.waitForFunction(() => window.__eudora && window.__eudora.partida, null, { timeout: 30_000 });
   return erros;
 }
@@ -92,4 +103,4 @@ async function criarDedo(page, testInfo) {
   };
 }
 
-module.exports = { abrirPartida, estado, esperarEstado, comandos, centro, ponto, criarDedo };
+module.exports = { abrirMenu, abrirPartida, estado, esperarEstado, comandos, centro, ponto, criarDedo };

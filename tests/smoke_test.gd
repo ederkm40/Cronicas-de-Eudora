@@ -3,14 +3,17 @@ extends SceneTree
 ## Uso: godot --headless --path . --fixed-fps 60 --script res://tests/smoke_test.gd
 ## Sai com código 0 se tudo passou e 1 se algo falhou.
 ##
-## Roteiro: joystick (toque e arraste) -> teclado (D) -> esquiva (Espaço) -> anda em círculos
-## coletando orbes -> escolhe a primeira oferta sempre que sobe de nível (pode ser arma nova)
+## Roteiro: abre o menu e toca em JOGAR -> joystick (toque e arraste) -> teclado (D)
+## -> esquiva (Espaço) -> anda em círculos coletando orbes -> escolhe a primeira oferta
+## sempre que sobe de nível (pode ser arma nova)
 ## -> aos 20 s força um elite e uma Fenda do Eco -> aos 40 s pausa com Esc e retoma
 ## -> confere o ciclo inteiro no final.
 
 const SIMULATED_SECONDS := 60.0
 
 var _main: Node
+var _menu: Node
+var _menu_frames := 0
 var _time := 0.0  ## Tempo real da simulação (corre mesmo com a partida pausada).
 var _start_pos := Vector3.ZERO
 var _touched := false
@@ -30,12 +33,35 @@ func _initialize() -> void:
 	GameSettings.path = "user://teste_config_simulacao.json"
 	if FileAccess.file_exists(MetaProgress.path):
 		DirAccess.remove_absolute(MetaProgress.path)
-	var scene: PackedScene = load("res://scenes/main.tscn")
-	_main = scene.instantiate()
-	root.add_child(_main)
+	# Começa como o jogador: pela cena inicial do projeto (o menu) e o botão JOGAR.
+	var scene: PackedScene = load(ProjectSettings.get_setting("application/run/main_scene"))
+	_menu = scene.instantiate()
+	root.add_child(_menu)
+	current_scene = _menu
+
+
+## Toca em JOGAR no menu e espera a partida abrir (no máximo 2 s).
+func _wait_for_game() -> bool:
+	_menu_frames += 1
+	if _menu_frames == 2:
+		_check(_menu is MainMenu, "o jogo deveria abrir no menu")
+		_menu.play_button().pressed.emit()
+	if current_scene != null and current_scene != _menu and current_scene.has_method("elapsed"):
+		_main = current_scene
+		_check(not is_instance_valid(_menu), "o menu deveria ser liberado ao jogar")
+		return false
+	if _menu_frames > 120:
+		_check(false, "JOGAR deveria abrir a partida")
+		for failure in _failures:
+			printerr("FALHOU: " + failure)
+		quit(1)
+		return true
+	return false
 
 
 func _process(delta: float) -> bool:
+	if _main == null:
+		return _wait_for_game()
 	_time += delta
 	var player: Player = _main.player
 

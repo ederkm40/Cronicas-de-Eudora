@@ -11,6 +11,7 @@ const SUITES := [
 	"res://tests/suites/esquiva_e_encerramento.gd",
 	"res://tests/suites/save_e_joystick.gd",
 	"res://tests/suites/despertar.gd",
+	"res://tests/suites/menu.gd",
 ]
 const TEST_SAVE := "user://teste_progresso.json"
 const TEST_SETTINGS := "user://teste_configuracoes.json"

@@ -9,7 +9,7 @@
 //                     cai no SwiftShader. O renderizador usado de verdade é impresso pelo teste.
 //   E2E_CHROME        caminho de um Chrome já instalado (só para rodar fora do CI)
 //   E2E_MODO          "qa" (padrão): build "Web QA", com a ponte de testes → jogo.spec e
-//                     jogabilidade.spec. "producao": build "Web" publicada → jogo.spec e
+//                     jogabilidade.spec e menu.spec. "producao": build "Web" publicada → jogo.spec e
 //                     producao.spec (confere que a ponte de testes NÃO existe).
 const path = require("path");
 const { defineConfig, devices } = require("@playwright/test");
@@ -20,7 +20,7 @@ const renderizador = process.env.E2E_RENDERIZADOR || "mesa";
 const modo = process.env.E2E_MODO || "qa";
 const arquivos = modo === "producao"
   ? ["jogo.spec.js", "producao.spec.js"]
-  : ["jogo.spec.js", "jogabilidade.spec.js"];
+  : ["jogo.spec.js", "jogabilidade.spec.js", "menu.spec.js"];
 
 // SwiftShader (o padrão do Chromium sem placa de vídeo) não mostra atualizações de MultiMesh
 // do Godot (ver docs/IA/ESTADO_ATUAL.md). Mesa/llvmpipe pelo ANGLE-GL renderiza corretamente.

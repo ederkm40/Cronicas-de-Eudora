@@ -51,11 +51,9 @@ func _ready() -> void:
 	_top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_top_row.add_theme_constant_override("separation", 16)
 	column.add_child(_top_row)
-	_pause_button = Button.new()
-	_pause_button.text = "II"
-	_pause_button.custom_minimum_size = Vector2(76, 64)
-	_pause_button.focus_mode = Control.FOCUS_NONE
-	_pause_button.add_theme_font_size_override("font_size", 30)
+	# Claro e com borda: na 0.4 era cinza sobre o chão cinza e quase não se via.
+	_pause_button = UiStyle.button("II", 34, 76)
+	_pause_button.custom_minimum_size.x = 92
 	_pause_button.pressed.connect(func() -> void: pause_requested.emit())
 	_top_row.add_child(_pause_button)
 	_status = _make_label(34)

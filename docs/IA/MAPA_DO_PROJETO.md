@@ -53,6 +53,12 @@
 | `enemy_types.gd` | `EnemyTypes` (dados) | — | `EnemyManager`, `BossController`, `RunStats`, testes |
 | `enemy_manager.gd` | `EnemyManager` | `Player`, `CameraRig`, `EnemyProjectiles`, `GroundEffects`, `RunStats`, `EnemyRenderer` | armas, `BossController`, `main.gd` (sinais `enemy_killed`, `boss_died`) |
 | `enemy_renderer.gd` | `EnemyRenderer` (filho do `EnemyManager`) | `EnemyTypes` | `EnemyManager` (`draw()` uma vez por quadro) |
+| `main_menu.gd` | `MainMenu` (cena `scenes/menu.tscn`, a cena inicial) | `MetaProgress`, `GameSettings`, `RunSetup`, `SettingsPanel`, `ShopPanel`, `BackNavigation`, `UiStyle` | — (troca para `main.tscn` no JOGAR) |
+| `run_setup.gd` | `RunSetup` (escolha de personagem e missão) | — | `MainMenu` (grava), `main.gd` (lê com `take()`) |
+| `back_navigation.gd` | `BackNavigation` (Esc, voltar do Android e do navegador) | `JavaScriptBridge` (só na web) | `MainMenu`, `main.gd` |
+| `settings_panel.gd` | `SettingsPanel` | `GameSettings`, `UiStyle` | `PauseMenu`, `MainMenu` |
+| `shop_panel.gd` | `ShopPanel` | `MetaProgress`, `UiStyle` | `ResultsScreen`, `MainMenu` |
+| `ui_style.gd` | `UiStyle` (visual dos botões e textos) | — | menu, pausa, resultados, `Hud` (botão de pausa) |
 | `enemy_projectiles.gd` | `EnemyProjectiles` | `Player` | `EnemyManager` (Lançador), `BossController` (rajada) |
 | `boss_controller.gd` | `BossController` | `EnemyManager`, `Player`, `GroundEffects`, `EnemyProjectiles` | `main.gd` (`start_encounter`, sinal `phase_changed`) |
 | `ground_effects.gd` | `GroundEffects` | — | inimigos, chefe, lâmina, esquiva |

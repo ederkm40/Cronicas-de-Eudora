@@ -50,7 +50,11 @@ Detalhes em `docs/versoes/0.4-alpha/RELATORIO.md`. Mecânicas novas são propost
 | 0.5-alpha | Habilidade ativa | esquiva **implementada na 0.3**; destro/canhoto e ajuste do joystick **implementados na 0.4** (PR #10) |
 | 0.6-alpha | Fim de partida | vitória e resumo **implementados na 0.3**; **pendente:** equilíbrio com testes de pessoas |
 | Etapa 3 "O Despertar de Eudora" (0.4-alpha) | Evolução do núcleo de jogo: evoluções, elites, eventos, chefe, configurações mobile, som | **integrada pelo PR #10** (testes automáticos e simulação; sem teste com pessoas). As mecânicas novas são propostas experimentais até o proprietário dizer quais ficam |
-| Manutenção pós-0.4 | Documentação em dia, texto da Atração do eco, `EnemyManager` com espaço para crescer (`EnemyRenderer`) | **em revisão** (sem mudança de jogo) |
+| Manutenção pós-0.4 | Documentação em dia, texto da Atração do eco, `EnemyManager` com espaço para crescer (`EnemyRenderer`) | **integrada pelo PR #12** |
+| 0.5-alpha, Parte 1: menu inicial | Tela inicial, Personagens, Missões, Loja, Configurações; voltar em todas as telas (inclusive o do celular); configurações e loja compartilhadas; pacote de escolha para a partida | **em revisão no PR #14** (aprovada pelo proprietário) |
+| 0.5-alpha, Parte 2: personagens | Catálogo de personagens (dados), tela de escolha, save com versão nova | aprovada como plano; nomes e quantidade a definir pelo proprietário |
+| 0.5-alpha, Parte 3: missões | Catálogo de missões (configurações da partida), tela de missões com progresso | aprovada como plano; conteúdo a definir |
+| 0.5-alpha, Parte 4: loja e perfil | Desbloqueios na loja, tela de perfil com estatísticas | aprovada como plano |
 | Próxima proposta (a aprovar) | Teste com pessoas e ajustes | 5 a 10 pessoas no celular; ajustar equilíbrio, legibilidade e controles a partir do que elas relatarem |
 
 Critério de saída da fase 1: 5 a 10 pessoas jogam no celular e pedem para jogar de novo.

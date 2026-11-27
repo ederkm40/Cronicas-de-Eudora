@@ -2,10 +2,12 @@
 
 ## Último estado validado
 
-- **`main`:** `7a7daf2`: 0.4-alpha "O Despertar de Eudora" (PR #10, `f51db23`) e a Wiki dela (PR #11). Jogo e Wiki oficiais publicados a partir dele.
-- **Em revisão:** manutenção pós-0.4 (branch `claude/bold-clarke-aixtws`, PR #12): `EnemyRenderer` (decisão 0013), texto da Atração do eco e documentação atualizada. Não fazer merge: o proprietário aprova.
-- **Mecânicas da 0.4:** estão `IMPLEMENTADO (PR #10)` no Documento Mestre, mas o design continua `PROPOSTO_NAO_APROVADO (experimental)` até o proprietário dizer quais ficam.
+- **`main`:** `baea23d`: 0.4-alpha (PR #10) e a manutenção pós-0.4 (PR #12, `EnemyRenderer`, decisão 0013). Jogo e Wiki oficiais publicados a partir dele.
+- **Em revisão:** PR #14 (branch `claude/bold-clarke-aixtws`): 0.5-alpha, Parte 1 do menu inicial (decisão 0014). Não fazer merge: o proprietário aprova.
+- **Plano aprovado da 0.5-alpha "menu inicial":** Parte 1, esqueleto (PR #14); Parte 2, catálogo e seleção de personagens (save com versão nova); Parte 3, catálogo e seleção de missões; Parte 4, loja ampliada (desbloqueios) e perfil com estatísticas. Proposta inicial: nomes provisórios, 3 personagens com as armas que já existem, 4 missões feitas com os sistemas atuais, loja nos dois lugares. **Nomes e quantidades ainda dependem do proprietário.**
+- **Mecânicas da 0.4:** `IMPLEMENTADO (PR #10)` no Documento Mestre; o design continua `PROPOSTO_NAO_APROVADO (experimental)` até o proprietário dizer quais ficam.
 - **Proteção da `main`:** checks `Testar e exportar` e `Publicar`. Mantenha esses nomes de job.
+- **Branch da sessão:** a `claude/bold-clarke-aixtws` foi reaproveitada depois do merge do PR #12 (squash). Os commits antigos foram unidos por merge, sem mudar arquivos, porque o `push --force` é bloqueado.
 
 ## Onde procurar antes de criar algo
 
@@ -13,7 +15,7 @@
 2. **`docs/TECNICO.md`**: como o que existe funciona, com os números.
 3. **`docs/ROADMAP.md`**: o que está aprovado para entregar.
 4. **`docs/design/DOCUMENTO_MESTRE_SISTEMAS.md`** e **`docs/design/catalogos/`**: design de todos os sistemas, com estados independentes de design (`PROPOSTO_NAO_APROVADO`, `APROVADO`, `REJEITADO`, `SUBSTITUÍDO`), implementação e validação. **Não autoriza implementar.** Consulte antes de propor um sistema, para não duplicar. Ao implementar algo, atualize os estados e os números a partir do código.
-5. **`docs/decisoes/`**: decisões técnicas (0001–0013).
+5. **`docs/decisoes/`**: decisões técnicas (0001–0014).
 
 ## Decisões importantes (detalhes em `docs/decisoes/`)
 
@@ -22,6 +24,7 @@
 11. Build de produção (preset `Web`) sem a ponte de testes; build `Web QA` só no CI para o Playwright.
 12. Gameplay da 0.4: estados em arrays do `EnemyManager`, um ponto de entrada para o dano (`_hurt`), evoluções como dados, `EventDirector` separado, configurações em arquivo próprio, som gerado no código.
 13. O `EnemyManager` ganha classes auxiliares: o desenho fica no `EnemyRenderer` (arrays passados só para leitura, uma chamada por quadro); auxiliares nunca leem membros com `_` de outra classe.
+14. Menu inicial em cena própria (`menu.tscn`, cena inicial); a escolha vai para a partida por `RunSetup.current` (`static`); `SettingsPanel`, `ShopPanel` e `UiStyle` compartilhados; `BackNavigation` junta Esc, voltar do Android e voltar do navegador.
 
 ## Pendências
 
@@ -29,6 +32,7 @@
 - Teste com pessoas em celulares físicos (equilíbrio, chefe — o piloto venceu 3/3 na 0.4 —, fenda, botão de pausa, joystick fixo, som) e FPS com a horda cheia.
 - `EnemyManager`: 18 de 20 métodos públicos, 772 de 1.000 linhas. Um sistema de inimigos grande deve vir numa classe auxiliar (decisão 0013).
 - Orbes distantes ficam no chão: falta o proprietário decidir (sumir, fundir ou puxar de longe).
+- Menu: personagens e missões (Partes 2 e 3) dependem do proprietário definir nomes e quantidades.
 - Pesquisa nas fontes de referência do Documento Mestre (seção 38): ainda não consultadas.
 - Wiki e changelog (ChatGPT): dados em `ENTREGA_PARA_CHATGPT.md`.
 
@@ -37,7 +41,7 @@
 - Custo zero; dependências de desenvolvimento só no CI e fixadas; nada externo no jogo publicado.
 - Nunca trabalhar no `main` nem fazer merge.
 - Não alterar equilíbrio, conteúdo ou progressão sem uma etapa de gameplay aprovada. (A etapa 3 foi uma etapa de gameplay pedida pelo proprietário.)
-- Testes usam arquivos próprios: `MetaProgress.path` e `GameSettings.path`.
+- Testes usam arquivos próprios: `MetaProgress.path` e `GameSettings.path`. Testes que abrem `main.tscn` direto recebem a escolha padrão (`RunSetup.take()`); os do Playwright abrem a partida tocando em JOGAR.
 - Na sessão do Claude Code na nuvem: API do Pages, GraphQL, PyPI e npm podem estar bloqueados; `*.github.io` não abre; `push --force` e `git reset --hard` podem ser bloqueados. Use REST, Actions e logs.
 
 ## Comandos de teste

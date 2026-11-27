@@ -5,6 +5,7 @@ extends Node
 ## `main.gd` só carrega a ponte quando a funcionalidade `qa` existe. Sem `class_name` de
 ## propósito: nada no jogo depende desta classe.
 ##
+## Funciona no menu (MainMenu: `tela` = "menu") e na partida (`tela` = "partida").
 ## A cada 0,1 s escreve o estado da partida em `window.__eudora` (posição, vida, nível,
 ## esquivas, tela de level-up, tela de resultados, chefe) e a posição dos botões na tela,
 ## em frações da tela (0 a 1). Assim os testes do Playwright tocam nos botões de verdade.
@@ -57,6 +58,11 @@ func _run_commands() -> void:
 func execute(command: String) -> void:
 	var parts := command.split(":")
 	var value := parts[1] if parts.size() > 1 else ""
+	if _game is MainMenu:
+		if parts[0] == "ecos":
+			_game.meta.ecos = int(value)
+			_game.show_screen(_game.current_screen())
+		return
 	var enemies: EnemyManager = _game.enemies
 	match parts[0]:
 		"xp":
@@ -79,6 +85,8 @@ func execute(command: String) -> void:
 
 
 func snapshot() -> Dictionary:
+	if _game is MainMenu:
+		return menu_snapshot()
 	var player: Player = _game.player
 	var panel: LevelUpPanel = _game.level_up_panel
 	var results: ResultsScreen = _game.results
@@ -88,6 +96,7 @@ func snapshot() -> Dictionary:
 		weapons[String(id)] = _game.arsenal.level(id)
 	var boss_index := enemies.boss_index()
 	return {
+		"tela": "partida",
 		"partida": _game.get_instance_id(),
 		"tempo": _game.elapsed(),
 		"pausado": get_tree().paused,
@@ -123,6 +132,8 @@ func snapshot() -> Dictionary:
 		{
 			"aberto": results.is_open(),
 			"reiniciar": _rect(results.restart_button()),
+			"menu": _rect(results.menu_button()),
+			"titulo": results.title_text(),
 		},
 		"pausa":
 		{
@@ -130,14 +141,41 @@ func snapshot() -> Dictionary:
 			"botao": _rect(_game.hud.pause_button()),
 			"mao": _rect(_game.pause_menu.option_button("mao")),
 			"continuar": _rect(_game.pause_menu.resume_button()),
+			"encerrar": _rect(_game.pause_menu.quit_button()),
 			"canhoto": _game.settings.left_handed(),
 		},
 		"joystick_ativo": _game.joystick.is_active(),
 	}
 
 
+func menu_snapshot() -> Dictionary:
+	var menu: MainMenu = _game
+	var buttons := {}
+	for screen in [MainMenu.CHARACTERS, MainMenu.MISSIONS, MainMenu.SHOP, MainMenu.SETTINGS]:
+		buttons[String(screen)] = _rect(menu.nav_button(screen))
+	var back: Button = menu.back_button()
+	return {
+		"tela": "menu",
+		"menu":
+		{
+			"id": menu.get_instance_id(),
+			"tela": String(menu.current_screen()),
+			"jogar": _rect(menu.play_button()),
+			"botoes": buttons,
+			"voltar": _rect(back) if back else [],
+			"ecos": menu.meta.ecos,
+			"mao": _rect(menu.settings_panel().option_button("mao")),
+			"canhoto": menu.settings.left_handed(),
+			"comprar_vigor": _rect(menu.shop_panel().buy_button(MetaProgress.VIGOR)),
+			"vigor": menu.meta.level_of(MetaProgress.VIGOR),
+		},
+	}
+
+
 ## Retângulo do controle em frações da área visível: [x, y, largura, altura].
 func _rect(control: Control) -> Array:
+	if control == null:
+		return []
 	var size := get_viewport().get_visible_rect().size
 	var r := control.get_global_rect()
 	return [r.position.x / size.x, r.position.y / size.y, r.size.x / size.x, r.size.y / size.y]

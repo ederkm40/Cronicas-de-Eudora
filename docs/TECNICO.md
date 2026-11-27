@@ -1,10 +1,10 @@
 # Documentação técnica
 
-Estado de referência: versão **0.4-alpha "O Despertar de Eudora"** (integrada no `main` pelo PR #10, `f51db23`), sobre a 0.3-alpha e a manutenção pós-0.3, mais a manutenção pós-0.4 (desenho dos inimigos no `EnemyRenderer`). Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
+Estado de referência: versão **0.4-alpha "O Despertar de Eudora"** (integrada no `main` pelo PR #10, `f51db23`), com a manutenção pós-0.4 (PR #12). **A seção "0.5-alpha, Parte 1: menu inicial" descreve o que o PR #14 acrescenta (em revisão).** Godot 4.7.2, GDScript, renderizador Compatibility (WebGL 2 no navegador), exportação Web sem threads.
 
 ## Visão geral
 
-A cena `scenes/main.tscn` tem um único nó com `scripts/main.gd`, que monta toda a partida em código. Cada sistema é uma classe (`class_name`) num arquivo próprio.
+Duas cenas, cada uma com um único nó que monta tudo em código: `scenes/menu.tscn` (`MainMenu`, a cena inicial desde a 0.5, PR #14) e `scenes/main.tscn` (`scripts/main.gd`, a partida). Cada sistema é uma classe (`class_name`) num arquivo próprio.
 
 ```
 Main (main.gd)
@@ -163,8 +163,8 @@ Medições: ver `docs/versoes/0.3-alpha/RELATORIO.md`, `docs/versoes/0.4-alpha/R
 
 | Arquivo | O que cobre |
 |---|---|
-| `tests/run_tests.gd` + `tests/suites/` | 73 testes em 6 suítes: progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (8, com o desenho por tipo); esquiva, encerramento e progressão permanente (9); save e joystick (11, com a Atração do eco); despertar (20, 0.4) |
-| `tests/smoke_test.gd` | 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa; 0.4: elite e fenda forçados, pausa por Esc, sons e estouros |
+| `tests/run_tests.gd` + `tests/suites/` | 86 testes em 7 suítes: menu (13, 0.5); progressão (os 16 da 0.2); armas e ofertas (9); inimigos e chefe (8, com o desenho por tipo); esquiva, encerramento e progressão permanente (9); save e joystick (11, com a Atração do eco); despertar (20, 0.4) |
+| `tests/smoke_test.gd` | abre o menu e toca em JOGAR; 60 s de partida: joystick, tecla D, Espaço, coleta, ofertas escolhidas, pausa; 0.4: elite e fenda forçados, pausa por Esc, sons e estouros |
 | `tests/long_simulation.gd` | partida longa (`--segundos=N`, `--invulneravel`): tempo por quadro, máximos, nós e memória, com reinícios |
 | `tests/balance_simulation.gd` | **não roda no CI**: comparação de armas (`--modo=dps`), partida com piloto (`--modo=partida`) e encontro final (`--modo=chefe`) |
 
@@ -317,6 +317,45 @@ Usa `EnemyManager.elapsed`. Só começa eventos com `spawning_enabled` e antes d
 ### Ponte de QA
 
 `web_bridge.gd` (só na build Web QA) informa também `pausa` (aberta, retângulos do botão II, da opção "mão" e de Continuar, `canhoto`) e `joystick_ativo`.
+
+## 0.5-alpha, Parte 1: menu inicial (PR #14, em revisão)
+
+### Fluxo entre cenas
+
+```
+menu.tscn (MainMenu) --JOGAR--> RunSetup.current = escolha --> main.tscn (partida)
+main.tscn --resultados: "Jogar de novo"--> reload_current_scene() (mesma escolha)
+main.tscn --resultados: "Voltar ao menu"--> menu.tscn
+```
+
+- `project.godot`: `run/main_scene` = `res://scenes/menu.tscn`.
+- `RunSetup` (`run_setup.gd`): `character_id` e `mission_id` (`&"padrao"` por enquanto). `static var current` guarda a escolha entre as cenas; a partida lê com `RunSetup.take()`, que devolve a escolha ou a padrão (testes que abrem `main.tscn` direto). Nada é salvo em arquivo nesta parte.
+- `MainMenu` (`main_menu.gd`): telas `inicio`, `personagens`, `missoes`, `loja`, `configuracoes`. Uma visível por vez (`show_screen`), `back()` volta à inicial. JOGAR (150 de altura, pulso de brilho de 0,9 s) chama `start_run()`, que só troca de cena uma vez. Personagens e Missões mostram só a opção atual, com números lidos do código (`Player.base_max_hp`, `Player.move_speed`, `WeaponCatalog.BOLT`, `main.gd encounter_time`, por `Script.get_property_default_value`).
+
+### Componentes compartilhados
+
+| Componente | Usado em | O que faz |
+|---|---|---|
+| `SettingsPanel` | pausa e menu | as 7 opções de `GameSettings`; cada toque troca, salva e emite `settings_changed`. As duas telas leem o mesmo arquivo |
+| `ShopPanel` | menu e resultados | as 4 melhorias permanentes; compra, salva e emite `purchased` |
+| `UiStyle` | menu, pausa, resultados, botão de pausa | botões `StyleBoxFlat` (fundo, borda de 2, cantos de 14) em 3 tipos: `NORMAL`, `PRIMARY` (dourado: JOGAR, Continuar, Jogar de novo), `QUIET` (Voltar, Encerrar) |
+| `BackNavigation` | menu e partida | um sinal `back_requested` para Esc, `NOTIFICATION_WM_GO_BACK_REQUEST` (Android) e o voltar do navegador |
+
+**Voltar do navegador:** no primeiro toque, `history.pushState` cria uma entrada extra (uma por página, marcada em `window.__eudoraHistorico`). O evento `popstate` (ouvinte criado com `JavaScriptBridge.create_callback` e removido em `_exit_tree`) põe outra entrada no lugar e emite o sinal. Sem o primeiro toque, o Chrome ignoraria a entrada. Todo `eval` termina com `void 0`.
+
+**Na partida:** voltar abre a pausa, ou fecha se já estiver aberta. No level-up e nos resultados não faz nada. O Esc continua com o `_unhandled_input` da partida (`handle_escape = false`). **No menu:** Esc ou voltar levam à tela inicial; na inicial, nada acontece.
+
+### Pausa e resultados
+
+- Pausa: `SettingsPanel`, Continuar e **Encerrar partida**. O primeiro toque troca o texto para "Toque de novo para encerrar", e reabrir a pausa cancela. O segundo chama `Main.quit_run()`: a partida termina como derrota (`record_run`, os Ecos contam), fica congelada (`paused`) e os resultados mostram "Partida encerrada". `result_data()` ganhou `quit`.
+- Resultados: Jogar de novo (dourado), Voltar ao menu (`menu_requested` → `Main.go_to_menu()`, que despausa e troca de cena) e Loja (página com o `ShopPanel`).
+- Botão de pausa do HUD: `UiStyle` `NORMAL`, 92 × 76, fonte 34. Na 0.4 era o botão padrão do Godot, 76 × 64, cinza sobre o chão cinza.
+
+### Ponte de QA e testes
+
+- `web_bridge.gd` também funciona no menu: `tela` = `"menu"`, com `menu.{id, tela, jogar, botoes, voltar, ecos, mao, canhoto, comprar_vigor, vigor}` e o comando `ecos:N`. Na partida: `tela` = `"partida"`, mais `resultados.menu`, `resultados.titulo` e `pausa.encerrar`.
+- Godot: `tests/suites/menu.gd` (13 testes). O smoke test começa pelo menu e toca em JOGAR.
+- Playwright: `menu.spec.js` (3 testes: telas e voltar do navegador; configuração e compra valendo na partida, encerrar e voltar ao menu; voltar do navegador na partida). `abrirPartida` passa pelo menu e toca em JOGAR.
 
 ## Limitações conhecidas
 
