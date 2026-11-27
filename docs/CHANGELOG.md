@@ -18,7 +18,7 @@ Categorias: **Jogabilidade**, **Interface**, **Desempenho**, **Correção**, **T
 
 A direção visual foi bem recebida pelo proprietário como referência para continuar o desenvolvimento. Nome, biografia, habilidades definitivas, regras das afinidades, sprites e animações permanecem em aberto ou propostos. O projeto continua na versão oficial **0.4-alpha**. Este registro não cria uma versão nova nem altera a aprovação de design de sistemas existentes.
 
-Página de referência: [HER-001 — O Guerreiro Arcano](../wiki-src/personagens/her-001-guerreiro-arcano.md).
+Página de referência: [HER-001 — O Guerreiro Arcano](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/personagens/her-001-guerreiro-arcano.md).
 
 ---
 
