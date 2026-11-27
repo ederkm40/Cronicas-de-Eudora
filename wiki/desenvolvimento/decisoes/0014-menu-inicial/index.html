@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0014: Menu inicial como cena própria, escolha passada por RunSetup e um só &quot;voltar&quot; · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Decisões técnicas</a></nav>
+<article>
+<h1>0014: Menu inicial como cena própria, escolha passada por RunSetup e um só &quot;voltar&quot;</h1>
+
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#contexto">Contexto</a></li><li><a href="#decisao">Decisão</a></li><li><a href="#alternativas-consideradas">Alternativas consideradas</a></li><li><a href="#consequencias">Consequências</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Situação</strong></td><td>Aceita</td></tr><tr><td><strong>Data</strong></td><td>27/11/2026</td></tr></tbody></table></div>
+<h2 id="contexto">Contexto</h2>
+<p>O proprietário aprovou a Parte 1 do menu inicial (etapa 0.5-alpha): tela inicial, Personagens, Missões, Loja e Configurações, "voltar" em todas as telas (inclusive o do celular), o mesmo painel de configurações na pausa e no menu, e uma escolha (personagem e missão) entregue à partida. As partes 2 e 3 vão trazer catálogos de personagens e missões, então a forma de passar a escolha precisa aguentar isso sem mudar de novo.</p>
+<h2 id="decisao">Decisão</h2>
+<ol><li><strong>Cena própria para o menu</strong> (<code>scenes/menu.tscn</code>, <code>MainMenu</code>), que vira a cena inicial. A partida (<code>main.tscn</code>) continua sendo aberta e fechada inteira: ir ao menu é <code>change_scene_to_file</code>, e "Jogar de novo" continua sendo <code>reload_current_scene</code>. Assim nada da partida sobrevive no menu, como já era entre partidas.</li><li><strong>A escolha passa por <code>RunSetup.current</code></strong> (uma variável <code>static</code>), lida pela partida com <code>RunSetup.take()</code>. Não precisa de autoload nem de mudar o save. Se a partida for aberta direto (testes), <code>take()</code> devolve a escolha padrão, e os testes antigos continuam valendo.</li><li><strong>Componentes compartilhados</strong> em vez de cópias: <code>SettingsPanel</code> (pausa e menu), <code>ShopPanel</code> (menu e resultados) e <code>UiStyle</code> (visual dos botões). As duas telas de configurações leem e gravam o mesmo <code>GameSettings</code>.</li><li><strong>Um só sinal de "voltar"</strong> (<code>BackNavigation</code>): Esc, o voltar do Android (<code>NOTIFICATION_WM_GO_BACK_REQUEST</code>) e o voltar do navegador (entrada extra no histórico + <code>popstate</code>). No navegador, sem isso, o voltar do celular saía da página do jogo.</li></ol>
+<h2 id="alternativas-consideradas">Alternativas consideradas</h2>
+<ul><li><strong>Menu por cima da partida, na mesma cena:</strong> a partida teria de existir parada atrás do menu (memória, inimigos, sons) e ser reiniciada a cada JOGAR. Descartado.</li><li><strong>Autoload para a escolha:</strong> funciona, mas acrescenta um nó global para um único valor. A variável <code>static</code> faz o mesmo. Pode virar autoload se o estado entre cenas crescer.</li><li><strong>Salvar a escolha no <code>progresso.json</code> já na Parte 1:</strong> mudaria o formato do save (versão e migração) sem necessidade. Fica para a Parte 2, quando houver personagens a liberar.</li><li><strong>Tema global do Godot (<code>Theme</code>):</strong> mudaria também os cartões do level-up, que têm estilo próprio. Os botões recebem o estilo um a um (<code>UiStyle.button</code> / <code>style_button</code>).</li></ul>
+<h2 id="consequencias">Consequências</h2>
+<ul><li>O jogo abre no menu. Um toque a mais antes de jogar.</li><li>No navegador, o voltar só é interceptado depois do primeiro toque na página (regra do Chrome para entradas de histórico).</li><li>Os testes do Playwright abrem a partida pelo botão JOGAR; a ponte de QA também descreve o menu.</li><li>Novos personagens e missões vão entrar como dados num catálogo e chegar à partida pelo mesmo <code>RunSetup</code>.</li></ul>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 7954a67</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/decisoes/0014-menu-inicial.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>

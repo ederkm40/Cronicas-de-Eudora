@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório da 0.5-alpha, Parte 1: menu inicial · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Relatórios</a></nav>
+<article>
+<h1>Relatório da 0.5-alpha, Parte 1: menu inicial</h1>
+<p class="selos"><span class="versao-art">Desde a 0.5-alpha-parte-1</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#objetivo">Objetivo</a></li><li><a href="#o-botao-de-pausa">O botão de pausa</a></li><li><a href="#mudancas">Mudanças</a></li><li><a href="#capturas-godot-4-7-2-com-xvfb-e-mesa-nao-e-um-celular">Capturas (Godot 4.7.2 com Xvfb e Mesa, não é um celular)</a></li><li><a href="#arquivos">Arquivos</a></li><li><a href="#testes-e-resultados-locais-godot-4-7-2-headless">Testes e resultados (locais, Godot 4.7.2 headless)</a></li><li><a href="#problemas-e-limitacoes">Problemas e limitações</a></li><li><a href="#commit-e-pr">Commit e PR</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Data</strong></td><td>27/11/2026</td></tr><tr><td><strong>Versão do jogo</strong></td><td>0.5-alpha em construção (Parte 1 de 4). Sem mudança de equilíbrio, conteúdo ou progressão</td></tr><tr><td><strong>Branch</strong></td><td><code>claude/bold-clarke-aixtws</code> (a partir do <code>main</code> <code>baea23d</code>, que tem a manutenção pós-0.4 do PR #12)</td></tr><tr><td><strong>Pull Request</strong></td><td>https://github.com/ederkm40/Cronicas-de-Eudora/pull/14</td></tr><tr><td><strong>Prévia</strong></td><td>https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-14/</td></tr></tbody></table></div>
+<h2 id="objetivo">Objetivo</h2>
+<p>Parte 1 do menu, aprovada pelo proprietário:</p>
+<ul><li>tela inicial com título, Ecos e JOGAR, mais Personagens, Missões, Loja e Configurações;</li><li>"voltar" em todas as telas, inclusive o do celular, cabendo em pé e deitado;</li><li>o mesmo painel de configurações na pausa e no menu;</li><li>loja no menu;</li><li>"Jogar de novo" e "Voltar ao menu" nos resultados;</li><li>um pacote com a escolha (personagem e missão) entregue à partida, por enquanto só com os atuais.</li></ul>
+<p>O proprietário também relatou que <strong>não encontrou o botão de pausa</strong>.</p>
+<h2 id="o-botao-de-pausa">O botão de pausa</h2>
+<ul><li><strong>Causa:</strong> o botão "II" existia (canto de cima, do lado oposto ao polegar), mas usava o estilo padrão do Godot: cinza-escuro sobre o chão cinza-escuro, 76 × 64. Uma captura da versão oficial (Chromium com tela de Pixel 7) confirmou que ele parecia um enfeite.</li><li><strong>Correção:</strong> fundo roxo, borda clara de 2 px, cantos arredondados, 92 × 76, fonte 34 (<code>UiStyle</code>). Um teste confere tamanho, borda e contraste da borda com o chão.</li><li><strong>Bônus:</strong> o voltar do celular agora também abre a pausa.</li></ul>
+<h2 id="mudancas">Mudanças</h2>
+<div class="tabela"><table><thead><tr><th>O quê</th><th>Como</th></tr></thead><tbody><tr><td>Menu (<code>MainMenu</code>, <code>scenes/menu.tscn</code>)</td><td>cena inicial do jogo. JOGAR dourado de 150 de altura, com um brilho lento; 4 botões em grade 2 × 2; uma tela visível por vez</td></tr><tr><td>Voltar (<code>BackNavigation</code>)</td><td>Esc, voltar do Android e voltar do navegador. No menu volta à inicial; na partida abre ou fecha a pausa; no level-up e nos resultados não faz nada</td></tr><tr><td>Voltar do navegador</td><td>antes <strong>saía da página do jogo</strong>. Agora o jogo cria uma entrada no histórico no primeiro toque e a repõe a cada voltar</td></tr><tr><td>Configurações (<code>SettingsPanel</code>)</td><td>o mesmo painel na pausa e no menu, gravando o mesmo arquivo</td></tr><tr><td>Loja (<code>ShopPanel</code>)</td><td>a mesma loja no menu e nos resultados</td></tr><tr><td>Resultados</td><td>Jogar de novo, Voltar ao menu e Loja</td></tr><tr><td>Pausa</td><td>Continuar e <strong>Encerrar partida</strong>, que pede um segundo toque. Encerrar conta como derrota (os Ecos da partida contam) e mostra "Partida encerrada"</td></tr><tr><td>Pacote da partida (<code>RunSetup</code>)</td><td>personagem e missão escolhidos (<code>padrao</code>/<code>padrao</code>); "Jogar de novo" repete a escolha</td></tr><tr><td>Personagens e Missões</td><td>mostram a opção atual, com números do código (vida 100, 5,0 m/s, Raio arcano, chefe aos 10:00), e o aviso "Mais opções chegam nas próximas etapas do menu"</td></tr></tbody></table></div>
+<p>Detalhes técnicos: <code>docs/TECNICO.md</code> (seção "0.5-alpha, Parte 1") e decisão 0014.</p>
+<h2 id="capturas-godot-4-7-2-com-xvfb-e-mesa-nao-e-um-celular">Capturas (Godot 4.7.2 com Xvfb e Mesa, não é um celular)</h2>
+<p>Em pé (720 × 1280): início, configurações, loja, personagens, partida (botão de pausa novo), pausa e resultados de "Encerrar partida".</p>
+<p>!<a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.5-alpha-parte-1/capturas_retrato.png" rel="noopener">Capturas em pé</a></p>
+<p>Deitado (1280 × 600): as mesmas telas, numa coluna central.</p>
+<p>!<a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.5-alpha-parte-1/capturas_paisagem.png" rel="noopener">Capturas deitado</a></p>
+<h2 id="arquivos">Arquivos</h2>
+<ul><li>Novos: <code>scenes/menu.tscn</code>, <code>scripts/main_menu.gd</code>, <code>scripts/back_navigation.gd</code>, <code>scripts/settings_panel.gd</code>, <code>scripts/shop_panel.gd</code>, <code>scripts/run_setup.gd</code>, <code>scripts/ui_style.gd</code> (com os <code>.uid</code>), <code>tests/suites/menu.gd</code>, <code>tools/e2e/testes/menu.spec.js</code>.</li><li>Alterados: <code>project.godot</code> (cena inicial), <code>scripts/main.gd</code>, <code>scripts/pause_menu.gd</code>, <code>scripts/results_screen.gd</code>, <code>scripts/hud.gd</code>, <code>scripts/web_bridge.gd</code>, <code>tests/run_tests.gd</code>, <code>tests/smoke_test.gd</code>, <code>tools/e2e/testes/ajudantes.js</code>, <code>tools/e2e/testes/jogabilidade.spec.js</code>, <code>tools/e2e/playwright.config.js</code>.</li><li>Documentação: <code>docs/TECNICO.md</code>, decisão 0014 (e a linha no índice), <code>docs/IA/*</code>, <code>docs/ROADMAP.md</code>, Documento Mestre (seção 27.1).</li></ul>
+<h2 id="testes-e-resultados-locais-godot-4-7-2-headless">Testes e resultados (locais, Godot 4.7.2 headless)</h2>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado</th></tr></thead><tbody><tr><td><code>gdlint scripts tests</code></td><td><code>Success: no problems found</code></td></tr><tr><td><code>gdformat --check</code> (arquivos alterados)</td><td>sem pendências</td></tr><tr><td><code>run_tests</code></td><td>86 testes, 4.704 verificações, 0 falhas (13 novos na suíte <code>menu.gd</code>)</td></tr><tr><td><code>smoke_test</code></td><td><code>SMOKE TEST: OK</code> (agora abre o menu e toca em JOGAR)</td></tr><tr><td><code>long_simulation</code> (300 s)</td><td><code>SIMULAÇÃO LONGA: OK</code>; média 1,85 ms, p95 4,75 ms, p99 6,81 ms</td></tr><tr><td>Wiki e montagem do site</td><td>OK</td></tr><tr><td>Playwright no CI (commit <code>8b62994</code>), Mesa/llvmpipe nos 3 perfis</td><td>build QA: <strong>33 aprovados</strong>, 3 pulados de propósito (eram 24; +9 = 3 testes do menu × 3 perfis). Build de produção: 11 aprovados, 1 pulado</td></tr><tr><td>Prévia</td><td>publicada e <strong>verificada no ar</strong> pelo workflow (commit <code>8b62994</code>)</td></tr></tbody></table></div>
+<p>Testes novos da suíte <code>menu.gd</code>: abre na inicial com os Ecos; navegação, Voltar e Esc; voltar do Android; personagem e missão com números do código; configuração do menu vale na partida; configuração da pausa aparece no menu; compra no menu vale na partida (108 de vida com Vigor 1); JOGAR abre a partida com a escolha (só uma, mesmo com dois toques); Voltar ao menu pelos resultados; Encerrar com confirmação; voltar do celular na partida (e não no level-up); botão de pausa visível; tela inicial cabe em pé.</p>
+<p>Playwright (<code>menu.spec.js</code>), nos 3 perfis: telas e Voltar por toque, e o voltar do navegador sem sair da página; canhoto e compra no menu valendo na partida, Encerrar com dois toques e Voltar ao menu; voltar do navegador pausando e retomando a partida. Todos os testes antigos de jogabilidade agora abrem a partida tocando em JOGAR.</p>
+<h2 id="problemas-e-limitacoes">Problemas e limitações</h2>
+<ul><li>Não testado em celular físico. As capturas vêm do Godot com renderização por software.</li><li>No navegador, o voltar só é interceptado depois do primeiro toque na página (regra do Chrome). Antes disso, ele sai da página, como antes.</li><li>Personagens e Missões ainda não têm escolha: só a opção atual. Os catálogos vêm nas partes 2 e 3.</li><li>Na tela deitada, as telas ficam numa coluna central e pequenas, como o resto da interface.</li><li>No fim dos testes aparece o aviso "2 ObjectDB instances leaked" (<code>AudioStreamWAV</code> do cache de sons da 0.4). Ele não vem do menu.</li></ul>
+<h2 id="commit-e-pr">Commit e PR</h2>
+<p>Código em <code>e13f586</code>, mais a junção com o histórico da branch (sem mudar arquivos) e a documentação. PR #14.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit 7954a67</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.5-alpha-parte-1/RELATORIO.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>
