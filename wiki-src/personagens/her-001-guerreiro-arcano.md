@@ -3,7 +3,7 @@ titulo: HER-001 — O Guerreiro Arcano
 resumo: Proposta conceitual do primeiro novo herói de Crônicas de Eudora, com domínio potencial sobre dez afinidades elementais.
 ---
 
-<badge>PROPOSTO_NAO_APROVADO</badge>
+**Estado:** `PROPOSTO_NAO_APROVADO`.
 
 > **Natureza deste registro:** proposta de personagem e direção artística. Não representa personagem implementado, selecionável, testado ou publicado. A arte desenvolvida na conversa é referência conceitual; ainda não existe um pacote de sprites validado no repositório.
 
