@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório da manutenção pós-0.4-alpha · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Wiki oficial de Crônicas de Eudora, RPG de ação isométrico com combate de hordas, armas automáticas e progressão roguelite.">
+<link rel="icon" href="../../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../../assets/wiki.css">
+</head>
+<body data-raiz="../../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #12, branch <code>claude/bold-clarke-aixtws</code>, commit <code>a087559</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../../"><img src="../../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../../personagens/">Personagens</a></li><li><a href="../../../armas/">Armas</a></li><li><a href="../../../melhorias/">Melhorias</a></li><li><a href="../../../inimigos/">Inimigos</a></li><li><a href="../../../chefes/">Chefes</a></li><li><a href="../../../itens/">Itens e equipamentos</a></li><li><a href="../../../mapas/">Mapas e ambientes</a></li><li><a href="../../../combate/">Sistemas de combate</a></li><li><a href="../../../progressao/">Progressão</a></li><li><a href="../../../controles/">Controles</a></li><li><a href="../../../estrategias/">Estratégias</a></li><li><a href="../../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../" aria-current=page>Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../../">Wiki</a> › <a href="../../">Painel de desenvolvimento</a> › <a href="../">Relatórios</a></nav>
+<article>
+<h1>Relatório da manutenção pós-0.4-alpha</h1>
+<p class="selos"><span class="versao-art">Desde a manutencao-pos-0.4</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#objetivo">Objetivo</a></li><li><a href="#1-texto-da-atracao-do-eco">1. Texto da Atração do eco</a></li><li><a href="#2-divisao-do-enemymanager-decisao-0013">2. Divisão do EnemyManager (decisão 0013)</a></li><li><a href="#arquivos-alterados">Arquivos alterados</a></li><li><a href="#testes-novos">Testes novos</a></li><li><a href="#resultados-locais-godot-4-7-2-headless-neste-servidor">Resultados (locais, Godot 4.7.2 headless neste servidor)</a></li><li><a href="#problemas-e-limitacoes">Problemas e limitações</a></li><li><a href="#commit-e-pr">Commit e PR</a></li></ol></details>
+<div class="tabela"><table><thead><tr><th></th><th></th></tr></thead><tbody><tr><td><strong>Data</strong></td><td>27/11/2026</td></tr><tr><td><strong>Versão do jogo</strong></td><td>continua 0.4-alpha (sem mudança de equilíbrio, conteúdo ou progressão)</td></tr><tr><td><strong>Branch</strong></td><td><code>claude/bold-clarke-aixtws</code> (a partir do <code>main</code> <code>7a7daf2</code>, que tem a 0.4-alpha do PR #10 e a Wiki do PR #11)</td></tr><tr><td><strong>Pull Request</strong></td><td>https://github.com/ederkm40/Cronicas-de-Eudora/pull/12</td></tr><tr><td><strong>Prévia</strong></td><td>https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-12/ (build de produção)</td></tr></tbody></table></div>
+<h2 id="objetivo">Objetivo</h2>
+<p>Arrumar a casa depois da 0.4, sem mexer no jogo:</p>
+<ol><li>Pôr a documentação em dia: ela ainda dizia que a 0.4 estava "em revisão".</li><li>Corrigir o texto da Atração do eco.</li><li>Tirar o <code>EnemyManager</code> do limite do <code>gdlint</code> (20 métodos públicos), para o próximo sistema de inimigos ter espaço.</li></ol>
+<h2 id="1-texto-da-atracao-do-eco">1. Texto da Atração do eco</h2>
+<ul><li><strong>Problema:</strong> a loja dizia "+20% de raio de coleta dos orbes por nível". O efeito real é no <strong>ímã</strong> (<code>XpOrbManager.magnet_radius</code>, 3 m na base), a distância em que o orbe começa a voar até o personagem. A coleta final (0,6 m) não muda.</li><li><strong>Solução:</strong> o texto passou a ser "+20% no raio do ímã dos orbes por nível." (<code>scripts/meta_progress.gd</code>). O efeito e os preços não mudaram.</li></ul>
+<h2 id="2-divisao-do-enemymanager-decisao-0013">2. Divisão do EnemyManager (decisão 0013)</h2>
+<div class="tabela"><table><thead><tr><th></th><th>Antes</th><th>Depois</th></tr></thead><tbody><tr><td>Linhas de <code>enemy_manager.gd</code></td><td>890</td><td>772</td></tr><tr><td>Métodos públicos (limite 20)</td><td>20</td><td>18</td></tr></tbody></table></div>
+<ul><li><strong><code>EnemyRenderer</code> (novo, <code>scripts/enemy_renderer.gd</code>):</strong> cria os <code>MultiMesh</code> (um por tipo, 300 de capacidade, 2 para o chefe), guarda os buffers e as formas provisórias de cada tipo (<code>make_mesh</code>). O <code>EnemyManager</code> calcula a cor de cada inimigo num <code>PackedColorArray</code> reaproveitado e chama <code>draw()</code> uma vez por quadro. O código de desenho é o mesmo de antes, só mudou de arquivo.</li><li><strong><code>is_on_screen</code></strong> passou para o <code>CameraRig</code>, com o centro como parâmetro: <code>is_on_screen(ponto, centro, metade, margem)</code>.</li><li><strong><code>count_of_kind</code></strong> saiu do <code>EnemyManager</code>. Só os testes usavam; agora é <code>_count_of_kind</code> em <code>tests/suites/base.gd</code>.</li></ul>
+<h2 id="arquivos-alterados">Arquivos alterados</h2>
+<ul><li>Código: <code>scripts/enemy_renderer.gd</code> (novo, com <code>.uid</code>), <code>scripts/enemy_manager.gd</code>, <code>scripts/camera_rig.gd</code>, <code>scripts/meta_progress.gd</code>.</li><li>Testes: <code>tests/suites/base.gd</code>, <code>tests/suites/inimigos_e_chefe.gd</code>, <code>tests/suites/save_e_joystick.gd</code>.</li><li>Documentação: <code>docs/TECNICO.md</code>, <code>docs/ROADMAP.md</code>, <code>docs/IA/*</code>, <code>docs/decisoes/0013-*</code> (e a linha no índice), <code>docs/design/DOCUMENTO_MESTRE_SISTEMAS.md</code> e os catálogos 03, 05, 12, 14 e 26.</li></ul>
+<h2 id="testes-novos">Testes novos</h2>
+<ul><li><code>test_desenho_um_por_inimigo_e_tela</code> (inimigos e chefe): o <code>EnemyRenderer</code> desenha exatamente 3 Couraçados e 1 Volátil quando há 3 e 1, nenhum comum, e nada depois de limpar; <code>CameraRig.is_on_screen</code> aceita o centro e recusa um ponto além da largura.</li><li><code>test_atracao_do_eco_texto_e_efeito_no_ima</code> (save e joystick): o texto fala do ímã e não de coleta; com 2 níveis comprados e salvos, a partida seguinte começa com ímã de 4,2 m.</li></ul>
+<h2 id="resultados-locais-godot-4-7-2-headless-neste-servidor">Resultados (locais, Godot 4.7.2 headless neste servidor)</h2>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado</th></tr></thead><tbody><tr><td><code>gdlint scripts tests</code></td><td><code>Success: no problems found</code></td></tr><tr><td><code>gdformat --check</code> (arquivos alterados)</td><td>sem alterações pendentes</td></tr><tr><td><code>run_tests</code></td><td>73 testes, 4.624 verificações, 0 falhas — <code>TESTES: OK</code></td></tr><tr><td><code>smoke_test</code></td><td><code>SMOKE TEST: OK</code></td></tr><tr><td><code>long_simulation</code> (300 s)</td><td><code>SIMULAÇÃO LONGA: OK</code></td></tr><tr><td><code>tools/wiki/test_wiki.py</code></td><td>OK</td></tr><tr><td><code>tools/site/test_montar_site.py</code></td><td>OK</td></tr><tr><td>Exportações e Playwright</td><td>só no CI (ver o PR)</td></tr></tbody></table></div>
+<h3 id="mesmo-jogo-mesmo-custo">Mesmo jogo, mesmo custo</h3>
+<p>A <code>long_simulation</code> de 300 s foi rodada no <code>main</code> e nesta branch. As partidas são <strong>idênticas</strong>: mesmos inimigos (122, 300, 123…), níveis, orbes e mortes nos mesmos instantes. A única diferença é 1 nó a mais na árvore (188 contra 187), o <code>EnemyRenderer</code>.</p>
+<p>Tempo de CPU por quadro, três rodadas alternadas no mesmo servidor (<strong>não representa um celular</strong>):</p>
+<div class="tabela"><table><thead><tr><th>Rodada</th><th><code>main</code> média · p95 · p99</th><th>Esta branch média · p95 · p99</th></tr></thead><tbody><tr><td>1</td><td>2,08 · 6,32 · 7,39 ms</td><td>1,84 · 5,05 · 6,64 ms</td></tr><tr><td>2</td><td>1,82 · 5,07 · 6,49 ms</td><td>1,80 · 4,76 · 6,03 ms</td></tr><tr><td>3</td><td>1,84 · 5,23 · 6,51 ms</td><td>1,83 · 5,13 · 6,80 ms</td></tr></tbody></table></div>
+<p>As diferenças estão dentro do ruído do servidor: não houve ganho nem perda. O pior quadro (65 a 104 ms) é o primeiro, quando os sons são gerados, como na 0.4.</p>
+<h2 id="problemas-e-limitacoes">Problemas e limitações</h2>
+<ul><li>Continua: nada testado em celular físico nem por pessoas; orbes distantes ficam no chão.</li><li>A grade espacial continua no <code>EnemyManager</code> (ver as alternativas da decisão 0013).</li><li>As mecânicas da 0.4 continuam <strong>propostas experimentais</strong> no Documento Mestre: o merge integrou o código, mas cada mecânica só vira <code>APROVADO</code> com a palavra do proprietário.</li></ul>
+<h2 id="commit-e-pr">Commit e PR</h2>
+<p>Código em <code>5adf868</code>, documentação nos commits seguintes da branch. PR #12.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit a087559</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/claude/bold-clarke-aixtws/docs/versoes/manutencao-pos-0.4/RELATORIO.md" rel="noopener">Ver o documento de origem</a></p>
+</footer>
+<script src="../../../assets/busca.js" defer></script>
+</body>
+</html>

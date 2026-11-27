@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Level-up · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Ao subir de nível, a partida pausa e você escolhe entre armas novas, evoluções ou melhorias.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #12, branch <code>claude/bold-clarke-aixtws</code>, commit <code>a087559</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../" aria-current=page>Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../" aria-current=page>Progressão</a></li><li><a href="../../controles/">Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Progressão</a></nav>
+<article>
+<h1>Level-up</h1>
+<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.4-alpha</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#como-funciona">Como funciona</a></li><li><a href="#tipos-de-oferta">Tipos de oferta</a></li><li><a href="#trocar-e-bloquear">Trocar e bloquear</a></li><li><a href="#cura-e-fim-das-opcoes">Cura e fim das opções</a></li></ol></details>
+<p>Quando a barra de <a href="../experiencia/">experiência</a> enche, a partida pausa e abre o painel de level-up.</p>
+<h2 id="como-funciona">Como funciona</h2>
+<ol><li>Inimigos, projéteis, orbes, surgimento das hordas e relógio param.</li><li>Aparecem até três ofertas válidas.</li><li>Você escolhe uma oferta, troca as opções ou bloqueia um cartão.</li><li>A escolha é aplicada e a partida continua.</li></ol>
+<h2 id="tipos-de-oferta">Tipos de oferta</h2>
+<ul><li><strong>Nova arma:</strong> adquire uma arma que ainda não está no arsenal, se houver espaço.</li><li><strong>Evolução de arma:</strong> na 0.4-alpha, uma carta dourada pode transformar uma arma quando seus requisitos de arma e passivas são cumpridos.</li><li><strong>Melhoria:</strong> aumenta uma das seis melhorias passivas ou escolhe o novo <strong>Pacto do Eco</strong>.</li></ul>
+<p>O Pacto do Eco é experimental: cada nível concede +25% de dano e +15% de experiência, mas aumenta o dano recebido em 20%. O limite é de três níveis.</p>
+<p>As opções são diferentes entre si. Armas no nível máximo e melhorias no limite deixam de aparecer. Se houver menos de três opções válidas, o jogo mostra apenas as que existem.</p>
+<h2 id="trocar-e-bloquear">Trocar e bloquear</h2>
+<div class="tabela"><table><thead><tr><th>Ação</th><th style="text-align:right">Limite base por partida</th><th>Efeito</th></tr></thead><tbody><tr><td>Trocar opções</td><td style="text-align:right">2</td><td>Sorteia novas opções, evitando repetir as atuais quando houver alternativas.</td></tr><tr><td>Bloquear</td><td style="text-align:right">2</td><td>Remove uma oferta da partida inteira e coloca outra no cartão.</td></tr></tbody></table></div>
+<p>Trocar e bloquear são recursos independentes. A melhoria permanente <a href="../melhorias-permanentes/">Renovação</a> aumenta a quantidade de trocas.</p>
+<h2 id="cura-e-fim-das-opcoes">Cura e fim das opções</h2>
+<p>Cada nível ganho recupera <strong>12% da vida máxima</strong>. Se não houver nenhuma oferta válida, o nível é consumido e o personagem recupera 25 de vida sem abrir o painel.</p>
+<p>A Fenda do Eco pode conceder uma escolha extra quando o jogador permanece dentro dela por tempo suficiente, mas as hordas dobram enquanto ele está na área.</p>
+<p>Se vários níveis forem ganhos de uma vez, as escolhas aparecem uma após a outra.</p>
+<p>A partida volta a funcionar depois da escolha. O joystick foi corrigido na manutenção pós-0.3 para retomar corretamente após a pausa de level-up.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit a087559</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/claude/bold-clarke-aixtws/wiki-src/progressao/level-up.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>

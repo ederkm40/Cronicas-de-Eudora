@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Joystick flutuante · Crônicas de Eudora Wiki</title>
+<meta name="description" content="Toque em qualquer lugar livre da tela e arraste para mover o personagem.">
+<link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/wiki.css">
+</head>
+<body data-raiz="../../">
+<div class="aviso-previa" role="note"><strong>Prévia em teste</strong> — Pull Request #12, branch <code>claude/bold-clarke-aixtws</code>, commit <code>a087559</code>. Esta não é a versão oficial. <a href="https://ederkm40.github.io/Cronicas-de-Eudora/wiki/">Ir para a Wiki oficial</a></div>
+<header class="topo">
+  <a class="marca" href="../../"><img src="../../assets/logo.svg" alt="" width="32" height="32"><span>Crônicas de Eudora<small>Wiki</small></span></a>
+  <form class="busca" action="../../busca/" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar na Wiki" aria-label="Buscar na Wiki">
+  </form>
+  <a class="botao-topo" href="../../../">Jogar</a>
+</header>
+<div class="layout">
+<nav class="menu" aria-label="Categorias">
+  <details class="menu-movel"><summary>Categorias</summary>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../" aria-current=page>Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </details>
+  <div class="menu-fixo">
+  <p class="menu-titulo">Enciclopédia</p>
+  <ul><li><a href="../../personagens/">Personagens</a></li><li><a href="../../armas/">Armas</a></li><li><a href="../../melhorias/">Melhorias</a></li><li><a href="../../inimigos/">Inimigos</a></li><li><a href="../../chefes/">Chefes</a></li><li><a href="../../itens/">Itens e equipamentos</a></li><li><a href="../../mapas/">Mapas e ambientes</a></li><li><a href="../../combate/">Sistemas de combate</a></li><li><a href="../../progressao/">Progressão</a></li><li><a href="../" aria-current=page>Controles</a></li><li><a href="../../estrategias/">Estratégias</a></li><li><a href="../../glossario/">Glossário</a></li></ul>
+  <p class="menu-titulo">Projeto</p>
+  <ul><li><a href="../../desenvolvimento/">Painel de desenvolvimento</a></li></ul>
+  </div>
+</nav>
+<main>
+<nav class="trilha" aria-label="Você está em"><a href="../../">Wiki</a> › <a href="../">Controles</a></nav>
+<article>
+<h1>Joystick flutuante</h1>
+<p class="selos"><span class="selo selo-publicado">Publicado</span><span class="versao-art">Desde a 0.1-alpha</span></p>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#como-funciona">Como funciona</a></li><li><a href="#esquiva">Esquiva</a></li><li><a href="#pausa-e-retomada">Pausa e retomada</a></li></ol></details>
+<p>Não existe um joystick fixo na tela. <strong>Toque em um ponto livre e arraste</strong>: o joystick aparece onde o dedo tocou e some quando você solta.</p>
+<h2 id="como-funciona">Como funciona</h2>
+<div class="tabela"><table><thead><tr><th>Característica</th><th>Valor</th></tr></thead><tbody><tr><td>Onde aparece</td><td>Em qualquer ponto livre da tela</td></tr><tr><td>Raio</td><td>90 unidades de tela (base de 720 px de largura)</td></tr><tr><td>Zona morta</td><td>12% do raio</td></tr><tr><td>Velocidade</td><td>Fixa fora da zona morta</td></tr><tr><td>Centro que acompanha</td><td>Sim, quando o dedo passa do raio</td></tr></tbody></table></div>
+<p>A direção é relativa à tela: arrastar para cima move o personagem para o alto da tela, mesmo com a câmera isométrica.</p>
+<h2 id="esquiva">Esquiva</h2>
+<p>Dois toques curtos e próximos podem ativar a <a href="../esquiva/">esquiva</a>. Um arrasto rápido no segundo toque também pode definir a direção.</p>
+<h2 id="pausa-e-retomada">Pausa e retomada</h2>
+<p>Durante o <a href="../../progressao/level-up/">level-up</a>, o movimento fica pausado. Se o dedo que controlava o joystick continuar pressionando a tela, o controle retoma a partir da posição atual quando a escolha termina. Se o dedo for solto durante a pausa, o joystick volta neutro. Toques iniciados durante a pausa não assumem o controle nem geram esquiva. Esse comportamento foi implementado na manutenção pós-0.3-alpha e testado no Godot e no Chromium emulado; ainda não foi confirmado em celular físico.</p>
+</article>
+</main>
+</div>
+<footer class="rodape">
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Prévia · commit a087559</p>
+  <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/claude/bold-clarke-aixtws/wiki-src/controles/joystick-flutuante.md" rel="noopener">Editar esta página no GitHub</a></p>
+</footer>
+<script src="../../assets/busca.js" defer></script>
+</body>
+</html>
