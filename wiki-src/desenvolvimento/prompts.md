@@ -145,3 +145,26 @@ As regras abaixo devem acompanhar os próximos pedidos de desenvolvimento, salvo
 **Resultado:** PR #10 integrado em 26/11/2026 como 0.4-alpha. Foram adicionadas configurações mobile, três evoluções de armas, Pacto do Eco, estados de combate, Tecelão, Semeador, elites, eventos, novas mecânicas da Sentinela, som procedural e feedback audiovisual. As mecânicas novas de gameplay permanecem experimentais no eixo de design; a personalização mobile já era aprovada.
 
 **Registro da entrega:** [PR #10](https://github.com/ederkm40/Cronicas-de-Eudora/pull/10) · [relatório 0.4-alpha](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.4-alpha/RELATORIO.md).
+
+
+## HER-001 — Primeiro herói: O Guerreiro Arcano
+
+**Data:** 27/11/2026.
+
+**Situação do registro:** resumo recuperado desta conversa; não é transcrição literal integral de todos os pedidos.
+
+**Pedido confirmado:** iniciar o desenvolvimento conceitual do primeiro novo herói de Crônicas de Eudora. O proprietário indicou possuir imagens de referência, mas depois delegou a direção criativa ao ChatGPT e aprovou a primeira exploração artística como muito boa.
+
+**Decisões e diretrizes registradas:**
+- Função: mago ou conjurador, reinterpretado como **guerreiro arcano**, com aparência pronta para batalha e poderes elementais.
+- Idade visual: jovem, mas experiente.
+- Direção artística: manter o estilo já estabelecido em Crônicas de Eudora.
+- Formato técnico inegociável: jogo 2D, câmera top-down inclinada/isométrica e sprites 2D; não converter o herói para 3D.
+- Afinidades previstas: fogo, água, gelo, terra, vento, relâmpago, luz, sombra, veneno e sangue.
+- A magia deve ser canalizada principalmente pelas mãos e braços, sem dependência de cajado.
+- A identidade visual deve permanecer consistente entre as dez afinidades.
+- A produção futura deve considerar oito direções, controles mobile existentes e legibilidade em telas pequenas.
+
+**Resultado editorial:** ficha [[personagens/her-001-guerreiro-arcano|HER-001 — O Guerreiro Arcano]] criada como proposta conceitual. O proprietário aprovou a direção visual como referência positiva, mas não aprovou automaticamente nome, lore, habilidades definitivas, implementação ou validação.
+
+**Limites:** a arte conceitual produzida na conversa não é spritesheet pronta para Godot. Não houve alteração de código, build ou versão jogável.
