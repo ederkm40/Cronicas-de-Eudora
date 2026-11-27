@@ -36,8 +36,13 @@
 <article>
 <h1>Testes</h1>
 
-<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#0-4-alpha-pr-10">0.4-alpha — PR #10</a></li><li><a href="#manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</a></li><li><a href="#0-3-alpha">0.3-alpha</a></li><li><a href="#limite-da-validacao">Limite da validação</a></li></ol></details>
+<details class="sumario" open><summary>Nesta página</summary><ol><li><a href="#manutencao-pos-0-4-alpha-pr-12">Manutenção pós-0.4-alpha — PR #12</a></li><li><a href="#0-4-alpha-pr-10">0.4-alpha — PR #10</a></li><li><a href="#manutencao-pos-0-3-alpha-pr-7">Manutenção pós-0.3-alpha (PR #7)</a></li><li><a href="#0-3-alpha">0.3-alpha</a></li><li><a href="#limite-da-validacao">Limite da validação</a></li></ol></details>
 <p>O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados em cada entrega, não uma nova execução desta atualização editorial.</p>
+<h2 id="manutencao-pos-0-4-alpha-pr-12">Manutenção pós-0.4-alpha — PR #12</h2>
+<p>A manutenção registrou <strong>73 testes em seis suítes, 4.624 verificações e zero falhas</strong>. Foram acrescentados dois testes: desenho dos inimigos por tipo/geometria da tela e texto/efeito do ímã da Atração do eco.</p>
+<div class="tabela"><table><thead><tr><th>Verificação</th><th>Resultado registrado</th></tr></thead><tbody><tr><td>gdlint scripts tests</td><td>Sem problemas</td></tr><tr><td>gdformat --check</td><td>Sem alterações pendentes nos arquivos alterados</td></tr><tr><td>Testes do Godot</td><td>73 testes, 4.624 verificações, 0 falhas</td></tr><tr><td>Smoke test</td><td>Aprovado</td></tr><tr><td>Simulação longa</td><td>300 s, aprovada</td></tr><tr><td>Wiki / montagem do site</td><td>Aprovados</td></tr><tr><td>Playwright no CI</td><td>QA: 24 aprovados, 3 pulados; produção: 11 aprovados, 1 pulado, nos três perfis</td></tr></tbody></table></div>
+<p>A comparação de uma simulação de 300 s entre main e a branch produziu partidas idênticas. As medições de CPU por quadro ficaram dentro da variação normal do servidor, sem ganho ou perda identificável. Os perfis móveis do Playwright são emulações no Chromium, não aparelhos físicos.</p>
+<p>Relatório: <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/manutencao-pos-0.4/RELATORIO.md" rel="noopener">manutenção pós-0.4-alpha</a> · <a href="https://github.com/ederkm40/Cronicas-de-Eudora/pull/12" rel="noopener">PR #12</a>.</p>
 <h2 id="0-4-alpha-pr-10">0.4-alpha — PR #10</h2>
 <h3 id="godot-e-simulacoes">Godot e simulações</h3>
 <p>A 0.4-alpha registrou <strong>71 testes em seis suítes, 4.613 verificações e zero falhas</strong>. A nova suíte despertar.gd acrescentou 20 testes, cobrindo evoluções, Pacto do Eco, elites, Tecelão, Semeador, chefe, Fenda, Maré, configurações mobile, canhoto, joystick fixo, pausa, sons e números de dano.</p>
@@ -61,7 +66,7 @@
 </main>
 </div>
 <footer class="rodape">
-  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit baea23d</p>
+  <p>Crônicas de Eudora · versão oficial 0.3-alpha “Grande expansão do combate” · Wiki Oficial · commit b82e72e</p>
   <p>Gráficos e textos do jogo são provisórios. <a href="https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/wiki-src/desenvolvimento/testes.md" rel="noopener">Editar esta página no GitHub</a></p>
 </footer>
 <script src="../../assets/busca.js" defer></script>
