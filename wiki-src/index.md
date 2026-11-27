@@ -30,6 +30,7 @@ A versão 0.4-alpha amplia o núcleo de gameplay com configurações mobile, evo
 
 | Data | Versão | O que mudou |
 |---|---|---|
+| 27/11/2026 | Manutenção | Correção do texto da Atração do eco, extração do EnemyRenderer e atualização técnica, sem nova versão de gameplay (PR #12) |
 | 26/11/2026 | 0.4-alpha | O Despertar de Eudora: personalização mobile, evoluções, Pacto do Eco, Tecelão, Semeador, elites, eventos, chefe e feedback audiovisual (PR #10) |
 | 26/11/2026 | infraestrutura | Manutenção pós-0.3: build publicada sem ponte de QA, recuperação de save, retomada do joystick e Documento Mestre de Sistemas (PR #7) |
 | 26/11/2026 | 0.3-alpha | Duas armas novas, quatro tipos de inimigo adicionais, Sentinela do Eco, esquiva, Ecos e resultados |

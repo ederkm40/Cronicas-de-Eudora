@@ -12,10 +12,9 @@ ordem: 50
 | Botão de pausa e áreas seguras | Não foi conferido em aparelhos físicos com entalhes, recortes de câmera ou bordas arredondadas. |
 | Desempenho em celulares | No servidor de testes, o custo médio por quadro subiu aproximadamente 10% a 20% e o p99 cerca de 33% em relação à 0.3. O FPS real em celular não foi medido. |
 | Primeiro quadro de áudio | A geração inicial dos sons pode provocar um quadro de cerca de 55 ms; ocorre uma vez e os sons ficam em cache entre partidas. |
-| Atração do eco | O texto ainda diz “raio de coleta”, mas o efeito real altera o raio do ímã. |
 | Orbes distantes | Permanecem no chão até o jogador se aproximar; não há atração global. |
 | Arte e áudio finais | Os efeitos visuais e sonoros ainda são provisórios; não há pacote audiovisual final. |
-| Organização do EnemyManager | O relatório da 0.4 registra 20 métodos públicos e 890 linhas; acompanhar a manutenção da responsabilidade do gerenciador. |
+| Organização do EnemyManager | Parcialmente resolvido pela decisão 0013: desenho extraído para EnemyRenderer; o gerenciador caiu de 890 para 772 linhas e de 20 para 18 métodos públicos. A grade espacial continua nele. |
 
 A retomada do joystick após o level-up e as configurações mobile passaram por testes automatizados em Godot e Chromium emulado. Isso não confirma o comportamento em aparelhos físicos.
 

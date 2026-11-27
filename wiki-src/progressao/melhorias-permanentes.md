@@ -14,7 +14,7 @@ A tela de resultados permite gastar [[progressao/ecos|Ecos]] em quatro melhorias
 | Atração do eco | +20% no raio do ímã dos orbes (3 m na base) | 3 | 12, 25, 45 |
 | Renovação | +1 troca de ofertas no level-up | 2 | 40, 90 |
 
-Na tela do jogo, a descrição da Atração do eco diz "raio de coleta"; o efeito real é aumentar a distância em que os orbes começam a voar até o personagem (o ímã), não a distância final de coleta (0,6 m).
+A Atração do eco aumenta a distância em que os orbes começam a voar até o personagem (o ímã). A distância final de coleta permanece em 0,6 m e não é alterada pela melhoria. A descrição da loja foi corrigida na manutenção pós-0.4-alpha.
 
 Os limites são independentes: cada melhoria pode chegar ao próprio nível máximo.
 

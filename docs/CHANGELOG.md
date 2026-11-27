@@ -8,6 +8,25 @@ Categorias: **Jogabilidade**, **Interface**, **Desempenho**, **Correção**, **T
 
 ---
 
+## Manutenção pós-0.4-alpha (PR #12)
+
+**Data:** 27/11/2026 · **Merge:** PR #12 · **Versão do jogo:** permanece 0.4-alpha. Esta manutenção não alterou equilíbrio, conteúdo, progressão ou economia.
+
+| Categoria | Descrição | Motivo | Efeito no jogo | Arquivos / sistemas | Testes |
+|---|---|---|---|---|---|
+| Correção | Texto da Atração do eco corrigido para “+20% no raio do ímã dos orbes por nível” | Descrever o efeito real da melhoria | Nenhuma mudança no efeito ou nos preços; a distância final de coleta continua em 0,6 m | scripts/meta_progress.gd | Teste de texto e efeito com dois níveis salvos; ímã resultante de 4,2 m |
+| Arquitetura | Desenho dos inimigos extraído para EnemyRenderer | Liberar espaço no EnemyManager, que havia atingido o limite de 20 métodos públicos do gdlint | Nenhuma mudança visual, funcional ou de desempenho identificada | scripts/enemy_renderer.gd, scripts/enemy_manager.gd, scripts/camera_rig.gd; decisão técnica 0013 | Teste de desenho por tipo e geometria da tela |
+| Documentação | Relatório da manutenção, decisão 0013, pacote de fatos para IA, Documento Mestre e catálogos atualizados | Alinhar documentação ao estado integrado da 0.4-alpha | Nenhum efeito na build | docs/versoes/manutencao-pos-0.4/, docs/decisoes/, docs/design/, docs/IA/ | Testes da Wiki e montagem do site aprovados |
+| Testes | Cobertura ampliada em duas verificações | Proteger a correção do texto/efeito e a extração do desenho | Nenhum efeito na build | tests/suites/ | 73 testes, 4.624 verificações, 0 falhas; lint, smoke e simulação de 300 s aprovados |
+
+**Desempenho:** a simulação de 300 s no main e na branch produziu resultados idênticos. As medições de CPU por quadro ficaram dentro do ruído do servidor, sem ganho ou perda identificável. Isso não representa medição em celular.
+
+**Limites mantidos:** sem teste em celular físico ou com pessoas; os demais problemas conhecidos da 0.4 permanecem. A prévia do PR #12 e os testes de navegador foram verificados pelo workflow do GitHub, com perfis móveis emulados no Chromium.
+
+Relatório técnico: [manutenção pós-0.4-alpha](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/manutencao-pos-0.4/RELATORIO.md) · [PR #12](https://github.com/ederkm40/Cronicas-de-Eudora/pull/12) · [pacote de fatos](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/IA/ENTREGA_PARA_CHATGPT.md).
+
+---
+
 ## 0.4-alpha — O Despertar de Eudora (publicada)
 
 **Data:** 26/11/2026 · **Pull Request:** [#10](https://github.com/ederkm40/Cronicas-de-Eudora/pull/10) · **Merge:** [f51db236fd0ae3954178b4354c6641729c58fdf8](https://github.com/ederkm40/Cronicas-de-Eudora/commit/f51db236fd0ae3954178b4354c6641729c58fdf8). A publicação no GitHub Pages foi concluída com sucesso no workflow [#45902410165](https://github.com/ederkm40/Cronicas-de-Eudora/actions/runs/45902410165).

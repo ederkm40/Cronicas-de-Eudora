@@ -10,8 +10,8 @@ Esta área acompanha o desenvolvimento. A enciclopédia descreve o que existe no
 |---|---|
 | **Versão oficial** | 0.4-alpha — O Despertar de Eudora {PUBLICADO} |
 | **Branch principal** | main |
-| **Última integração técnica** | PR #10, **ETAPA 3: O DESPERTAR DE EUDORA**, em 26/11/2026 |
-| **Última integração documental** | PR #8, atualização editorial pós-PR #7; esta atualização registra a 0.4-alpha |
+| **Última integração técnica** | PR #12, manutenção pós-0.4-alpha, em 27/11/2026 |
+| **Última integração documental** | PR #11, atualização editorial pós-0.4-alpha; a manutenção do PR #12 está sendo registrada |
 | **Fase** | 1, protótipo |
 | **Próxima prioridade** | Continuar a expansão de sistemas e conteúdo antes da validação externa, adiada pelo proprietário |
 
@@ -29,6 +29,13 @@ Esta é a linha do tempo oficial das entregas que chegaram à branch main. Manut
 | Documentação pós-PR #7 | Atualização editorial da Wiki e do changelog | PR #8 · 26/11/2026 | {PUBLICADO} |
 | Arquivo histórico de prompts | Organização cronológica das solicitações de desenvolvimento | PR #9 · 26/11/2026 | {PUBLICADO} |
 | **ETAPA 3 — O Despertar de Eudora (0.4-alpha)** | Personalização mobile, impacto audiovisual, evoluções, Pacto do Eco, novos inimigos, elites, eventos e melhorias no chefe | **PR #10 · merge f51db236 · 26/11/2026** | {PUBLICADO} |
+| Manutenção pós-0.4-alpha | Correção do texto da Atração do eco, extração do desenho para EnemyRenderer, decisão técnica 0013 e atualização documental; sem mudança de gameplay | **PR #12 · 27/11/2026** | {PUBLICADO} |
+
+## Manutenção pós-0.4-alpha (PR #12)
+
+A manutenção não criou uma nova versão e não alterou equilíbrio, conteúdo, progressão ou economia. O texto da Atração do eco agora descreve corretamente o raio do ímã dos orbes. O desenho dos inimigos foi extraído do EnemyManager para EnemyRenderer, reduzindo o gerenciador de 890 para 772 linhas e de 20 para 18 métodos públicos. A grade espacial continua no gerenciador; ver decisão técnica 0013.
+
+A entrega registrou 73 testes, 4.624 verificações e zero falhas. A versão oficial permanece 0.4-alpha.
 
 ## O que chegou com a 0.4-alpha
 
