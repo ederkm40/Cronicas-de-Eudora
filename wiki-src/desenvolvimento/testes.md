@@ -5,6 +5,24 @@ ordem: 40
 ---
 O projeto utiliza testes automáticos no GitHub Actions antes de exportar o jogo e atualizar o site. Os resultados abaixo são os registrados em cada entrega, não uma nova execução desta atualização editorial.
 
+## Manutenção pós-0.4-alpha — PR #12
+
+A manutenção registrou **73 testes em seis suítes, 4.624 verificações e zero falhas**. Foram acrescentados dois testes: desenho dos inimigos por tipo/geometria da tela e texto/efeito do ímã da Atração do eco.
+
+| Verificação | Resultado registrado |
+|---|---|
+| gdlint scripts tests | Sem problemas |
+| gdformat --check | Sem alterações pendentes nos arquivos alterados |
+| Testes do Godot | 73 testes, 4.624 verificações, 0 falhas |
+| Smoke test | Aprovado |
+| Simulação longa | 300 s, aprovada |
+| Wiki / montagem do site | Aprovados |
+| Playwright no CI | QA: 24 aprovados, 3 pulados; produção: 11 aprovados, 1 pulado, nos três perfis |
+
+A comparação de uma simulação de 300 s entre main e a branch produziu partidas idênticas. As medições de CPU por quadro ficaram dentro da variação normal do servidor, sem ganho ou perda identificável. Os perfis móveis do Playwright são emulações no Chromium, não aparelhos físicos.
+
+Relatório: [manutenção pós-0.4-alpha](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/manutencao-pos-0.4/RELATORIO.md) · [PR #12](https://github.com/ederkm40/Cronicas-de-Eudora/pull/12).
+
 ## 0.4-alpha — PR #10
 
 ### Godot e simulações
