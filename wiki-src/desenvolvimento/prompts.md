@@ -147,24 +147,21 @@ As regras abaixo devem acompanhar os próximos pedidos de desenvolvimento, salvo
 **Registro da entrega:** [PR #10](https://github.com/ederkm40/Cronicas-de-Eudora/pull/10) · [relatório 0.4-alpha](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/0.4-alpha/RELATORIO.md).
 
 
-## HER-001 — Primeiro herói: O Guerreiro Arcano
 
-**Data:** 27/11/2026.
+## PR #12 — Manutenção pós-0.4-alpha
 
-**Situação do registro:** resumo recuperado desta conversa; não é transcrição literal integral de todos os pedidos.
+**Situação do registro:** resumo recuperado a partir do pacote técnico entregue pelo Claude Code em docs/IA/ENTREGA_PARA_CHATGPT.md e do relatório docs/versoes/manutencao-pos-0.4/RELATORIO.md.
 
-**Pedido confirmado:** iniciar o desenvolvimento conceitual do primeiro novo herói de Crônicas de Eudora. O proprietário indicou possuir imagens de referência, mas depois delegou a direção criativa ao ChatGPT e aprovou a primeira exploração artística como muito boa.
+**Objetivo confirmado:** corrigir a descrição da melhoria permanente Atração do eco, tirar o EnemyManager do limite de métodos públicos do verificador e alinhar a documentação técnica à 0.4-alpha já publicada, sem criar uma nova versão de gameplay.
 
-**Decisões e diretrizes registradas:**
-- Função: mago ou conjurador, reinterpretado como **guerreiro arcano**, com aparência pronta para batalha e poderes elementais.
-- Idade visual: jovem, mas experiente.
-- Direção artística: manter o estilo já estabelecido em Crônicas de Eudora.
-- Formato técnico inegociável: jogo 2D, câmera top-down inclinada/isométrica e sprites 2D; não converter o herói para 3D.
-- Afinidades previstas: fogo, água, gelo, terra, vento, relâmpago, luz, sombra, veneno e sangue.
-- A magia deve ser canalizada principalmente pelas mãos e braços, sem dependência de cajado.
-- A identidade visual deve permanecer consistente entre as dez afinidades.
-- A produção futura deve considerar oito direções, controles mobile existentes e legibilidade em telas pequenas.
+**Escopo confirmado:**
+- Corrigir o texto da loja para “+20% no raio do ímã dos orbes por nível”, sem alterar efeito ou preços.
+- Extrair o desenho dos inimigos para a classe EnemyRenderer, reduzindo EnemyManager de 890 para 772 linhas e de 20 para 18 métodos públicos.
+- Mover is_on_screen para CameraRig e retirar do gerenciador o contador usado apenas pelos testes.
+- Registrar a decisão técnica 0013 e atualizar Documento Mestre, catálogos e documentação técnica.
 
-**Resultado editorial:** ficha [[personagens/her-001-guerreiro-arcano|HER-001 — O Guerreiro Arcano]] criada como proposta conceitual. O proprietário aprovou a direção visual como referência positiva, mas não aprovou automaticamente nome, lore, habilidades definitivas, implementação ou validação.
+**Testes locais informados:** 73 testes, 4.624 verificações e zero falhas; lint, formatação, smoke test, simulação de 300 segundos, testes da Wiki e montagem do site aprovados. A comparação da simulação entre main e a branch não encontrou diferença de resultado ou desempenho além da variação normal do servidor.
 
-**Limites:** a arte conceitual produzida na conversa não é spritesheet pronta para Godot. Não houve alteração de código, build ou versão jogável.
+**Resultado:** PR #12 integrado. A versão oficial continua **0.4-alpha**. A manutenção não altera equilíbrio, conteúdo, progressão ou economia. Os testes de navegador e a prévia foram verificados no workflow do GitHub; perfis móveis foram emulados no Chromium, não testados em aparelhos físicos.
+
+**Referências:** [PR #12](https://github.com/ederkm40/Cronicas-de-Eudora/pull/12) · [relatório da manutenção](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/versoes/manutencao-pos-0.4/RELATORIO.md) · [pacote de fatos](https://github.com/ederkm40/Cronicas-de-Eudora/blob/main/docs/IA/ENTREGA_PARA_CHATGPT.md).
