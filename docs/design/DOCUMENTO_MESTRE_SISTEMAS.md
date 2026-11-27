@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Versão do documento** | 0.1.2 (0.4-alpha integrada à `main`; manutenção pós-0.4) |
+| **Versão do documento** | 0.1.3 (menu inicial, 0.5-alpha Parte 1) |
 | **Data de início** | 26/11/2026 |
 | **Data desta revisão** | 27/11/2026 |
 | **Status geral** | `EM_ELABORAÇÃO` |
@@ -701,7 +701,11 @@ A estudar: conquistas, marcos, maestria, coleções, chefes derrotados, builds d
 | Level-up | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 | Resultados (com loja permanente) | `APROVADO` | `IMPLEMENTADO` | `TESTADO` |
 | Configurações (pausa) | `APROVADO` (necessária para destro/canhoto e joystick) | `IMPLEMENTADO` (PR #10) | `TESTADO` |
-| Menu principal, seleção de personagem, seleção de estágio, base, inventário, equipamentos, habilidades, coleções, bestiário, codex, fabricação, missões | `PROPOSTO_NAO_APROVADO` | `NÃO_IMPLEMENTADO` | — |
+| Menu principal (JOGAR, Ecos, Personagens, Missões, Loja, Configurações; voltar em todas as telas) | `APROVADO` (proprietário, 0.5-alpha Parte 1) | `IMPLEMENTADO` (PR #14, `MainMenu`) | `TESTADO` (`tests/suites/menu.gd`, `menu.spec.js`; sem celular físico) |
+| Loja no menu e configurações no menu | `APROVADO` (Parte 1) | `IMPLEMENTADO` (PR #14, `ShopPanel`, `SettingsPanel`) | `TESTADO` |
+| Seleção de personagem e de missão | `APROVADO` (plano das Partes 2 e 3; conteúdo a definir) | `IMPLEMENTADO_PARCIALMENTE` (PR #14: telas e `RunSetup`, só a opção atual) | `TESTADO` (só a opção atual) |
+| Perfil com estatísticas | `APROVADO` (plano da Parte 4) | `NÃO_IMPLEMENTADO` | — |
+| Base, inventário, equipamentos, habilidades, coleções, bestiário, codex, fabricação | `PROPOSTO_NAO_APROVADO` | `NÃO_IMPLEMENTADO` | — |
 
 ### 27.2. HUD atual
 
@@ -917,7 +921,8 @@ Nesta versão **nenhuma fonte foi consultada**: o acesso às páginas pedia uma 
 |---|---|---|
 | 0.1 | estrutura geral das 38 áreas, inventário da 0.3-alpha com os três estados, índice dos 30 catálogos, modelo de entrada, 9 catálogos com conteúdo comprovado | 26/11/2026 |
 | **0.1.1** | estados atualizados com a etapa "O Despertar de Eudora" (PR #10): estados de combate, evoluções, Pacto do eco, Tecelão, Semeador, elites, chefe, eventos, configurações mobile, som e retorno visual | 26/11/2026 |
-| **0.1.2** | 0.4-alpha integrada: estados `EM_DESENVOLVIMENTO (PR #10)` → `IMPLEMENTADO (PR #10)`; texto da Atração do eco corrigido no jogo; desenho dos inimigos separado no `EnemyRenderer` | **esta versão** (27/11/2026) |
+| **0.1.2** | 0.4-alpha integrada: estados `EM_DESENVOLVIMENTO (PR #10)` → `IMPLEMENTADO (PR #10)`; texto da Atração do eco corrigido no jogo; desenho dos inimigos separado no `EnemyRenderer` | 27/11/2026 |
+| **0.1.3** | seção 27.1: menu principal, loja e configurações no menu (`APROVADO` · `IMPLEMENTADO`); seleção de personagem e missão `IMPLEMENTADO_PARCIALMENTE` | **esta versão** (27/11/2026) |
 | 0.2 | catálogos detalhados e matrizes de relações | planejada |
 | 0.3 | regras completas de sistemas e dados | planejada |
 | 0.4 | conteúdo original e balanceamento inicial | planejada |

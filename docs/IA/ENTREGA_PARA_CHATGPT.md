@@ -1,48 +1,83 @@
 # Entrega para o ChatGPT
 
-*Pacote de fatos técnicos da última entrega do Claude Code. Use para revisar a Wiki (`wiki-src/`) e o `docs/CHANGELOG.md`. Não é um artigo: são dados. O Claude Code **não** alterou o changelog nem a Wiki nesta etapa. O pacote da 0.4-alpha continua no histórico do git e em `docs/versoes/0.4-alpha/RELATORIO.md`.*
+*Pacote de fatos técnicos da última entrega do Claude Code. Use para revisar a Wiki (`wiki-src/`) e o `docs/CHANGELOG.md`. Não é um artigo: são dados. O Claude Code **não** alterou o changelog nem a Wiki nesta etapa. Os pacotes anteriores (0.4-alpha e manutenção pós-0.4) continuam no histórico do git e nos relatórios em `docs/versoes/`.*
 
 ## Identificação
 
 | | |
 |---|---|
-| **Etapa** | Manutenção pós-0.4-alpha |
-| **Versão do jogo** | continua **0.4-alpha** (sem mudança de equilíbrio, conteúdo ou progressão) |
-| **Branch** | `claude/bold-clarke-aixtws` (a partir do `main` `7a7daf2`) |
-| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/12 |
-| **Prévia** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-12/ |
-| **Relatório** | `docs/versoes/manutencao-pos-0.4/RELATORIO.md` |
+| **Etapa** | 0.5-alpha, Parte 1 de 4: menu inicial |
+| **Versão do jogo** | continua **0.4-alpha** até o merge. A 0.5-alpha será fechada nas próximas partes |
+| **Branch** | `claude/bold-clarke-aixtws` (a partir do `main` `baea23d`) |
+| **Pull Request** | https://github.com/ederkm40/Cronicas-de-Eudora/pull/14 |
+| **Prévia** | https://ederkm40.github.io/Cronicas-de-Eudora/previews/pr-14/ |
+| **Relatório** | `docs/versoes/0.5-alpha-parte-1/RELATORIO.md` (com capturas de tela) |
+
+**Importante:** nada foi testado em celular físico. O PR #13 (Wiki da manutenção pós-0.4) continua valendo; esta entrega não o altera.
 
 ## Fatos para a Wiki (só depois do merge)
 
-### Problemas conhecidos (`desenvolvimento/problemas-conhecidos.md`)
+### Menu inicial (página nova sugerida, por exemplo `interface/menu-inicial` ou dentro de `controles/`)
 
-- **Sai da lista:** "Atração do eco: o texto ainda diz 'raio de coleta'". O texto da loja agora é **"+20% no raio do ímã dos orbes por nível."** O efeito e os preços não mudaram.
-- **Atualizar:** "Organização do EnemyManager". O desenho dos inimigos foi para uma classe própria (`EnemyRenderer`). O `EnemyManager` passou de 890 para 772 linhas e de 20 para 18 métodos públicos (o limite do `gdlint` é 20). Decisão 0013.
-- **Continuam:** todos os outros itens da 0.4 (celular físico, chefe possivelmente fácil, fenda não medida, som não ouvido, botão de pausa em telas com entalhe, desempenho no celular, primeiro quadro de áudio, orbes distantes, arte e áudio finais).
+- O jogo agora **abre num menu**, e não mais direto na partida.
+- **Tela inicial:** título "Crônicas de Eudora", contador de Ecos, botão **JOGAR** (grande, dourado, brilhando devagar) e, embaixo, quatro botões: **Personagens**, **Missões**, **Loja** e **Configurações**. Uma linha mostra a escolha atual: "Personagem padrão · Partida padrão".
+- **Personagens:** mostra só o personagem atual ("Personagem padrão"): vida 100, velocidade 5,0 m/s, arma inicial Raio arcano, esquiva por duplo toque no joystick. Aviso: "Mais opções chegam nas próximas etapas do menu." Use `{PLANEJADO}` para novos personagens.
+- **Missões:** mostra só a missão atual ("Partida padrão"): sobreviver às hordas; aos 10:00 surge a Sentinela do Eco; vitória ao derrotá-la. O mesmo aviso. Use `{PLANEJADO}` para novas missões.
+- **Loja:** as mesmas 4 melhorias permanentes (preços e efeitos sem mudança). Continua também nos resultados.
+- **Configurações:** as mesmas 7 opções da pausa (mão, joystick, tamanho, altura, som, tremor, números). Mudar no menu vale na pausa, e vice-versa.
+- "Personagem padrão" e "Partida padrão" são **nomes provisórios**, sem história.
 
-### Progressão (`progressao/melhorias-permanentes.md`)
+### Controles (`controles/`)
 
-- O parágrafo que diz "Na tela do jogo, a descrição da Atração do eco diz 'raio de coleta'…" pode sair. O texto do jogo agora fala do ímã. A explicação do efeito (ímã de 3 m na base; coleta final em 0,6 m, que não muda) continua correta.
+- **Voltar:** toda tela do menu tem um botão "‹ Voltar". O **voltar do celular** (navegador ou Android) e o **Esc** fazem o mesmo.
+- **Antes, o voltar do navegador do celular saía da página do jogo.** Agora:
+  - no menu, volta à tela inicial;
+  - na partida, abre a pausa (ou continua, se a pausa estiver aberta);
+  - no level-up e nos resultados, não faz nada.
+- Limitação: no navegador, o voltar só é tratado depois do primeiro toque na página.
+- **Botão de pausa:** o "II" no alto da tela ficou bem visível (fundo roxo, borda clara, maior). Antes era cinza sobre o chão cinza e difícil de achar.
+
+### Pausa e resultados
+
+- Pausa: novo botão **Encerrar partida**. Ele pede um segundo toque ("Toque de novo para encerrar"). Encerrar termina a partida como derrota (os Ecos da partida contam) e mostra os resultados com o título "Partida encerrada".
+- Resultados: **Jogar de novo**, **Voltar ao menu** e **Loja**.
 
 ### Testes (`desenvolvimento/testes.md`)
 
-- **Godot:** 73 testes em 6 suítes (antes, 71). Novos: desenho dos inimigos por tipo e geometria da tela (`inimigos_e_chefe.gd`, agora com 8); texto e efeito da Atração do eco (`save_e_joystick.gd`, agora com 11).
-- Resultado local: 73 testes, 4.624 verificações, 0 falhas; smoke e simulação longa OK.
-- Desempenho: a mesma partida simulada de 300 s no `main` e na branch, com o mesmo resultado e o mesmo tempo por quadro dentro do ruído (tabela no relatório).
+- **Godot:** 86 testes em 7 suítes (antes, 73). Suíte nova `menu.gd`, com 13 testes.
+- **Smoke test:** agora começa pelo menu e toca em JOGAR.
+- **Playwright:** arquivo novo `menu.spec.js`, com 3 testes nos 3 perfis:
+  - navegação por toque e voltar do navegador sem sair da página;
+  - configuração e compra no menu valendo na partida, encerrar e voltar ao menu;
+  - voltar do navegador pausando a partida.
+- Todos os testes antigos de jogabilidade agora abrem a partida tocando em JOGAR.
 
-### Arquitetura (se a Wiki tiver página técnica)
+### Problemas conhecidos (`desenvolvimento/problemas-conhecidos.md`)
 
-- Novo arquivo `scripts/enemy_renderer.gd` (`EnemyRenderer`, filho do `EnemyManager`): um MultiMesh por tipo de inimigo e a forma provisória de cada tipo.
-- `CameraRig.is_on_screen(ponto, centro, metade, margem)` (antes no `EnemyManager`).
-- Decisão nova: `docs/decisoes/0013-enemy-manager-classes-auxiliares.md`. O Claude Code acrescentou a linha dela em `docs/decisoes/README.md`, sem mudar o resto.
+- **Novo:** o voltar do navegador só é tratado depois do primeiro toque na página.
+- **Novo:** Personagens e Missões ainda não têm escolha (Partes 2 e 3).
+- **Sai da lista**, se estiver lá: "botão de pausa difícil de ver".
 
 ## Para o changelog (sugestão)
 
-- **Corrigido:** texto da melhoria permanente Atração do eco (agora fala do ímã dos orbes).
-- **Técnico:** desenho dos inimigos separado no `EnemyRenderer` (decisão 0013), sem mudança de jogo nem de desempenho; documentação técnica e Documento Mestre atualizados para a 0.4 integrada.
+- **Adicionado:**
+  - menu inicial com JOGAR, Personagens, Missões, Loja e Configurações;
+  - Voltar em todas as telas;
+  - Encerrar partida na pausa;
+  - Voltar ao menu nos resultados.
+- **Alterado:**
+  - o jogo abre no menu;
+  - o voltar do celular não sai mais do jogo;
+  - o botão de pausa ficou visível;
+  - os botões das telas ganharam fundo e borda.
+- **Técnico:**
+  - decisão 0014;
+  - `RunSetup` leva a escolha à partida;
+  - painéis de configurações e loja compartilhados.
 
 ## Documento Mestre
 
-- Versão 0.1.2: os elementos da 0.4 passaram de `EM_DESENVOLVIMENTO (PR #10)` para `IMPLEMENTADO (PR #10)`. O design continua `PROPOSTO_NAO_APROVADO (experimental)` até o proprietário decidir.
-- Corrigidas duas linhas desatualizadas da tabela de estruturas futuras: configurações persistentes e estados de combate estão `IMPLEMENTADO` desde a 0.4.
+- Versão 0.1.3, seção 27.1:
+  - menu principal, loja e configurações no menu: `APROVADO` · `IMPLEMENTADO (PR #14)` · `TESTADO`;
+  - seleção de personagem e missão: `IMPLEMENTADO_PARCIALMENTE` (só a opção atual);
+  - perfil: `APROVADO` (plano), `NÃO_IMPLEMENTADO`.

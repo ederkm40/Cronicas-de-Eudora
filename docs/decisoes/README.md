@@ -17,5 +17,6 @@ Cada arquivo registra uma decisão: contexto, decisão e consequências. **Nunca
 | 0011 | [Build de produção sem a ponte de testes; build de QA só no CI](0011-builds-producao-e-qa.md) | Aceita | 26/11/2026 |
 | 0012 | [Gameplay da 0.4: estados em arrays, diretor de eventos, configurações próprias e som gerado no código](0012-nucleo-de-gameplay-04.md) | Aceita (técnica) | 26/11/2026 |
 | 0013 | [O EnemyManager ganha classes auxiliares, começando pelo desenho](0013-enemy-manager-classes-auxiliares.md) | Aceita | 27/11/2026 |
+| 0014 | [Menu inicial como cena própria, escolha passada por RunSetup e um só "voltar"](0014-menu-inicial.md) | Aceita | 27/11/2026 |
 
 Modelo para uma nova decisão: copie qualquer arquivo e mantenha as seções *Contexto*, *Decisão* e *Consequências*.
