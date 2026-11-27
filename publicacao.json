@@ -3,12 +3,5 @@
     "commit": "b82e72efedcb292d01970e83e32d5ff3a692be11",
     "publicado_em": "2026-11-27T16:48:25Z"
   },
-  "previas": {
-    "14": {
-      "branch": "claude/bold-clarke-aixtws",
-      "commit": "70e5fbde7919a1904b7ff0dcb32108201ced097a",
-      "publicado_em": "2026-11-27T17:01:15Z",
-      "titulo": "Menu inicial (Parte 1): navegação, configurações, loja e botão de pausa visível"
-    }
-  }
+  "previas": {}
 }
