@@ -8,6 +8,20 @@ Categorias: **Jogabilidade**, **Interface**, **Desempenho**, **Correção**, **T
 
 ---
 
+## Registro de design — HER-001: O Guerreiro Arcano (proposta)
+
+**Data:** 27/11/2026 · **Natureza:** documentação conceitual, sem nova versão de gameplay.
+
+| Categoria | Registro | Efeito no jogo | Estado |
+|---|---|---|---|
+| Documentação | Criação da ficha conceitual HER-001, primeiro novo herói em desenvolvimento editorial: guerreiro arcano jovem e experiente, com armadura azul e dourada, magia canalizada pelas mãos e potencial para dez afinidades elementais | Nenhum efeito na build atual; o personagem não foi implementado nem adicionado como opção jogável | Proposta; implementação não iniciada; não testado |
+
+A direção visual foi bem recebida pelo proprietário como referência para continuar o desenvolvimento. Nome, biografia, habilidades definitivas, regras das afinidades, sprites e animações permanecem em aberto ou propostos. O projeto continua na versão oficial **0.4-alpha**. Este registro não cria uma versão nova nem altera a aprovação de design de sistemas existentes.
+
+Página de referência: [HER-001 — O Guerreiro Arcano](../wiki-src/personagens/her-001-guerreiro-arcano.md).
+
+---
+
 ## 0.4-alpha — O Despertar de Eudora (publicada)
 
 **Data:** 26/11/2026 · **Pull Request:** [#10](https://github.com/ederkm40/Cronicas-de-Eudora/pull/10) · **Merge:** [f51db236fd0ae3954178b4354c6641729c58fdf8](https://github.com/ederkm40/Cronicas-de-Eudora/commit/f51db236fd0ae3954178b4354c6641729c58fdf8). A publicação no GitHub Pages foi concluída com sucesso no workflow [#45902410165](https://github.com/ederkm40/Cronicas-de-Eudora/actions/runs/45902410165).
