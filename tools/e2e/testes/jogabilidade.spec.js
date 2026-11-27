@@ -8,7 +8,7 @@ const { test, expect } = require("@playwright/test");
 const { abrirPartida, estado, esperarEstado, comandos, centro, ponto, criarDedo } = require("./ajudantes");
 
 test("joystick move o personagem e o duplo toque esquiva, sem esquiva acidental", async ({ page }, testInfo) => {
-  const erros = await abrirPartida(page);
+  const erros = await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "invulneravel:1", "limpar");
   const dedo = await criarDedo(page, testInfo);
   const base = await ponto(page, 0.5, 0.7);
@@ -48,7 +48,7 @@ test("joystick move o personagem e o duplo toque esquiva, sem esquiva acidental"
 
 test("teclado: Espaço esquiva no computador", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "computador", "teclado só no perfil de computador");
-  await abrirPartida(page);
+  await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "invulneravel:1", "limpar");
   await page.locator("#canvas").click({ position: { x: 5, y: 5 } }); // foco no jogo
   await page.waitForTimeout(1600); // o clique acima pode ter contado como toque
@@ -58,7 +58,7 @@ test("teclado: Espaço esquiva no computador", async ({ page }, testInfo) => {
 });
 
 test("level-up: trocar, bloquear e escolher tocando nos botões", async ({ page }, testInfo) => {
-  const erros = await abrirPartida(page);
+  const erros = await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "invulneravel:1", "limpar", "xp:4");
   await esperarEstado(page, (e) => e.painel.aberto && !e.painel.travado && e.pausado, "a escolha deveria abrir e pausar");
   const dedo = await criarDedo(page, testInfo);
@@ -95,7 +95,7 @@ test("level-up: trocar, bloquear e escolher tocando nos botões", async ({ page 
 });
 
 test("encontro final: vitória, resultados e reinício limpo", async ({ page }, testInfo) => {
-  const erros = await abrirPartida(page);
+  const erros = await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "invulneravel:1", "limpar", "chefe");
   await esperarEstado(page, (e) => e.chefe, "o chefe deveria surgir");
   const primeira = (await estado(page)).partida;
@@ -114,7 +114,7 @@ test("encontro final: vitória, resultados e reinício limpo", async ({ page }, 
 });
 
 test("derrota: resultados e reinício pelo toque", async ({ page }, testInfo) => {
-  const erros = await abrirPartida(page);
+  const erros = await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "limpar", "morrer");
   await esperarEstado(page, (e) => e.fim && !e.vitoria && e.resultados.aberto, "a derrota deveria abrir os resultados");
   const primeira = (await estado(page)).partida;
@@ -126,7 +126,7 @@ test("derrota: resultados e reinício pelo toque", async ({ page }, testInfo) =>
 });
 
 test("joystick volta a responder depois do level-up sem levantar o dedo", async ({ page }, testInfo) => {
-  const erros = await abrirPartida(page);
+  const erros = await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "invulneravel:1", "limpar");
   const dedo = await criarDedo(page, testInfo);
   const base = await ponto(page, 0.5, 0.7);
@@ -165,7 +165,7 @@ test("joystick volta a responder depois do level-up sem levantar o dedo", async 
 });
 
 test("pausa pelo botão II, modo canhoto e retomada pelo toque", async ({ page }, testInfo) => {
-  const erros = await abrirPartida(page);
+  const erros = await abrirPartida(page, testInfo);
   await comandos(page, "hordas:0", "invulneravel:1", "limpar");
   const dedo = await criarDedo(page, testInfo);
   await page.waitForTimeout(300);

@@ -13,6 +13,7 @@ extends Node3D
 const GROUND_SIZE := 120.0
 const GRID_CELL := 2.0
 const QA_BRIDGE_PATH := "res://scripts/web_bridge.gd"
+const MENU_SCENE := "res://scenes/menu.tscn"
 
 @export var encounter_time := 600.0  ## Segundos de partida até o chefe aparecer.
 @export var encounter_spawn_rate := 0.3  ## Ritmo das hordas durante o encontro final.
@@ -46,6 +47,8 @@ var sounds: SoundBank
 var feedback: CombatFeedback
 var feel: GameFeel
 var pause_menu: PauseMenu
+var setup: RunSetup  ## Personagem e missão escolhidos no menu (RunSetup.take()).
+var back_navigation: BackNavigation
 var xp_per_enemy := 1  ## Multiplicador da XP de cada inimigo (cada tipo tem a sua).
 var ecos_earned := 0
 
@@ -54,12 +57,14 @@ var _elapsed := 0.0
 var _kills := 0
 var _over := false
 var _won := false
+var _quit := false  ## Partida encerrada pela pausa.
 var _encounter_started := false
 var _warned := false
 var _xp_fraction := 0.0  ## Sobras de XP do Pacto do eco (acumulam até virar 1 ponto).
 
 
 func _ready() -> void:
+	setup = RunSetup.take()
 	meta = MetaProgress.load_from()
 	settings = GameSettings.load_from()
 	stats = RunStats.new()
@@ -164,12 +169,18 @@ func _ready() -> void:
 	results = ResultsScreen.new()
 	ui.add_child(results)
 	results.restart_requested.connect(_on_restart)
+	results.menu_requested.connect(go_to_menu)
 	pause_menu = PauseMenu.new()
 	pause_menu.settings = settings
 	ui.add_child(pause_menu)
 	pause_menu.resumed.connect(_on_resume)
 	pause_menu.settings_changed.connect(_apply_settings)
+	pause_menu.quit_requested.connect(quit_run)
 	hud.pause_requested.connect(open_pause)
+	back_navigation = BackNavigation.new()
+	back_navigation.handle_escape = false  # o Esc já abre e fecha a pausa (abaixo)
+	add_child(back_navigation)
+	back_navigation.back_requested.connect(_on_back)
 
 	sounds = SoundBank.new()
 	add_child(sounds)
@@ -222,6 +233,25 @@ func open_pause() -> void:
 	get_tree().paused = true
 	joystick.set_enabled(false)
 	pause_menu.open()
+
+
+## Voltar do celular: abre a pausa ou, com ela aberta, continua. No level-up e nos resultados
+## não faz nada, para um toque sem querer não pular uma escolha.
+func _on_back() -> void:
+	if pause_menu.is_open():
+		pause_menu.close()
+	else:
+		open_pause()
+
+
+## "Encerrar partida" na pausa: termina como derrota (os Ecos da partida contam) e mostra os
+## resultados. A partida fica congelada atrás da tela.
+func quit_run() -> void:
+	if _over:
+		return
+	_quit = true
+	get_tree().paused = true
+	_finish(false)
 
 
 func _on_resume() -> void:
@@ -536,6 +566,7 @@ func result_data() -> Dictionary:
 			)
 	return {
 		"won": _won,
+		"quit": _quit,
 		"time": _elapsed,
 		"level": progression.level,
 		"kills": _kills,
@@ -556,6 +587,11 @@ func result_data() -> Dictionary:
 func _on_restart() -> void:
 	get_tree().paused = false
 	get_tree().reload_current_scene()
+
+
+func go_to_menu() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file(MENU_SCENE)
 
 
 func _build_environment() -> void:
